@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Training Summary App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #app {
+            text-align: center;
+        }
+        .screen {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+        }
+        textarea {
+            width: 100%;
+            height: 400px;
+            font-size: 14px;
+        }
+        .choice-button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 15px;
+            text-align: left;
+            white-space: normal;
+        }
+        .nav-buttons {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Driver Training Summary</h1>
+        <div id="name-screen" class="screen">
+            <label for="driver-name">Enter Driver's Name:</label><br>
+            <input type="text" id="driver-name" placeholder="Driver Name">
+        </div>
+        <!-- Choice screens will be dynamically generated -->
+        <div id="result-screen" class="screen">
+            <h2>Generated Summary</h2>
+            <textarea id="summary-text"></textarea><br>
+            <button onclick="copySummary()">Copy to Clipboard</button>
+        </div>
+        <div class="nav-buttons">
+            <button id="prev-btn" onclick="prevPage()" disabled>⬅️ Previous</button>
+            <button id="next-btn" onclick="nextPage()">➡️ Next</button>
+        </div>
+    </div>
+
+    <script>
+        // Define skills and notes
+        const skills = [
+            { id: 'flex', label: 'Flex App Usage', good: 'Good understanding of Flex app usage.', mid: 'Needs time to get used to the Flex app.', bad: 'Limited understanding of Flex app usage.' },
+            { id: 'organize_van', label: 'Organize Van', good: 'Knows how to organize van with overflows and bags.', mid: 'Needs more practice organizing van with overflows and bags.', bad: 'Does not know how to organize van with overflows and bags.' },
+            { id: 'bag_overflow', label: 'Bag vs Overflows', good: 'Understands difference between bag packages and overflows; knows where to look without wasting time.', mid: 'Partial understanding of bag vs overflows; some confusion.', bad: 'Confuses bag packages and overflows; wastes time searching wrong places.' },
+            { id: 'customer_instructions', label: 'Customer Instructions', good: 'Follows customer instructions.', mid: 'Follows customer instructions with minor issues.', bad: 'Does not follow customer instructions consistently.' },
+            { id: 'language', label: 'Language Challenges', good: 'No language challenges noted.', mid: 'Minor language challenges.', bad: 'Language Barrier.' },
+            { id: 'mark_undeliverable', label: 'Mark Undeliverable', good: 'Knows how to mark undeliverable packages correctly (e.g., damage, missing, closed business).', mid: 'Needs guidance on marking undeliverable packages.', bad: 'Does not know how to mark undeliverable packages correctly.' },
+            { id: 'photos', label: 'Photos', good: 'Takes clear photos.', mid: 'Photos need improvement.', bad: 'Takes unclear or poor photos.' },
+            { id: 'polite', label: 'Polite with Customers', good: 'Polite with customers.', mid: 'Generally polite, but room for improvement.', bad: 'Not always polite with customers.' },
+            { id: 'driving', label: 'Driving Skills', good: 'Strong driver: full stops, speed limits, follows traffic rules.', mid: 'Adequate driver, needs some refinement.', bad: 'Weak driver: ignores stops, speeds, breaks traffic rules.' },
+            { id: 'building_deliveries', label: 'Building Deliveries', good: 'Knows how to handle building deliveries: upstairs, package rooms, reception, organizes by floor.', mid: 'Needs more practice with building deliveries.', bad: 'Struggles with building deliveries: avoids upstairs, mishandles package rooms/reception, poor organization.' },
+            { id: 'house_deliveries', label: 'House Deliveries', good: 'Knows how to handle house deliveries: organizes packages, special notes (e.g., back door), multiple stops.', mid: 'Needs more practice with house deliveries.', bad: 'Struggles with house deliveries: poor organization, ignores special notes, risks multiple-stop errors.' },
+            { id: 'delivery_speed', label: 'Delivery Speed', good: 'Delivers quickly: photo and go.', mid: 'Delivery speed is average; some lingering.', bad: 'Delivers slowly; lingers at stops.' },
+            { id: 'identify_addresses', label: 'Identify Addresses', good: 'Identifies addresses accurately.', mid: 'Occasionally struggles with address identification.', bad: 'Struggles to identify addresses accurately.' },
+            { id: 'parking', label: 'Parking Sequence', good: 'Knows proper parking sequence.', mid: 'Needs reminder on parking sequence.', bad: 'Does not know proper parking sequence.' },
+            { id: 'gps', label: 'Map/GPS Skills', good: 'Good map/GPS skills.', mid: 'Needs improvement on map/GPS skills.', bad: 'Poor map/GPS skills.' },
+            { id: 'learner', label: 'Learning Speed', good: 'Quick learner overall.', mid: 'Average learner; takes time.', bad: 'Slow learner overall.' },
+            { id: 'attitude', label: 'Attitude', good: 'Positive attitude and eager to learn.', mid: 'Neutral attitude; moderate interest in learning.', bad: 'Negative attitude or reluctant to learn.' }
+        ];
+
+        const notes = [
+            { id: 'feels_ready', text: 'Feels ready and confident to go solo today.', label: 'Feels Ready' },
+            { id: 'gas_card', text: 'Shown gas card usage, preferred stations (e.g., Exxon, BP), and timecard fixes.', label: 'Gas Card & Timecard' },
+            { id: 'checklist', text: 'Ride-along checklist posting soon.', label: 'Checklist Posting' },
+            { id: 'coached', text: 'Coached on-road today; was [X] stops behind/ahead.', label: 'Coached On-Road' },
+            { id: 'morning_issues', text: 'Morning van issues (e.g., gas, tires) slowed them.', label: 'Morning Issues' },
+            { id: 'check_org', text: 'Plans to check bag/overflow organization tomorrow.', label: 'Check Organization Tomorrow' },
+            { id: 'no_more_training', text: "Doesn't need more training overall.", label: 'No More Training' },
+            { id: 'handled_challenges', text: 'Handled challenges like OTP issues; strengthened skills.', label: 'Handled Challenges' },
+            { id: 'doing_great', text: 'Doing great since; no complaints.', label: 'Doing Great' },
+            { id: 'paperwork', text: 'Paperwork finished.', label: 'Paperwork' },
+            { id: 'experienced', text: 'Experienced from prior routes.', label: 'Experienced' },
+            { id: 'more_details', text: 'More details available if needed.', label: 'More Details' },
+            { id: 'check_quality', text: 'Check delivery quality/feedback tomorrow.', label: 'Check Quality' }
+        ];
+
+        // State
+        let state = {
+            name: '',
+            selections: {}
+        };
+
+        // Total pages: 0 = name, 1 to skills.length = skills, skills.length+1 to skills.length+notes.length = notes, last = result
+        const totalChoicePages = skills.length + notes.length;
+        const resultPageIndex = totalChoicePages + 1;
+        let currentPage = 0;
+
+        // Initialize selections
+        skills.forEach(s => { state.selections[s.id] = null; });
+        notes.forEach(n => { state.selections[n.id] = null; });
+
+        // Dynamically create choice screens
+        function createChoiceScreens() {
+            skills.forEach((item, index) => {
+                const screen = document.createElement('div');
+                screen.id = `screen-${index + 1}`;
+                screen.className = 'screen';
+                screen.innerHTML = `<h2>${item.label}</h2>
+                    <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
+                    <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'❔ ' + item.mid}</button>
+                    <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'❌ ' + item.bad}</button>
+                    <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DOES NOT APPLY</button>`;
+                document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
+            });
+
+            notes.forEach((item, index) => {
+                const screenIndex = skills.length + index + 1;
+                const screen = document.createElement('div');
+                screen.id = `screen-${screenIndex}`;
+                screen.className = 'screen';
+                screen.innerHTML = `<h2>${item.label}</h2>
+                    <button class="choice-button" data-value="include" onclick="selectChoice('${item.id}', 'include')">${'❔ ' + item.text}</button>
+                    <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DOES NOT APPLY</button>`;
+                document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
+            });
+        }
+
+        createChoiceScreens();
+
+        // Show page
+        function showPage(page) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            if (page === 0) {
+                document.getElementById('name-screen').classList.add('active');
+                document.getElementById('driver-name').value = state.name;
+            } else if (page === resultPageIndex) {
+                document.getElementById('result-screen').classList.add('active');
+                generateSummary();
+            } else {
+                document.getElementById(`screen-${page}`).classList.add('active');
+                // Highlight selected
+                const item = page <= skills.length ? skills[page - 1] : notes[page - skills.length - 1];
+                const selected = state.selections[item.id];
+                const buttons = document.getElementById(`screen-${page}`).querySelectorAll('button.choice-button');
+                buttons.forEach(btn => {
+                    btn.style.backgroundColor = (btn.dataset.value === selected) ? '#d0ffd0' : '';
+                });
+            }
+            document.getElementById('prev-btn').disabled = (page === 0);
+            document.getElementById('next-btn').innerText = (page === resultPageIndex) ? '➡️ Next' : '➡️ Next'; // No next on result, but keep for consistency, disable if needed
+            if (page === resultPageIndex) {
+                document.getElementById('next-btn').disabled = true;
+            } else {
+                document.getElementById('next-btn').disabled = false;
+            }
+            currentPage = page;
+        }
+
+        // Select choice
+        function selectChoice(id, value) {
+            state.selections[id] = value === 'dna' ? null : value;
+            nextPage(); // Auto next after select
+        }
+
+        // Next page
+        function nextPage() {
+            if (currentPage === 0) {
+                state.name = document.getElementById('driver-name').value.trim();
+                if (!state.name) {
+                    alert('Please enter a name.');
+                    return;
+                }
+            }
+            if (currentPage < resultPageIndex) {
+                currentPage++;
+                showPage(currentPage);
+            }
+        }
+
+        // Prev page
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                showPage(currentPage);
+            }
+        }
+
+        // Generate summary
+        function generateSummary() {
+            const goods = skills.filter(s => state.selections[s.id] === 'good').map(s => `✅ ${s.good}`);
+            const mids = skills.filter(s => state.selections[s.id] === 'mid').map(s => `❔ ${s.mid}`);
+            const bads = skills.filter(s => state.selections[s.id] === 'bad').map(s => `❌ ${s.bad}`);
+            const otherMids = notes.filter(n => state.selections[n.id] === 'include').map(n => `❔ ${n.text}`);
+
+            let message = `### ${state.name}\n\n`;
+            if (goods.length > 0) message += goods.join('\n') + '\n\n';
+            if (mids.length > 0 || otherMids.length > 0) message += [...mids, ...otherMids].join('\n') + '\n\n';
+            if (bads.length > 0) message += bads.join('\n');
+
+            document.getElementById('summary-text').value = message.trim();
+        }
+
+        // Copy to clipboard
+        function copySummary() {
+            const text = document.getElementById('summary-text').value;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+
+        // Start
+        showPage(0);
+    </script>
+</body>
+</html>
