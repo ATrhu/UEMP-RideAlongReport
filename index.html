@@ -9,21 +9,26 @@
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background: url('logo.png') no-repeat center center fixed;
-            background-size: cover;
+            background-size: contain; /* Changed to contain to show full logo without cropping */
             color: #333;
+            display: flex;
+            align-items: center; /* Vertically center content */
+            justify-content: center; /* Horizontally center */
+            min-height: 100vh; /* Full viewport height */
         }
         #app {
             max-width: 600px;
-            margin: 0 auto;
+            width: 90%; /* Ensure symmetry and no overflow on small screens */
             background: rgba(255, 255, 255, 0.9); /* Semi-transparent for readability */
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Make everything symmetrical */
         }
         h1 {
-            color: #1a73e8;
+            color: #FFD700; /* Gold color to match logo theme */
             text-align: center;
         }
         .screen {
@@ -33,12 +38,13 @@
             display: block;
         }
         input, textarea {
-            width: 100%;
+            width: calc(100% - 24px); /* Adjust width to prevent overflow, symmetrical padding */
             padding: 12px;
-            margin: 10px 0;
+            margin: 10px auto; /* Center inputs */
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            display: block; /* Ensure block for centering */
         }
         textarea {
             height: 300px;
@@ -56,14 +62,14 @@
             display: block;
             width: 100%;
             margin: 10px 0;
-            background: #e8f0fe;
-            color: #1a73e8;
+            background: #fffacd; /* Light gold for modern feel */
+            color: #333;
             text-align: left;
             white-space: normal;
         }
         .choice-button:hover, .choice-button.selected {
-            background: #1a73e8;
-            color: #fff;
+            background: #FFD700; /* Gold on hover/select */
+            color: #000;
         }
         .nav-buttons {
             display: flex;
@@ -71,20 +77,20 @@
             margin-top: 20px;
         }
         .nav-buttons button {
-            background: #1a73e8;
-            color: #fff;
+            background: #FFD700; /* Gold theme */
+            color: #000;
         }
         .nav-buttons button:disabled {
             background: #ccc;
             cursor: not-allowed;
         }
         #copy-btn {
-            background: #34c759;
-            color: #fff;
+            background: #FFD700; /* Gold theme */
+            color: #000;
             width: 100%;
         }
         #copy-btn:hover {
-            background: #2ea44f;
+            background: #DAA520; /* Darker gold on hover */
         }
     </style>
 </head>
@@ -106,7 +112,6 @@
             <button id="next-btn" onclick="nextPage()">➡️ Next</button>
         </div>
     </div>
-
     <script>
         // Define skills and notes
         const skills = [
@@ -128,7 +133,6 @@
             { id: 'learner', label: 'Learning Speed', good: 'Quick learner overall.', mid: 'Average learner; takes time.', bad: 'Slow learner overall.' },
             { id: 'attitude', label: 'Attitude', good: 'Positive attitude and eager to learn.', mid: 'Neutral attitude; moderate interest in learning.', bad: 'Negative attitude or reluctant to learn.' }
         ];
-
         const notes = [
             { id: 'feels_ready', text: 'Feels ready and confident to go solo today.', label: 'Feels Ready' },
             { id: 'gas_card', text: 'Shown gas card usage, preferred stations (e.g., Exxon, BP), and timecard fixes.', label: 'Gas Card & Timecard' },
@@ -144,21 +148,17 @@
             { id: 'more_details', text: 'More details available if needed.', label: 'More Details' },
             { id: 'check_quality', text: 'Check delivery quality/feedback tomorrow.', label: 'Check Quality' }
         ];
-
         // State
         let state = {
             name: '',
             selections: {}
         };
-
         const totalChoicePages = skills.length + notes.length;
         const resultPageIndex = totalChoicePages + 1;
         let currentPage = 0;
-
         // Initialize selections
         skills.forEach(s => { state.selections[s.id] = null; });
         notes.forEach(n => { state.selections[n.id] = null; });
-
         // Create choice screens
         function createChoiceScreens() {
             skills.forEach((item, index) => {
@@ -172,7 +172,6 @@
                     <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DOES NOT APPLY</button>`;
                 document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
             });
-
             notes.forEach((item, index) => {
                 const screenIndex = skills.length + index + 1;
                 const screen = document.createElement('div');
@@ -184,9 +183,7 @@
                 document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
             });
         }
-
         createChoiceScreens();
-
         // Show page
         function showPage(page) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -209,13 +206,11 @@
             document.getElementById('next-btn').disabled = (page === resultPageIndex);
             currentPage = page;
         }
-
         // Select choice
         function selectChoice(id, value) {
             state.selections[id] = value === 'dna' ? null : value;
             nextPage();
         }
-
         // Next page
         function nextPage() {
             if (currentPage === 0) {
@@ -230,7 +225,6 @@
                 showPage(currentPage);
             }
         }
-
         // Prev page
         function prevPage() {
             if (currentPage > 0) {
@@ -238,22 +232,18 @@
                 showPage(currentPage);
             }
         }
-
         // Generate summary
         function generateSummary() {
             const goods = skills.filter(s => state.selections[s.id] === 'good').map(s => `✅ ${s.good}`);
             const mids = skills.filter(s => state.selections[s.id] === 'mid').map(s => `❔ ${s.mid}`);
             const bads = skills.filter(s => state.selections[s.id] === 'bad').map(s => `❌ ${s.bad}`);
             const otherMids = notes.filter(n => state.selections[n.id] === 'include').map(n => `❔ ${n.text}`);
-
             let message = `### ${state.name}\n\n`;
             if (goods.length > 0) message += goods.join('\n') + '\n\n';
             if (mids.length > 0 || otherMids.length > 0) message += [...mids, ...otherMids].join('\n') + '\n\n';
             if (bads.length > 0) message += bads.join('\n');
-
             document.getElementById('summary-text').value = message.trim();
         }
-
         // Copy to clipboard
         function copySummary() {
             const text = document.getElementById('summary-text').value;
@@ -263,7 +253,6 @@
                 alert('Failed to copy: ' + err);
             });
         }
-
         // Start
         showPage(0);
     </script>
