@@ -102,6 +102,16 @@
             display: none;
             margin-top: 10px;
         }
+        .bg-img {
+            position: absolute;
+            width: 20%; /* Adjust size as needed */
+            opacity: 0.5; /* Semi-transparent to blend */
+            pointer-events: none; /* Prevent interaction */
+        }
+        .top-left { top: 10%; left: 10%; }
+        .top-right { top: 10%; right: 10%; }
+        .bottom-left { bottom: 10%; left: 10%; }
+        .bottom-right { bottom: 10%; right: 10%; }
     </style>
 </head>
 <body>
@@ -122,6 +132,10 @@
             <button id="next-btn" onclick="nextPage()">Next</button>
         </div>
     </div>
+    <img src="logo.png" class="bg-img top-left">
+    <img src="logo.png" class="bg-img top-right">
+    <img src="logo.png" class="bg-img bottom-left">
+    <img src="logo.png" class="bg-img bottom-right">
     <script>
         // Define skills and notes
         const skills = [
@@ -297,7 +311,7 @@
         // Generate summary
         function generateSummary() {
             let message = `${state.name}\n\n`;
-            
+           
             // Top: Coached or Overall Comment
             const coached = notes.find(n => n.id === 'coached');
             if (state.selections[coached.id] === 'include') {
@@ -310,7 +324,7 @@
                 const overall = skills.find(s => s.id === 'overall_comment')[state.selections['overall_comment']];
                 message += `Overall: ${overall}\n\n`;
             }
-            
+           
             // Goods
             const goods = skills.filter(s => state.selections[s.id] === 'good' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `✅ ${s.good}`);
             const handled = notes.find(n => n.id === 'handled_challenges');
@@ -324,7 +338,7 @@
             if (goods.length > 0) message += goods.join('\n') + '\n\n';
             const trainingGood = state.selections['training_needed'] === 'good' ? `✅ ${skills.find(s => s.id === 'training_needed').good}` : '';
             if (trainingGood) message += trainingGood + '\n\n';
-            
+           
             // Mids
             const mids = skills.filter(s => state.selections[s.id] === 'mid' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `🔧 ${s.mid}`);
             const feelsReadyMid = state.selections['feels_ready'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'feels_ready').mid}` : '';
@@ -334,7 +348,7 @@
             if (mids.length > 0) message += mids.join('\n') + '\n\n';
             const trainingMid = state.selections['training_needed'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'training_needed').mid}` : '';
             if (trainingMid) message += trainingMid + '\n\n';
-            
+           
             // Bads
             const bads = skills.filter(s => state.selections[s.id] === 'bad' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `❌ ${s.bad}`);
             const feelsReadyBad = state.selections['feels_ready'] === 'bad' ? `❌ ${skills.find(s => s.id === 'feels_ready').bad}` : '';
@@ -342,20 +356,20 @@
             if (bads.length > 0) message += bads.join('\n') + '\n\n';
             const trainingBad = state.selections['training_needed'] === 'bad' ? `❌ ${skills.find(s => s.id === 'training_needed').bad}` : '';
             if (trainingBad) message += trainingBad + '\n\n';
-            
+           
             // Unfair situations
             const unfair = notes.filter(n => state.selections[n.id] === 'include' && ['morning_issues', 'equipment_issues', 'route_issues', 'only_buildings', 'not_nursery'].includes(n.id)).map(n => n.text);
             if (unfair.length > 0) message += unfair.join('\n') + '\n\n';
-            
+           
             // Driver feeling
             const driverFeeling = state.selections['driver_feeling'] ? skills.find(s => s.id === 'driver_feeling')[state.selections['driver_feeling']] : '';
             if (driverFeeling) message += `Driver feelings: ${driverFeeling}\n\n`;
-            
+           
             // Comments (org help)
             if (state.selections['organize_van'] === 'mid' || state.selections['organize_van'] === 'bad') {
                 message += `Comments: Please help organize the van on the launchpad next working day.\n\n`;
             }
-            
+           
             // Trainer notes
             let trainerNotes = [];
             const checklist = notes.find(n => n.id === 'checklist');
@@ -367,7 +381,7 @@
                 trainerNotes.push(moreDetails.text);
             }
             if (trainerNotes.length > 0) message += `Trainer notes: ${trainerNotes.join('\n')}`;
-            
+           
             document.getElementById('summary-text').value = message.trim();
         }
         // Copy to clipboard
