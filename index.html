@@ -10,8 +10,8 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background: url('background.png') no-repeat center center fixed, #000; /* Default to black, overridden by background.png if present */
-            background-size: cover; /* Ensures full cover */
+            background: url('logo.png') no-repeat center center fixed, #000; /* Default to black, overridden by logo.png if present */
+            background-size: contain; /* Fits without distortion */
             color: #333;
             display: flex;
             align-items: center;
@@ -175,8 +175,8 @@
                 body.style.background = '#000';
             } else {
                 toggle.classList.add('bg-on');
-                body.style.background = "url('background.png') no-repeat center center fixed, #000";
-                body.style.backgroundSize = 'cover';
+                body.style.background = "url('logo.png') no-repeat center center fixed, #000";
+                body.style.backgroundSize = 'contain';
             }
         }
         // Define skills and notes
