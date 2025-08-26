@@ -136,7 +136,7 @@
             { id: 'driving', label: 'Driving Skills', good: 'Strong driver: full stops, speed limits, follows traffic rules.', mid: 'Adequate driver, needs some refinement.', bad: 'Weak driver: ignores stops, speeds, breaks traffic rules.' },
             { id: 'building_deliveries', label: 'Building Deliveries', good: 'Knows how to handle building deliveries: upstairs, package rooms, reception, organizes by floor.', mid: 'Needs more practice with building deliveries.', bad: 'Struggles with building deliveries: avoids upstairs, mishandles package rooms/reception, poor organization.' },
             { id: 'house_deliveries', label: 'House Deliveries', good: 'Knows how to handle house deliveries: organizes packages, special notes (e.g., back door), multiple stops.', mid: 'Needs more practice with house deliveries.', bad: 'Struggles with house deliveries: poor organization, ignores special notes, risks multiple-stop errors.' },
-            { id: 'delivery_speed', label: 'Delivery Speed', good: 'Delivers quickly: photo and go.', mid: 'Delivery speed is average; takes extra time.', bad: 'Delivers slowly; lingers at stops.' },
+            { id: 'delivery_speed', label: 'Delivery Speed', good: 'Delivers quickly: photo and go.', mid: 'Delivery speed is average; some extra time at stops.', bad: 'Delivers slowly; spends extra time at stops.' },
             { id: 'identify_addresses', label: 'Identify Addresses', good: 'Identifies addresses accurately.', mid: 'Occasionally struggles with address identification.', bad: 'Struggles to identify addresses accurately.' },
             { id: 'parking', label: 'Parking Sequence', good: 'Knows proper parking sequence.', mid: 'Needs reminder on parking sequence.', bad: 'Does not know proper parking sequence.' },
             { id: 'gps', label: 'Map/GPS Skills', good: 'Good map/GPS skills.', mid: 'Needs improvement on map/GPS skills.', bad: 'Poor map/GPS skills.' },
@@ -146,7 +146,9 @@
             { id: 'time_card', label: 'Timecard Editing', good: 'Knows how to edit timecard and meal period times.', mid: 'Needs more guidance on editing timecard and meal period times.', bad: 'Does not know how to edit timecard and meal period times.' },
             { id: 'feels_ready', label: 'Feels Ready', good: 'Feels ready and confident to go solo on the next scheduled day.', mid: 'Needs one more day of training; does not feel confident going alone yet.', bad: 'Does not feel ready to go solo on the next scheduled day.' },
             { id: 'driver_feeling', label: 'Driver Feeling', overwhelmed: '😵‍💫 Feels overwhelmed about the job.', happy: '😊 Feels happy about the job.', confident: '💪 Feels confident about the job.', challenged: '🏆 Feels challenged in a positive way.', good_mental: '👍 Good mental state.', bad_mental: '👎 Bad mental state.', lazy: '😴 Seems lazy about the job.' },
-            { id: 'overall_comment', label: 'Overall Comment', killed_it: '🔥 Killed it today', struggled: '🙈 Struggled today', had_easy: '😎 Had it easy today', pushed_through: '🫡 Pushed through it today', did_amazing: '🤩 Did amazing today', had_fun: '🤪 Had fun today', did_crazy: '🥶 Did crazy today', did_insane: '🤯 Did insaneeee today', hmm: '🤔 Hmm today', overwhelmed_today: '🫨 Overwhelmed today', did_good: '🤘🏼 Did good today' }
+            { id: 'overall_comment', label: 'Overall Comment', killed_it: '🔥 Killed it today', struggled: '🙈 Struggled today', had_easy: '😎 Had it easy today', pushed_through: '🫡 Pushed through it today', did_amazing: '🤩 Did amazing today', had_fun: '🤪 Had fun today', did_crazy: '🥶 Did crazy today', did_insane: '🤯 Did insaneeee today', hmm: '🤔 Hmm today', overwhelmed_today: '🫨 Overwhelmed today', did_good: '🤘🏼 Did good today' },
+            { id: 'experienced', label: 'Experience Level', good: 'Experienced from prior routes.', mid: '', bad: 'Little or no experience as a carrier.' },
+            { id: 'training_needed', label: 'Training Needed', good: "Doesn't need more training overall.", mid: 'Needs some more training.', bad: 'Will need a lot of training.' }
         ];
         const notes = [
             { id: 'coached', text: '🚨 Emergency coached on-road: Driver required interruption for re-training due to falling behind.', label: 'Emergency Coached On-Road', has_input: true, input_label: 'Stops Behind', input_id: 'stops-behind' },
@@ -155,11 +157,9 @@
             { id: 'route_issues', text: '⚠️ Faced issues with the route itself (awful route, bad sequencing).', label: 'Route Issues' },
             { id: 'only_buildings', text: '⚠️ Only buildings route.', label: 'Only Buildings Route' },
             { id: 'not_nursery', text: '⚠️ Had to do a non-nursery route.', label: 'Non-Nursery Route' },
-            { id: 'no_more_training', text: "Doesn't need more training overall.", label: 'No More Training' },
             { id: 'handled_challenges', text: '✅ Handled challenges like OTP issues; strengthened skills.', label: 'Handled Challenges' },
-            { id: 'experienced', text: 'Experienced from prior routes.', label: 'Experienced' },
             { id: 'more_details', text: 'More details available if needed.', label: 'More Details' },
-            { id: 'checklist', text: '📋 Ride-along checklist will be posted soon (time constraint prevented signing today).', label: 'Checklist Posting', emote: '😓' }
+            { id: 'checklist', text: 'Ride-along checklist will be posted soon (time constraint prevented signing today).', label: 'Checklist Posting', emote: '😓' }
         ];
         // State
         let state = {
@@ -186,16 +186,21 @@
                         innerHTML += `<button class="choice-button" data-value="${opt}" onclick="selectChoice('${item.id}', '${opt}')">${item[opt]}</button>`;
                     });
                     innerHTML += `<button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
-                } else if (item.id === 'feels_ready') {
+                } else if (item.id === 'feels_ready' || item.id === 'training_needed') {
                     innerHTML += `
                         <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'❔ ' + item.mid}</button>
+                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'🔧 ' + item.mid}</button>
                         <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'❌ ' + item.bad}</button>
+                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
+                } else if (item.id === 'experienced') {
+                    innerHTML += `
+                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
+                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'🔧 ' + item.bad}</button>
                         <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
                 } else {
                     innerHTML += `
                         <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'❔ ' + item.mid}</button>
+                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'🔧 ' + item.mid}</button>
                         <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'❌ ' + item.bad}</button>
                         <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
                 }
@@ -306,51 +311,62 @@
                 message += `Overall: ${overall}\n\n`;
             }
             
-            // Goods including handled challenges
-            const goods = skills.filter(s => state.selections[s.id] === 'good' && s.id !== 'feels_ready' && s.id !== 'driver_feeling' && s.id !== 'overall_comment').map(s => `✅ ${s.good}`);
+            // Goods
+            const goods = skills.filter(s => state.selections[s.id] === 'good' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `✅ ${s.good}`);
             const handled = notes.find(n => n.id === 'handled_challenges');
             if (state.selections[handled.id] === 'include') {
                 goods.push(handled.text);
             }
             const feelsReadyGood = state.selections['feels_ready'] === 'good' ? `✅ ${skills.find(s => s.id === 'feels_ready').good}` : '';
             if (feelsReadyGood) goods.push(feelsReadyGood);
+            const experiencedGood = state.selections['experienced'] === 'good' ? `✅ ${skills.find(s => s.id === 'experienced').good}` : '';
+            if (experiencedGood) goods.push(experiencedGood);
             if (goods.length > 0) message += goods.join('\n') + '\n\n';
+            const trainingGood = state.selections['training_needed'] === 'good' ? `✅ ${skills.find(s => s.id === 'training_needed').good}` : '';
+            if (trainingGood) message += trainingGood + '\n\n';
             
             // Mids
-            const mids = skills.filter(s => state.selections[s.id] === 'mid').map(s => `❔ ${s.mid}`);
-            const feelsReadyMid = state.selections['feels_ready'] === 'mid' ? `❔ ${skills.find(s => s.id === 'feels_ready').mid}` : '';
+            const mids = skills.filter(s => state.selections[s.id] === 'mid' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `🔧 ${s.mid}`);
+            const feelsReadyMid = state.selections['feels_ready'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'feels_ready').mid}` : '';
             if (feelsReadyMid) mids.push(feelsReadyMid);
+            if (mids.length > 0) message += mids.join('\n') + '\n\n';
+            const trainingMid = state.selections['training_needed'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'training_needed').mid}` : '';
+            if (trainingMid) message += trainingMid + '\n\n';
             
             // Bads
-            const bads = skills.filter(s => state.selections[s.id] === 'bad' && s.id !== 'feels_ready' && s.id !== 'driver_feeling' && s.id !== 'overall_comment').map(s => `❌ ${s.bad}`);
+            const bads = skills.filter(s => state.selections[s.id] === 'bad' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `❌ ${s.bad}`);
             const feelsReadyBad = state.selections['feels_ready'] === 'bad' ? `❌ ${skills.find(s => s.id === 'feels_ready').bad}` : '';
             if (feelsReadyBad) bads.push(feelsReadyBad);
+            const experiencedBad = state.selections['experienced'] === 'bad' ? `🔧 ${skills.find(s => s.id === 'experienced').bad}` : '';
+            if (experiencedBad) bads.push(experiencedBad);
+            if (bads.length > 0) message += bads.join('\n') + '\n\n';
+            const trainingBad = state.selections['training_needed'] === 'bad' ? `❌ ${skills.find(s => s.id === 'training_needed').bad}` : '';
+            if (trainingBad) message += trainingBad + '\n\n';
             
-            // Other mids (notes)
-            const otherMids = notes.filter(n => state.selections[n.id] === 'include' && n.id !== 'coached' && n.id !== 'checklist' && n.id !== 'handled_challenges').map(n => `${n.emote ? n.emote + ' ' : '❔ '}${n.text}`);
+            // Unfair situations
+            const unfair = notes.filter(n => state.selections[n.id] === 'include' && ['morning_issues', 'equipment_issues', 'route_issues', 'only_buildings', 'not_nursery'].includes(n.id)).map(n => n.text);
+            if (unfair.length > 0) message += unfair.join('\n') + '\n\n';
             
             // Driver feeling
             const driverFeeling = state.selections['driver_feeling'] ? skills.find(s => s.id === 'driver_feeling')[state.selections['driver_feeling']] : '';
+            if (driverFeeling) message += `Driver feelings: ${driverFeeling}\n\n`;
             
-            // Unfair situations
-            const unfair = otherMids.filter(m => m.startsWith('⚠️'));
-            
-            // Regular mids
-            const regularMids = [...mids, ...otherMids.filter(m => !m.startsWith('⚠️')), driverFeeling, ...bads].filter(Boolean);
-            
-            if (unfair.length > 0) message += unfair.join('\n') + '\n\n';
-            if (regularMids.length > 0) message += regularMids.join('\n') + '\n\n';
-            
-            // Organization help
+            // Comments (org help)
             if (state.selections['organize_van'] === 'mid' || state.selections['organize_van'] === 'bad') {
-                message += '❔ Please help organize the van on the launchpad next working day.\n\n';
+                message += `Comments: Please help organize the van on the launchpad next working day.\n\n`;
             }
             
-            // Bottom: Checklist
+            // Trainer notes
+            let trainerNotes = [];
             const checklist = notes.find(n => n.id === 'checklist');
             if (state.selections[checklist.id] === 'include') {
-                message += `${checklist.emote} ${checklist.text}`;
+                trainerNotes.push(`${checklist.emote} ${checklist.text}`);
             }
+            const moreDetails = notes.find(n => n.id === 'more_details');
+            if (state.selections[moreDetails.id] === 'include') {
+                trainerNotes.push(moreDetails.text);
+            }
+            if (trainerNotes.length > 0) message += `Trainer notes: ${trainerNotes.join('\n')}`;
             
             document.getElementById('summary-text').value = message.trim();
         }
