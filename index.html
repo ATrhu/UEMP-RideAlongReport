@@ -1,4 +1,3 @@
-I need to modify this program:
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,27 +10,30 @@ I need to modify this program:
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background: url('logo.png') no-repeat center center fixed;
-            background-size: contain; /* Full logo without cropping */
+            background: url('background.png') no-repeat center center fixed, #000; /* Default to black, overridden by background.png if present */
+            background-size: cover; /* Ensures full cover */
             color: #333;
             display: flex;
-            align-items: center; /* Vertical center */
-            justify-content: center; /* Horizontal center */
-            min-height: 100vh; /* Full height */
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
         }
         #app {
             max-width: 600px;
-            width: 90%; /* Symmetry, no overflow */
-            background: rgba(255, 255, 255, 0.1); /* Glassmorphism: semi-transparent */
-            backdrop-filter: blur(10px); /* Liquid glass blur effect */
-            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for glass */
+            width: 90%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
-            text-align: center; /* Symmetry */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
         h1 {
-            color: #FFD700; /* Gold theme */
+            color: #FFD700;
             text-align: center;
         }
         .screen {
@@ -41,14 +43,14 @@ I need to modify this program:
             display: block;
         }
         input, textarea {
-            width: calc(100% - 24px); /* Prevent overflow, centered */
+            width: calc(100% - 24px);
             padding: 12px;
-            margin: 10px auto; /* Center */
+            margin: 10px auto;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
             display: block;
-            text-align: center; /* Center text in input */
+            text-align: center;
         }
         textarea {
             height: 300px;
@@ -66,13 +68,13 @@ I need to modify this program:
             display: block;
             width: 100%;
             margin: 10px 0;
-            background: linear-gradient(to right, #B8860B, #000); /* Black mixed with gold gradient */
-            color: #fff; /* White text for contrast */
+            background: linear-gradient(to right, #B8860B, #000);
+            color: #fff;
             text-align: left;
             white-space: normal;
         }
         .choice-button:hover, .choice-button.selected {
-            background: linear-gradient(to right, #DAA520, #333); /* Darker variant on hover */
+            background: linear-gradient(to right, #DAA520, #333);
             color: #fff;
         }
         .nav-buttons {
@@ -81,9 +83,9 @@ I need to modify this program:
             margin-top: 20px;
         }
         .nav-buttons button {
-            background: transparent; /* No background color */
-            color: #FFD700; /* Gold text */
-            border: 1px solid #FFD700; /* Gold border for visibility */
+            background: transparent;
+            color: #FFD700;
+            border: 1px solid #FFD700;
         }
         .nav-buttons button:disabled {
             background: transparent;
@@ -92,20 +94,61 @@ I need to modify this program:
             cursor: not-allowed;
         }
         #copy-btn {
-            background: #FFD700; /* Gold */
+            background: #FFD700;
             color: #000;
             width: 100%;
         }
         #copy-btn:hover {
-            background: #DAA520; /* Darker gold */
+            background: #DAA520;
         }
         #stops-behind-input {
             display: none;
             margin-top: 10px;
         }
+        #bg-switch {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+        }
+        #bg-switch label {
+            margin-right: 10px;
+            color: #FFD700;
+        }
+        #bg-toggle {
+            width: 40px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+        #bg-toggle::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        #bg-toggle.bg-on {
+            background: #FFD700;
+        }
+        #bg-toggle.bg-on::after {
+            transform: translateX(20px);
+        }
     </style>
 </head>
 <body>
+    <div id="bg-switch">
+        <label>Background</label>
+        <div id="bg-toggle" onclick="toggleBackground()"></div>
+    </div>
     <div id="app">
         <h1>Ride-Along Report</h1>
         <div id="name-screen" class="screen">
@@ -124,6 +167,28 @@ I need to modify this program:
         </div>
     </div>
     <script>
+        let hasBackground = document.body.style.backgroundImage.includes('background.png');
+        if (!hasBackground) {
+            document.body.style.background = '#000'; // Fallback to black if no background.png
+        }
+
+        function toggleBackground() {
+            const toggle = document.getElementById('bg-toggle');
+            const body = document.body;
+            if (toggle.classList.contains('bg-on')) {
+                toggle.classList.remove('bg-on');
+                body.style.background = '#000';
+            } else {
+                toggle.classList.add('bg-on');
+                if (hasBackground) {
+                    body.style.background = 'url(background.png) no-repeat center center fixed';
+                    body.style.backgroundSize = 'cover';
+                } else {
+                    body.style.background = '#000'; // Stay black if no image
+                }
+            }
+        }
+
         // Define skills and notes
         const skills = [
             { id: 'flex', label: 'Flex App Usage', good: 'Good understanding of Flex app usage.', mid: 'Needs time to get used to the Flex app.', bad: 'Limited understanding of Flex app usage.' },
