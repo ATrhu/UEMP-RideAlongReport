@@ -1,3 +1,4 @@
+I need to modify this program:
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,16 +103,6 @@
             display: none;
             margin-top: 10px;
         }
-        .bg-img {
-            position: absolute;
-            width: 20%; /* Adjust size as needed */
-            opacity: 0.5; /* Semi-transparent to blend */
-            pointer-events: none; /* Prevent interaction */
-        }
-        .top-left { top: 10%; left: 10%; }
-        .top-right { top: 10%; right: 10%; }
-        .bottom-left { bottom: 10%; left: 10%; }
-        .bottom-right { bottom: 10%; right: 10%; }
     </style>
 </head>
 <body>
@@ -132,10 +123,6 @@
             <button id="next-btn" onclick="nextPage()">Next</button>
         </div>
     </div>
-    <img src="logo.png" class="bg-img top-left">
-    <img src="logo.png" class="bg-img top-right">
-    <img src="logo.png" class="bg-img bottom-left">
-    <img src="logo.png" class="bg-img bottom-right">
     <script>
         // Define skills and notes
         const skills = [
