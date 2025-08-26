@@ -6,23 +6,40 @@
     <title>Ride Along Report</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* Define color variables here for easy changes */
+        :root {
+            --gold: #FFD700;       /* Main gold color, change this to update all gold elements */
+            --dark-gold: #DAA520;  /* Darker gold for hovers, etc. */
+            --gradient-start: #B8860B; /* Gradient start color */
+            --gradient-end: #000;     /* Gradient end color */
+            --gradient-hover-start: #DAA520; /* Hover gradient start */
+            --gradient-hover-end: #333;     /* Hover gradient end */
+            --text-color: #333;       /* Main text color */
+            --border-color: #ccc;     /* Border color for inputs */
+            --bg-black: #000;         /* Black background */
+            --switch-off: #ccc;       /* Switch off color */
+            --switch-on: var(--gold); /* Switch on color */
+            --white: #fff;            /* White for accents */
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background: url('logo.png') no-repeat center center fixed, #000; /* Default to black, overridden by logo.png if present */
-            background-size: contain; /* Fits without distortion */
-            color: #333;
+            background: url('logo.png') no-repeat center center fixed, var(--bg-black);
+            background-size: contain;
+            color: var(--text-color);
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             position: relative;
         }
+
         #app {
             max-width: 600px;
             width: 90%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent white for glass effect */
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 20px;
@@ -32,30 +49,36 @@
             position: relative;
             z-index: 1;
         }
+
         h1 {
-            color: #FFD700;
+            color: var(--gold);
             text-align: center;
         }
+
         .screen {
             display: none;
         }
+
         .active {
             display: block;
         }
+
         input, textarea {
             width: calc(100% - 24px);
             padding: 12px;
             margin: 10px auto;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             font-size: 16px;
             display: block;
             text-align: center;
         }
+
         textarea {
             height: 300px;
             resize: vertical;
         }
+
         button {
             padding: 12px 20px;
             font-size: 16px;
@@ -64,47 +87,56 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         .choice-button {
             display: block;
             width: 100%;
             margin: 10px 0;
-            background: linear-gradient(to right, #B8860B, #000);
-            color: #fff;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: var(--white);
             text-align: left;
             white-space: normal;
         }
+
         .choice-button:hover, .choice-button.selected {
-            background: linear-gradient(to right, #DAA520, #333);
-            color: #fff;
+            background: linear-gradient(to right, var(--gradient-hover-start), var(--gradient-hover-end));
+            color: var(--white);
         }
+
         .nav-buttons {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
+
         .nav-buttons button {
             background: transparent;
-            color: #FFD700;
-            border: 1px solid #FFD700;
+            color: var(--gold);
+            border: 1px solid var(--gold);
         }
+
         .nav-buttons button:disabled {
             background: transparent;
-            color: #ccc;
-            border: 1px solid #ccc;
+            color: var(--border-color);
+            border: 1px solid var(--border-color);
             cursor: not-allowed;
         }
+
         #copy-btn {
-            background: #FFD700;
-            color: #000;
+            background: var(--gold);
+            color: var(--gradient-end);
             width: 100%;
         }
+
         #copy-btn:hover {
-            background: #DAA520;
+            background: var(--dark-gold);
         }
+
         #stops-behind-input {
             display: none;
             margin-top: 10px;
         }
+
         #bg-switch {
             position: absolute;
             top: 10px;
@@ -112,33 +144,38 @@
             display: flex;
             align-items: center;
         }
+
         #bg-switch label {
             margin-right: 10px;
-            color: #FFD700;
+            color: var(--gold);
         }
+
         #bg-toggle {
             width: 40px;
             height: 20px;
-            background: #ccc;
+            background: var(--switch-off);
             border-radius: 10px;
             cursor: pointer;
             position: relative;
             transition: background 0.3s;
         }
+
         #bg-toggle::after {
             content: '';
             position: absolute;
             width: 16px;
             height: 16px;
-            background: #fff;
+            background: var(--white);
             border-radius: 50%;
             top: 2px;
             left: 2px;
             transition: transform 0.3s;
         }
+
         #bg-toggle.bg-on {
-            background: #FFD700;
+            background: var(--switch-on);
         }
+
         #bg-toggle.bg-on::after {
             transform: translateX(20px);
         }
@@ -150,138 +187,382 @@
         <div id="bg-toggle" onclick="toggleBackground()"></div>
     </div>
     <div id="app">
-        <h1>Ride-Along Report</h1>
+        <h1>Ride-Along Report</h1> <!-- Change the title text here if needed -->
         <div id="name-screen" class="screen">
-            <label for="driver-name">Driver's Name</label>
-            <input type="text" id="driver-name" placeholder="Enter Driver's Name">
+            <label for="driver-name">Driver's Name</label> <!-- Change label text here -->
+            <input type="text" id="driver-name" placeholder="Enter Driver's Name"> <!-- Change placeholder here -->
         </div>
         <!-- Choice screens will be dynamically generated -->
         <div id="result-screen" class="screen">
-            <h2>Generated Summary</h2>
+            <h2>Generated Summary</h2> <!-- Change heading here -->
             <textarea id="summary-text"></textarea>
-            <button id="copy-btn" onclick="copySummary()">Copy to Clipboard</button>
+            <button id="copy-btn" onclick="copySummary()">Copy to Clipboard</button> <!-- Change button text here -->
         </div>
         <div class="nav-buttons">
-            <button id="prev-btn" onclick="prevPage()" disabled>Previous</button>
-            <button id="next-btn" onclick="nextPage()">Next</button>
+            <button id="prev-btn" onclick="prevPage()" disabled>Previous</button> <!-- Change button text -->
+            <button id="next-btn" onclick="nextPage()">Next</button> <!-- Change button text -->
         </div>
     </div>
     <script>
+        // Function to toggle background - change 'logo.png' if you want a different image
         function toggleBackground() {
             const toggle = document.getElementById('bg-toggle');
             const body = document.body;
             if (toggle.classList.contains('bg-on')) {
                 toggle.classList.remove('bg-on');
-                body.style.background = '#000';
+                body.style.background = '#000'; // Black background when off
             } else {
                 toggle.classList.add('bg-on');
                 body.style.background = "url('logo.png') no-repeat center center fixed, #000";
-                body.style.backgroundSize = 'contain';
+                body.style.backgroundSize = 'contain'; // 'contain' fits the image, change to 'cover' if needed
             }
         }
-        // Define skills and notes
+
+        // Define skills here - each object has id, label, and texts for good/mid/bad
+        // Change the texts in 'good', 'mid', 'bad' to update sentences
         const skills = [
-            { id: 'flex', label: 'Flex App Usage', good: 'Good understanding of Flex app usage.', mid: 'Needs time to get used to the Flex app.', bad: 'Limited understanding of Flex app usage.' },
-            { id: 'organize_van', label: 'Organize Van', good: 'Knows how to organize van with overflows and bags.', mid: 'Needs more practice organizing van with overflows and bags.', bad: 'Does not know how to organize van with overflows and bags.' },
-            { id: 'bag_overflow', label: 'Bag vs Overflows', good: 'Understands difference between bag packages and overflows; knows where to look without wasting time.', mid: 'Partial understanding of bag vs overflows; some confusion.', bad: 'Confuses bag packages and overflows; wastes time searching wrong places.' },
-            { id: 'customer_instructions', label: 'Customer Instructions', good: 'Follows customer instructions.', mid: 'Follows customer instructions with minor issues.', bad: 'Does not follow customer instructions consistently.' },
-            { id: 'language', label: 'Language Challenges', good: 'No language challenges noted.', mid: 'Minor language challenges.', bad: 'Language Barrier.' },
-            { id: 'mark_undeliverable', label: 'Mark Undeliverable', good: 'Knows how to mark undeliverable packages correctly (e.g., damage, missing, closed business).', mid: 'Needs guidance on marking undeliverable packages.', bad: 'Does not know how to mark undeliverable packages correctly.' },
-            { id: 'photos', label: 'Photos', good: 'Takes clear photos.', mid: 'Photos need improvement.', bad: 'Takes unclear or poor photos.' },
-            { id: 'polite', label: 'Polite with Customers', good: 'Polite with customers.', mid: 'Generally polite, but room for improvement.', bad: 'Not always polite with customers.' },
-            { id: 'driving', label: 'Driving Skills', good: 'Strong driver: full stops, speed limits, follows traffic rules.', mid: 'Adequate driver, needs some refinement.', bad: 'Weak driver: ignores stops, speeds, breaks traffic rules.' },
-            { id: 'building_deliveries', label: 'Building Deliveries', good: 'Knows how to handle building deliveries: upstairs, package rooms, reception, organizes by floor.', mid: 'Needs more practice with building deliveries.', bad: 'Struggles with building deliveries: avoids upstairs, mishandles package rooms/reception, poor organization.' },
-            { id: 'house_deliveries', label: 'House Deliveries', good: 'Knows how to handle house deliveries: organizes packages, special notes (e.g., back door), multiple stops.', mid: 'Needs more practice with house deliveries.', bad: 'Struggles with house deliveries: poor organization, ignores special notes, risks multiple-stop errors.' },
-            { id: 'delivery_speed', label: 'Delivery Speed', good: 'Delivers quickly: photo and go.', mid: 'Delivery speed is average; some extra time at stops.', bad: 'Delivers slowly; spends extra time at stops.' },
-            { id: 'identify_addresses', label: 'Identify Addresses', good: 'Identifies addresses accurately.', mid: 'Occasionally struggles with address identification.', bad: 'Struggles to identify addresses accurately.' },
-            { id: 'parking', label: 'Parking Sequence', good: 'Knows proper parking sequence.', mid: 'Needs reminder on parking sequence.', bad: 'Does not know proper parking sequence.' },
-            { id: 'gps', label: 'Map/GPS Skills', good: 'Good map/GPS skills.', mid: 'Needs improvement on map/GPS skills.', bad: 'Poor map/GPS skills.' },
-            { id: 'learner', label: 'Learning Speed', good: 'Quick learner overall.', mid: 'Average learner; takes time.', bad: 'Slow learner overall.' },
-            { id: 'attitude', label: 'Attitude', good: 'Positive attitude and eager to learn.', mid: 'Neutral attitude; moderate interest in learning.', bad: 'Negative attitude or reluctant to learn.' },
-            { id: 'gas_card', label: 'Gas Card & Powered by Amazon App', good: 'Knows how to use the gas card and Powered by Amazon app.', mid: 'Needs more guidance on using the gas card and Powered by Amazon app.', bad: 'Does not know how to use the gas card and Powered by Amazon app.' },
-            { id: 'time_card', label: 'Timecard Editing', good: 'Knows how to edit timecard and meal period times.', mid: 'Needs more guidance on editing timecard and meal period times.', bad: 'Does not know how to edit timecard and meal period times.' },
-            { id: 'feels_ready', label: 'Feels Ready', good: 'Feels ready and confident to go solo on the next scheduled day.', mid: 'Needs one more day of training; does not feel confident going alone yet.', bad: 'Does not feel ready to go solo on the next scheduled day.' },
-            { id: 'driver_feeling', label: 'Driver Feeling', overwhelmed: '😵‍💫 Feels overwhelmed about the job.', happy: '😊 Feels happy about the job.', confident: '💪 Feels confident about the job.', challenged: '🏆 Feels challenged in a positive way.', good_mental: '👍 Good mental state.', bad_mental: '👎 Bad mental state.', lazy: '😴 Seems lazy about the job.' },
-            { id: 'overall_comment', label: 'Overall Comment', killed_it: '🔥 Killed it today', struggled: '🙈 Struggled today', had_easy: '😎 Had it easy today', pushed_through: '🫡 Pushed through it today', did_amazing: '🤩 Did amazing today', had_fun: '🤪 Had fun today', did_crazy: '🥶 Did crazy today', did_insane: '🤯 Did insaneeee today', hmm: '🤔 Hmm today', overwhelmed_today: '🫨 Overwhelmed today', did_good: '🤘🏼 Did good today' },
-            { id: 'experienced', label: 'Experience Level', good: 'Experienced from prior routes.', mid: '', bad: 'Little or no experience as a carrier.' },
-            { id: 'training_needed', label: 'Training Needed', good: "Doesn't need more training overall.", mid: 'Needs some more training.', bad: 'Will need a lot of training.' }
+            {
+                id: 'flex',
+                label: 'Flex App Usage', // Change label here
+                good: 'Good understanding of Flex app usage.',
+                mid: 'Needs time to get used to the Flex app.',
+                bad: 'Limited understanding of Flex app usage.'
+            },
+            {
+                id: 'organize_van',
+                label: 'Organize Van',
+                good: 'Knows how to organize van with overflows and bags.',
+                mid: 'Needs more practice organizing van with overflows and bags.',
+                bad: 'Does not know how to organize van with overflows and bags.'
+            },
+            {
+                id: 'bag_overflow',
+                label: 'Bag vs Overflows',
+                good: 'Understands difference between bag packages and overflows; knows where to look without wasting time.',
+                mid: 'Partial understanding of bag vs overflows; some confusion.',
+                bad: 'Confuses bag packages and overflows; wastes time searching wrong places.'
+            },
+            {
+                id: 'customer_instructions',
+                label: 'Customer Instructions',
+                good: 'Follows customer instructions.',
+                mid: 'Follows customer instructions with minor issues.',
+                bad: 'Does not follow customer instructions consistently.'
+            },
+            {
+                id: 'language',
+                label: 'Language Challenges',
+                good: 'No language challenges noted.',
+                mid: 'Minor language challenges.',
+                bad: 'Language Barrier.'
+            },
+            {
+                id: 'mark_undeliverable',
+                label: 'Mark Undeliverable',
+                good: 'Knows how to mark undeliverable packages correctly (e.g., damage, missing, closed business).',
+                mid: 'Needs guidance on marking undeliverable packages.',
+                bad: 'Does not know how to mark undeliverable packages correctly.'
+            },
+            {
+                id: 'photos',
+                label: 'Photos',
+                good: 'Takes clear photos.',
+                mid: 'Photos need improvement.',
+                bad: 'Takes unclear or poor photos.'
+            },
+            {
+                id: 'polite',
+                label: 'Polite with Customers',
+                good: 'Polite with customers.',
+                mid: 'Generally polite, but room for improvement.',
+                bad: 'Not always polite with customers.'
+            },
+            {
+                id: 'driving',
+                label: 'Driving Skills',
+                good: 'Strong driver: full stops, speed limits, follows traffic rules.',
+                mid: 'Adequate driver, needs some refinement.',
+                bad: 'Weak driver: ignores stops, speeds, breaks traffic rules.'
+            },
+            {
+                id: 'building_deliveries',
+                label: 'Building Deliveries',
+                good: 'Knows how to handle building deliveries: upstairs, package rooms, reception, organizes by floor.',
+                mid: 'Needs more practice with building deliveries.',
+                bad: 'Struggles with building deliveries: avoids upstairs, mishandles package rooms/reception, poor organization.'
+            },
+            {
+                id: 'house_deliveries',
+                label: 'House Deliveries',
+                good: 'Knows how to handle house deliveries: organizes packages, special notes (e.g., back door), multiple stops.',
+                mid: 'Needs more practice with house deliveries.',
+                bad: 'Struggles with house deliveries: poor organization, ignores special notes, risks multiple-stop errors.'
+            },
+            {
+                id: 'delivery_speed',
+                label: 'Delivery Speed',
+                good: 'Delivers quickly: photo and go.',
+                mid: 'Delivery speed is average; some extra time at stops.',
+                bad: 'Delivers slowly; spends extra time at stops.'
+            },
+            {
+                id: 'identify_addresses',
+                label: 'Identify Addresses',
+                good: 'Identifies addresses accurately.',
+                mid: 'Occasionally struggles with address identification.',
+                bad: 'Struggles to identify addresses accurately.'
+            },
+            {
+                id: 'parking',
+                label: 'Parking Sequence',
+                good: 'Knows proper parking sequence.',
+                mid: 'Needs reminder on parking sequence.',
+                bad: 'Does not know proper parking sequence.'
+            },
+            {
+                id: 'gps',
+                label: 'Map/GPS Skills',
+                good: 'Good map/GPS skills.',
+                mid: 'Needs improvement on map/GPS skills.',
+                bad: 'Poor map/GPS skills.'
+            },
+            {
+                id: 'learner',
+                label: 'Learning Speed',
+                good: 'Quick learner overall.',
+                mid: 'Average learner; takes time.',
+                bad: 'Slow learner overall.'
+            },
+            {
+                id: 'attitude',
+                label: 'Attitude',
+                good: 'Positive attitude and eager to learn.',
+                mid: 'Neutral attitude; moderate interest in learning.',
+                bad: 'Negative attitude or reluctant to learn.'
+            },
+            {
+                id: 'gas_card',
+                label: 'Gas Card & Powered by Amazon App',
+                good: 'Knows how to use the gas card and Powered by Amazon app.',
+                mid: 'Needs more guidance on using the gas card and Powered by Amazon app.',
+                bad: 'Does not know how to use the gas card and Powered by Amazon app.'
+            },
+            {
+                id: 'time_card',
+                label: 'Timecard Editing',
+                good: 'Knows how to edit timecard and meal period times.',
+                mid: 'Needs more guidance on editing timecard and meal period times.',
+                bad: 'Does not know how to edit timecard and meal period times.'
+            },
+            {
+                id: 'feels_ready',
+                label: 'Feels Ready',
+                good: 'Feels ready and confident to go solo on the next scheduled day.',
+                mid: 'Needs one more day of training; does not feel confident going alone yet.',
+                bad: 'Does not feel ready to go solo on the next scheduled day.'
+            },
+            {
+                id: 'driver_feeling',
+                label: 'Driver Feeling',
+                overwhelmed: '😵‍💫 Feels overwhelmed about the job.', // Change emojis or texts here
+                happy: '😊 Feels happy about the job.',
+                confident: '💪 Feels confident about the job.',
+                challenged: '🏆 Feels challenged in a positive way.',
+                good_mental: '👍 Good mental state.',
+                bad_mental: '👎 Bad mental state.',
+                lazy: '😴 Seems lazy about the job.'
+            },
+            {
+                id: 'overall_comment',
+                label: 'Overall Comment',
+                killed_it: '🔥 Killed it today',
+                struggled: '🙈 Struggled today',
+                had_easy: '😎 Had it easy today',
+                pushed_through: '🫡 Pushed through it today',
+                did_amazing: '🤩 Did amazing today',
+                had_fun: '🤪 Had fun today',
+                did_crazy: '🥶 Did crazy today',
+                did_insane: '🤯 Did insaneeee today',
+                hmm: '🤔 Hmm today',
+                overwhelmed_today: '🫨 Overwhelmed today',
+                did_good: '🤘🏼 Did good today'
+            },
+            {
+                id: 'experienced',
+                label: 'Experience Level',
+                good: 'Experienced from prior routes.',
+                mid: '', // No mid option, leave empty
+                bad: 'Little or no experience as a carrier.'
+            },
+            {
+                id: 'training_needed',
+                label: 'Training Needed',
+                good: "Doesn't need more training overall.",
+                mid: 'Needs some more training.',
+                bad: 'Will need a lot of training.'
+            }
         ];
+
+        // Define notes here - similar to skills, change texts in 'text' or 'label'
         const notes = [
-            { id: 'coached', text: '🚨 Emergency coached on-road: Driver required interruption for re-training due to falling behind.', label: 'Emergency Coached On-Road', has_input: true, input_label: 'Stops Behind', input_id: 'stops-behind' },
-            { id: 'morning_issues', text: '⚠️ Faced issues with the van at the start of the route.', label: 'Morning Van Issues' },
-            { id: 'equipment_issues', text: '⚠️ Faced issues with equipment (phone).', label: 'Equipment Issues' },
-            { id: 'route_issues', text: '⚠️ Faced issues with the route itself (awful route, bad sequencing).', label: 'Route Issues' },
-            { id: 'only_buildings', text: '⚠️ Only buildings route.', label: 'Only Buildings Route' },
-            { id: 'not_nursery', text: '⚠️ Had to do a non-nursery route.', label: 'Non-Nursery Route' },
-            { id: 'handled_challenges', text: '✅ Handled challenges like OTP issues; strengthened skills.', label: 'Handled Challenges' },
-            { id: 'more_details', text: 'More details available if needed.', label: 'More Details' },
-            { id: 'checklist', text: 'Ride-along checklist will be posted soon (time constraint prevented signing today).', label: 'Checklist Posting', emote: '😓' }
+            {
+                id: 'coached',
+                text: '🚨 Emergency coached on-road: Driver required interruption for re-training due to falling behind.',
+                label: 'Emergency Coached On-Road',
+                has_input: true,
+                input_label: 'Stops Behind', // Change input placeholder here
+                input_id: 'stops-behind'
+            },
+            {
+                id: 'morning_issues',
+                text: '⚠️ Faced issues with the van at the start of the route.',
+                label: 'Morning Van Issues'
+            },
+            {
+                id: 'equipment_issues',
+                text: '⚠️ Faced issues with equipment (phone).',
+                label: 'Equipment Issues'
+            },
+            {
+                id: 'route_issues',
+                text: '⚠️ Faced issues with the route itself (awful route, bad sequencing).',
+                label: 'Route Issues'
+            },
+            {
+                id: 'only_buildings',
+                text: '⚠️ Only buildings route.',
+                label: 'Only Buildings Route'
+            },
+            {
+                id: 'not_nursery',
+                text: '⚠️ Had to do a non-nursery route.',
+                label: 'Non-Nursery Route'
+            },
+            {
+                id: 'handled_challenges',
+                text: '✅ Handled challenges like OTP issues; strengthened skills.',
+                label: 'Handled Challenges'
+            },
+            {
+                id: 'more_details',
+                text: 'More details available if needed.',
+                label: 'More Details'
+            },
+            {
+                id: 'checklist',
+                text: 'Ride-along checklist will be posted soon (time constraint prevented signing today).',
+                label: 'Checklist Posting',
+                emote: '😓' // Change emote here
+            }
         ];
-        // State
+
+        // App state - change default values if needed
         let state = {
             name: '',
             selections: {},
             stops_behind: ''
         };
+
         const totalChoicePages = skills.length + notes.length;
         const resultPageIndex = totalChoicePages + 1;
         let currentPage = 0;
-        // Initialize selections
+
+        // Initialize selections to null
         skills.forEach(s => { state.selections[s.id] = null; });
         notes.forEach(n => { state.selections[n.id] = null; });
-        // Create choice screens
+
+        // Function to create choice screens dynamically
         function createChoiceScreens() {
             skills.forEach((item, index) => {
                 const screen = document.createElement('div');
                 screen.id = `screen-${index + 1}`;
                 screen.className = 'screen';
-                let innerHTML = `<h2>${item.label}</h2>`;
+                let innerHTML = `<h2>${item.label}</h2>`; // Labels from skills array
+
                 if (item.id === 'driver_feeling' || item.id === 'overall_comment') {
                     const options = Object.keys(item).filter(key => key !== 'id' && key !== 'label');
                     options.forEach(opt => {
-                        innerHTML += `<button class="choice-button" data-value="${opt}" onclick="selectChoice('${item.id}', '${opt}')">${item[opt]}</button>`;
+                        innerHTML += `
+                            <button class="choice-button" data-value="${opt}" onclick="selectChoice('${item.id}', '${opt}')">
+                                ${item[opt]}
+                            </button>`;
                     });
-                    innerHTML += `<button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
+                    innerHTML += `
+                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">
+                            DNA
+                        </button>`;
                 } else if (item.id === 'feels_ready' || item.id === 'training_needed') {
                     innerHTML += `
-                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'🔧 ' + item.mid}</button>
-                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'❌ ' + item.bad}</button>
-                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
+                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">
+                            ✅ ${item.good}
+                        </button>
+                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">
+                            🔧 ${item.mid}
+                        </button>
+                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">
+                            ❌ ${item.bad}
+                        </button>
+                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">
+                            DNA
+                        </button>`;
                 } else if (item.id === 'experienced') {
                     innerHTML += `
-                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'🔧 ' + item.bad}</button>
-                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
+                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">
+                            ✅ ${item.good}
+                        </button>
+                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">
+                            🔧 ${item.bad}
+                        </button>
+                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">
+                            DNA
+                        </button>`;
                 } else {
                     innerHTML += `
-                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'🔧 ' + item.mid}</button>
-                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'❌ ' + item.bad}</button>
-                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
+                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">
+                            ✅ ${item.good}
+                        </button>
+                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">
+                            🔧 ${item.mid}
+                        </button>
+                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">
+                            ❌ ${item.bad}
+                        </button>
+                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">
+                            DNA
+                        </button>`;
                 }
                 screen.innerHTML = innerHTML;
                 document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
             });
+
             notes.forEach((item, index) => {
                 const screenIndex = skills.length + index + 1;
                 const screen = document.createElement('div');
                 screen.id = `screen-${screenIndex}`;
                 screen.className = 'screen';
-                let innerHTML = `<h2>${item.label}</h2>
-                    <button class="choice-button" data-value="include" onclick="selectChoice('${item.id}', 'include')">${item.emote ? item.emote + ' ' : ''}${item.text}</button>
-                    <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
+                let innerHTML = `
+                    <h2>${item.label}</h2>
+                    <button class="choice-button" data-value="include" onclick="selectChoice('${item.id}', 'include')">
+                        ${item.emote ? item.emote + ' ' : ''}${item.text}
+                    </button>
+                    <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">
+                        DNA
+                    </button>`;
                 if (item.has_input) {
-                    innerHTML += `<input type="number" id="${item.input_id}-input" placeholder="${item.input_label}" style="display: none;">`;
+                    innerHTML += `
+                        <input type="number" id="${item.input_id}-input" placeholder="${item.input_label}" style="display: none;">`;
                 }
                 screen.innerHTML = innerHTML;
                 document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
             });
         }
+
         createChoiceScreens();
-        // Show page
+
+        // Function to show a specific page
         function showPage(page) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
             if (page === 0) {
                 document.getElementById('name-screen').classList.add('active');
                 document.getElementById('driver-name').value = state.name;
@@ -305,27 +586,30 @@
                     input.style.display = 'none';
                 }
             }
+
             document.getElementById('prev-btn').disabled = (page === 0);
             document.getElementById('next-btn').disabled = (page === resultPageIndex);
             currentPage = page;
         }
-        // Select choice
+
+        // Function to select a choice
         function selectChoice(id, value) {
             state.selections[id] = value === 'dna' ? null : value;
             const item = notes.find(n => n.id === id) || skills.find(s => s.id === id);
             if (item && item.has_input && value === 'include') {
-                // Stay on page to input
+                // Stay on page to allow input
                 showPage(currentPage);
                 return;
             }
             nextPage();
         }
-        // Next page
+
+        // Function for next page
         function nextPage() {
             if (currentPage === 0) {
                 state.name = document.getElementById('driver-name').value.trim().toUpperCase();
                 if (!state.name) {
-                    alert('Please enter a name.');
+                    alert('Please enter a name.'); // Change alert message here
                     return;
                 }
             } else {
@@ -335,6 +619,7 @@
                     state.stops_behind = input.value.trim();
                 }
             }
+
             if (currentPage < resultPageIndex - 1) {
                 currentPage++;
                 showPage(currentPage);
@@ -343,75 +628,98 @@
                 showPage(currentPage);
             }
         }
-        // Prev page
+
+        // Function for previous page
         function prevPage() {
             if (currentPage > 0) {
                 currentPage--;
                 showPage(currentPage);
             }
         }
-        // Generate summary
+
+        // Function to generate the summary - this builds the message step by step
         function generateSummary() {
             let message = `${state.name}\n\n`;
-          
-            // Top: Coached or Overall Comment
+
+            // Top section: Coached or Overall Comment
             const coached = notes.find(n => n.id === 'coached');
             if (state.selections[coached.id] === 'include') {
                 let coachedText = coached.text;
                 if (state.stops_behind) {
-                    coachedText += ` The driver was ${state.stops_behind} stops behind.`;
+                    coachedText += ` The driver was ${state.stops_behind} stops behind.`; // Change this sentence here
                 }
                 message += coachedText + '\n\n';
             } else if (state.selections['overall_comment']) {
                 const overall = skills.find(s => s.id === 'overall_comment')[state.selections['overall_comment']];
-                message += `Overall: ${overall}\n\n`;
+                message += `Overall: ${overall}\n\n`; // Change "Overall:" prefix here
             }
-          
-            // Goods
-            const goods = skills.filter(s => state.selections[s.id] === 'good' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `✅ ${s.good}`);
+
+            // Goods section
+            const goods = skills
+                .filter(s => state.selections[s.id] === 'good' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id))
+                .map(s => `✅ ${s.good}`);
+
             const handled = notes.find(n => n.id === 'handled_challenges');
             if (state.selections[handled.id] === 'include') {
                 goods.push(handled.text);
             }
+
             const feelsReadyGood = state.selections['feels_ready'] === 'good' ? `✅ ${skills.find(s => s.id === 'feels_ready').good}` : '';
             if (feelsReadyGood) goods.push(feelsReadyGood);
+
             const experiencedGood = state.selections['experienced'] === 'good' ? `✅ ${skills.find(s => s.id === 'experienced').good}` : '';
             if (experiencedGood) goods.push(experiencedGood);
+
             if (goods.length > 0) message += goods.join('\n') + '\n\n';
+
             const trainingGood = state.selections['training_needed'] === 'good' ? `✅ ${skills.find(s => s.id === 'training_needed').good}` : '';
             if (trainingGood) message += trainingGood + '\n\n';
-          
-            // Mids
-            const mids = skills.filter(s => state.selections[s.id] === 'mid' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `🔧 ${s.mid}`);
+
+            // Mids section
+            const mids = skills
+                .filter(s => state.selections[s.id] === 'mid' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id))
+                .map(s => `🔧 ${s.mid}`);
+
             const feelsReadyMid = state.selections['feels_ready'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'feels_ready').mid}` : '';
             if (feelsReadyMid) mids.push(feelsReadyMid);
+
             const experiencedBad = state.selections['experienced'] === 'bad' ? `🔧 ${skills.find(s => s.id === 'experienced').bad}` : '';
             if (experiencedBad) mids.push(experiencedBad);
+
             if (mids.length > 0) message += mids.join('\n') + '\n\n';
+
             const trainingMid = state.selections['training_needed'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'training_needed').mid}` : '';
             if (trainingMid) message += trainingMid + '\n\n';
-          
-            // Bads
-            const bads = skills.filter(s => state.selections[s.id] === 'bad' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `❌ ${s.bad}`);
+
+            // Bads section
+            const bads = skills
+                .filter(s => state.selections[s.id] === 'bad' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id))
+                .map(s => `❌ ${s.bad}`);
+
             const feelsReadyBad = state.selections['feels_ready'] === 'bad' ? `❌ ${skills.find(s => s.id === 'feels_ready').bad}` : '';
             if (feelsReadyBad) bads.push(feelsReadyBad);
+
             if (bads.length > 0) message += bads.join('\n') + '\n\n';
+
             const trainingBad = state.selections['training_needed'] === 'bad' ? `❌ ${skills.find(s => s.id === 'training_needed').bad}` : '';
             if (trainingBad) message += trainingBad + '\n\n';
-          
-            // Unfair situations
-            const unfair = notes.filter(n => state.selections[n.id] === 'include' && ['morning_issues', 'equipment_issues', 'route_issues', 'only_buildings', 'not_nursery'].includes(n.id)).map(n => n.text);
+
+            // Unfair situations section
+            const unfair = notes
+                .filter(n => state.selections[n.id] === 'include' && ['morning_issues', 'equipment_issues', 'route_issues', 'only_buildings', 'not_nursery'].includes(n.id))
+                .map(n => n.text);
+
             if (unfair.length > 0) message += unfair.join('\n') + '\n\n';
-          
+
             // Driver feeling
             const driverFeeling = state.selections['driver_feeling'] ? skills.find(s => s.id === 'driver_feeling')[state.selections['driver_feeling']] : '';
-            if (driverFeeling) message += `Driver feelings: ${driverFeeling}\n\n`;
-          
-            // Comments (org help)
+            if (driverFeeling) message += `Driver feelings: ${driverFeeling}\n\n`; // Change "Driver feelings:" prefix here
+
+            // Comments for organize_van
             if (state.selections['organize_van'] === 'mid' || state.selections['organize_van'] === 'bad') {
-                message += `Comments: Please help organize the van on the launchpad next working day.\n\n`;
+                message += `Comments: Please help organize the van on the launchpad next working day.\n\n`; // Change this comment text here
             }
-          
+
             // Trainer notes
             let trainerNotes = [];
             const checklist = notes.find(n => n.id === 'checklist');
@@ -422,20 +730,22 @@
             if (state.selections[moreDetails.id] === 'include') {
                 trainerNotes.push(moreDetails.text);
             }
-            if (trainerNotes.length > 0) message += `Trainer notes: ${trainerNotes.join('\n')}`;
-          
+            if (trainerNotes.length > 0) message += `Trainer notes: ${trainerNotes.join('\n')}`; // Change "Trainer notes:" prefix here
+
             document.getElementById('summary-text').value = message.trim();
         }
-        // Copy to clipboard
+
+        // Function to copy summary to clipboard
         function copySummary() {
             const text = document.getElementById('summary-text').value;
             navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
+                alert('Copied to clipboard!'); // Change success message here
             }).catch(err => {
-                alert('Failed to copy: ' + err);
+                alert('Failed to copy: ' + err); // Change error message here
             });
         }
-        // Start
+
+        // Start the app by showing the first page
         showPage(0);
     </script>
 </body>
