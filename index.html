@@ -1,18 +1,51 @@
+Yes, it's a website (a single-page web app, technically). Since it's hosted on GitHub Pages, you can customize it by editing the HTML/CSS in the `index.html` file. Below are steps and code updates to add a logo, nice colors, and improve the look. I'll keep it simple and functional, focusing on your needs.
+
+### Customization Plan
+1. **Logo**: Add a placeholder logo (you can replace it with your own image later).
+2. **Colors**: Use a clean, professional palette (e.g., blue, white, gray) that's readable on light/dark themes.
+3. **Font**: Use a modern, readable font (e.g., Roboto).
+4. **Layout**: Improve spacing, button styles, and input fields for clarity.
+5. **Slack-Friendly**: Ensure the output remains Slack-compatible (line breaks, emojis).
+
+### Instructions
+1. Replace the `index.html` in your GitHub repo (`https://github.com/atrhu/UEMP-RideAlongReport`) with the updated code below.
+2. For the logo, upload an image (e.g., `logo.png`) to your repo root, and update the `<img>` src path if needed.
+3. Commit changes to the `main` branch; GitHub Pages will update the site in a minute or two.
+4. Test at `https://atrhu.github.io/UEMP-RideAlongReport/`.
+
+### Updated Code
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver Training Summary App</title>
+    <title>UEMP Ride-Along Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            max-width: 600px;
-            margin: 0 auto;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7fa;
+            color: #333;
         }
         #app {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #1a73e8;
             text-align: center;
+        }
+        img.logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 150px;
         }
         .screen {
             display: none;
@@ -20,46 +53,75 @@
         .active {
             display: block;
         }
-        button {
-            margin: 10px;
-            padding: 10px 20px;
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             font-size: 16px;
-        }
-        input {
-            padding: 10px;
-            font-size: 16px;
-            width: 80%;
         }
         textarea {
-            width: 100%;
-            height: 400px;
-            font-size: 14px;
+            height: 300px;
+            resize: vertical;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
         .choice-button {
             display: block;
-            width: 80%;
-            margin: 10px auto;
-            padding: 15px;
+            width: 100%;
+            margin: 10px 0;
+            background: #e8f0fe;
+            color: #1a73e8;
             text-align: left;
             white-space: normal;
         }
+        .choice-button:hover, .choice-button.selected {
+            background: #1a73e8;
+            color: #fff;
+        }
         .nav-buttons {
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
+        }
+        .nav-buttons button {
+            background: #1a73e8;
+            color: #fff;
+        }
+        .nav-buttons button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #copy-btn {
+            background: #34c759;
+            color: #fff;
+            width: 100%;
+        }
+        #copy-btn:hover {
+            background: #2ea44f;
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <h1>Driver Training Summary</h1>
+        <img src="logo.png" alt="UEMP Logo" class="logo">
+        <h1>UEMP Ride-Along Report</h1>
         <div id="name-screen" class="screen">
-            <label for="driver-name">Enter Driver's Name:</label><br>
+            <label for="driver-name">Enter Driver's Name:</label>
             <input type="text" id="driver-name" placeholder="Driver Name">
         </div>
         <!-- Choice screens will be dynamically generated -->
         <div id="result-screen" class="screen">
             <h2>Generated Summary</h2>
-            <textarea id="summary-text"></textarea><br>
-            <button onclick="copySummary()">Copy to Clipboard</button>
+            <textarea id="summary-text"></textarea>
+            <button id="copy-btn" onclick="copySummary()">Copy to Clipboard</button>
         </div>
         <div class="nav-buttons">
             <button id="prev-btn" onclick="prevPage()" disabled>⬅️ Previous</button>
@@ -111,7 +173,6 @@
             selections: {}
         };
 
-        // Total pages: 0 = name, 1 to skills.length = skills, skills.length+1 to skills.length+notes.length = notes, last = result
         const totalChoicePages = skills.length + notes.length;
         const resultPageIndex = totalChoicePages + 1;
         let currentPage = 0;
@@ -120,7 +181,7 @@
         skills.forEach(s => { state.selections[s.id] = null; });
         notes.forEach(n => { state.selections[n.id] = null; });
 
-        // Dynamically create choice screens
+        // Create choice screens
         function createChoiceScreens() {
             skills.forEach((item, index) => {
                 const screen = document.createElement('div');
@@ -159,28 +220,22 @@
                 generateSummary();
             } else {
                 document.getElementById(`screen-${page}`).classList.add('active');
-                // Highlight selected
                 const item = page <= skills.length ? skills[page - 1] : notes[page - skills.length - 1];
                 const selected = state.selections[item.id];
                 const buttons = document.getElementById(`screen-${page}`).querySelectorAll('button.choice-button');
                 buttons.forEach(btn => {
-                    btn.style.backgroundColor = (btn.dataset.value === selected) ? '#d0ffd0' : '';
+                    btn.classList.toggle('selected', btn.dataset.value === selected);
                 });
             }
             document.getElementById('prev-btn').disabled = (page === 0);
-            document.getElementById('next-btn').innerText = (page === resultPageIndex) ? '➡️ Next' : '➡️ Next'; // No next on result, but keep for consistency, disable if needed
-            if (page === resultPageIndex) {
-                document.getElementById('next-btn').disabled = true;
-            } else {
-                document.getElementById('next-btn').disabled = false;
-            }
+            document.getElementById('next-btn').disabled = (page === resultPageIndex);
             currentPage = page;
         }
 
         // Select choice
         function selectChoice(id, value) {
             state.selections[id] = value === 'dna' ? null : value;
-            nextPage(); // Auto next after select
+            nextPage();
         }
 
         // Next page
@@ -236,3 +291,21 @@
     </script>
 </body>
 </html>
+```
+
+### What's Changed
+- **Logo**: Added `<img src="logo.png" class="logo">`. Upload your logo as `logo.png` to the repo root or update the `src` path to match your file name.
+- **Colors**: Used a clean palette (blue `#1a73e8` for headers/buttons, green `#34c759` for copy button, light gray `#f4f7fa` for background, white `#fff` for app container). Buttons highlight on hover/selection.
+- **Font**: Switched to Roboto (loaded via Google Fonts) for a modern, professional look.
+- **Layout**: Added rounded corners, shadows, better spacing, and responsive input/textarea sizes.
+- **Slack**: Output format unchanged (Slack-compatible with emojis, line breaks, and markdown `###` for headers).
+
+### Next Steps
+1. Upload your logo image to the repo (e.g., `logo.png`).
+2. Replace the `index.html` file in your repo with this code.
+3. Commit to the `main` branch; check `https://atrhu.github.io/UEMP-RideAlongReport/` after a minute.
+4. If you want specific colors or logo tweaks, let me know (e.g., your brand colors or logo file name).
+5. (Small tip: Instead of "things like that," you could say "etc." or "similar features" for clarity.)
+
+### Why GitHub Pages is Free
+GitHub provides Pages to encourage developers to use their platform, promote open-source, and showcase projects. It's part of their free tier, funded by Microsoft, but limited to static sites (like this one). No server costs for you since it runs client-side in browsers.
