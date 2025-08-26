@@ -329,6 +329,8 @@
             const mids = skills.filter(s => state.selections[s.id] === 'mid' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `🔧 ${s.mid}`);
             const feelsReadyMid = state.selections['feels_ready'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'feels_ready').mid}` : '';
             if (feelsReadyMid) mids.push(feelsReadyMid);
+            const experiencedBad = state.selections['experienced'] === 'bad' ? `🔧 ${skills.find(s => s.id === 'experienced').bad}` : '';
+            if (experiencedBad) mids.push(experiencedBad);
             if (mids.length > 0) message += mids.join('\n') + '\n\n';
             const trainingMid = state.selections['training_needed'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'training_needed').mid}` : '';
             if (trainingMid) message += trainingMid + '\n\n';
@@ -337,8 +339,6 @@
             const bads = skills.filter(s => state.selections[s.id] === 'bad' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `❌ ${s.bad}`);
             const feelsReadyBad = state.selections['feels_ready'] === 'bad' ? `❌ ${skills.find(s => s.id === 'feels_ready').bad}` : '';
             if (feelsReadyBad) bads.push(feelsReadyBad);
-            const experiencedBad = state.selections['experienced'] === 'bad' ? `🔧 ${skills.find(s => s.id === 'experienced').bad}` : '';
-            if (experiencedBad) bads.push(experiencedBad);
             if (bads.length > 0) message += bads.join('\n') + '\n\n';
             const trainingBad = state.selections['training_needed'] === 'bad' ? `❌ ${skills.find(s => s.id === 'training_needed').bad}` : '';
             if (trainingBad) message += trainingBad + '\n\n';
