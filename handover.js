@@ -24,6 +24,23 @@ function initHandoverTool() {
     initializeFleetGrids();
     setDefaultDates();
     document.getElementById('oos-phones-count').addEventListener('input', updateOosPhonesDetails);
+    
+    // Sync current fleet data with FleetManager
+    if (window.fleetManager) {
+        const currentFleetData = {
+            fleet: {
+                prime: handoverData.fleet.prime,
+                cdv: handoverData.fleet.cdv,
+                merchant: handoverData.fleet.merchant,
+                fleetSharePrime: handoverData.fleet.fleetSharePrime,
+                fleetShareCdv: handoverData.fleet.fleetShareCdv,
+                rental: handoverData.fleet.rental,
+                oos: handoverData.fleet.oos
+            },
+            equipment: handoverData.equipment
+        };
+        window.fleetManager.syncWithHandoverData(currentFleetData);
+    }
 }
 
 function setDefaultDates() {
@@ -468,6 +485,12 @@ function generateHandoverReport() {
     report += `  ○ ${handoverData.equipment.missingEquipment || 'none'}`;
     
     document.getElementById('handover-summary-text').value = report;
+    
+    // Sync fleet data with FleetManager for use in other tools
+    if (window.fleetManager) {
+        window.fleetManager.syncWithHandoverData(handoverData);
+    }
+    
     nextHandoverStep();
 }
 

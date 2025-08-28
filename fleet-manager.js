@@ -26,10 +26,10 @@ class FleetManager {
                         cdv: this.generateVanRange(32, 40)
                     },
                     fleetShare: {
-                        prime: [],
-                        cdv: []
+                        prime: [18, 19, 20, 21, 22, 23, 24, 26, 27, 28, 29, 42, 43],
+                        cdv: [44]
                     },
-                    merchant: [],
+                    merchant: [25, 30, 31, 41],
                     rental: [],
                     oos: []
                 },
@@ -229,6 +229,57 @@ class FleetManager {
             return true;
         }
         return false;
+    }
+
+    // Sync fleet data with handover data
+    syncWithHandoverData(handoverData) {
+        if (handoverData && handoverData.fleet) {
+            // Update branded vehicles
+            this.fleetData.vehicles.branded.prime = handoverData.fleet.prime || [];
+            this.fleetData.vehicles.branded.cdv = handoverData.fleet.cdv || [];
+            
+            // Update fleet share vehicles
+            this.fleetData.vehicles.fleetShare.prime = handoverData.fleet.fleetSharePrime || [];
+            this.fleetData.vehicles.fleetShare.cdv = handoverData.fleet.fleetShareCdv || [];
+            
+            // Update merchant vehicles
+            this.fleetData.vehicles.merchant = handoverData.fleet.merchant || [];
+            
+            // Update rental vehicles
+            this.fleetData.vehicles.rental = handoverData.fleet.rental || [];
+            
+            // Update OOS vehicles
+            this.fleetData.vehicles.oos = handoverData.fleet.oos || [];
+            
+            // Update equipment
+            if (handoverData.equipment) {
+                this.fleetData.equipment = { ...this.fleetData.equipment, ...handoverData.equipment };
+            }
+            
+            this.fleetData.lastUpdated = new Date().toISOString();
+            this.fleetData.updatedBy = 'Handover Sync';
+            this.saveFleetData();
+            
+            return true;
+        }
+        return false;
+    }
+
+    // Get fleet summary for display
+    getFleetSummary() {
+        return {
+            branded: {
+                prime: this.fleetData.vehicles.branded.prime.length,
+                cdv: this.fleetData.vehicles.branded.cdv.length
+            },
+            fleetShare: {
+                prime: this.fleetData.vehicles.fleetShare.prime.length,
+                cdv: this.fleetData.vehicles.fleetShare.cdv.length
+            },
+            merchant: this.fleetData.vehicles.merchant.length,
+            rental: this.fleetData.vehicles.rental.length,
+            oos: this.fleetData.vehicles.oos.length
+        };
     }
 }
 

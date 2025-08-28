@@ -9,8 +9,17 @@ function initVehicleDamageTool() {
     // Show the vehicle selection screen
     showVehicleSelectionScreen();
     
-    // Populate the fleet vehicles
+    // Refresh fleet data from FleetManager and populate vehicles
+    refreshFleetData();
     populateFleetVehicles();
+}
+
+function refreshFleetData() {
+    // Ensure FleetManager has the latest data
+    if (window.fleetManager && window.fleetManager.getFleetSummary) {
+        const summary = window.fleetManager.getFleetSummary();
+        console.log('Current Fleet Summary:', summary);
+    }
 }
 
 function showVehicleSelectionScreen() {
