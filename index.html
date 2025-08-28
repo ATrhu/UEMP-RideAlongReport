@@ -309,42 +309,118 @@
             </button>
             <div class="tool-header">
                 <h2>Vehicle Damage Check</h2>
-                <p>Track and organize vehicle damages with photo documentation</p>
+                <p>Select a vehicle from the fleet to view damage history or add new damage</p>
             </div>
-            <div class="vehicle-damage-interface">
-                <div class="add-vehicle-form">
-                    <h3>Add New Vehicle</h3>
-                    <div class="form-group">
-                        <label for="vehicle-id">Vehicle ID</label>
-                        <input type="text" id="vehicle-id" placeholder="Enter vehicle ID">
+            
+            <!-- Vehicle Selection Screen -->
+            <div id="vehicle-selection-screen" class="screen">
+                <h3>Select a Vehicle</h3>
+                <div class="fleet-categories">
+                    <div class="fleet-category">
+                        <h4>Branded Vans</h4>
+                        <div class="vehicle-grid" id="branded-vehicles">
+                            <!-- Vehicles will be populated here -->
+                        </div>
                     </div>
+                    <div class="fleet-category">
+                        <h4>Fleet Share Vans</h4>
+                        <div class="vehicle-grid" id="fleet-share-vehicles">
+                            <!-- Vehicles will be populated here -->
+                        </div>
+                    </div>
+                    <div class="fleet-category">
+                        <h4>Merchant Vans</h4>
+                        <div class="vehicle-grid" id="merchant-vehicles">
+                            <!-- Vehicles will be populated here -->
+                        </div>
+                    </div>
+                    <div class="fleet-category">
+                        <h4>Rental Vans</h4>
+                        <div class="vehicle-grid" id="rental-vehicles">
+                            <!-- Vehicles will be populated here -->
+                        </div>
+                    </div>
+                    <div class="fleet-category">
+                        <h4>Out of Service</h4>
+                        <div class="vehicle-grid" id="oos-vehicles">
+                            <!-- Vehicles will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Damage History Screen -->
+            <div id="vehicle-damage-screen" class="screen" style="display: none;">
+                <div class="vehicle-info-header">
+                    <button class="back-btn-small" onclick="backToVehicleSelection()">
+                        <i class="fas fa-arrow-left"></i> Back to Selection
+                    </button>
+                    <h3 id="selected-vehicle-title">Vehicle Damage History</h3>
+                </div>
+                
+                <div class="vehicle-details">
+                    <div class="vehicle-summary">
+                        <h4 id="vehicle-summary-title"></h4>
+                        <div class="damage-stats" id="damage-stats">
+                            <!-- Damage statistics will be shown here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="damage-history-section">
+                    <h4>Damage History</h4>
+                    <div id="damage-history-list">
+                        <!-- Damage history entries will be shown here -->
+                    </div>
+                </div>
+
+                <div class="add-damage-section">
+                    <h4>Add New Damage Report</h4>
                     <div class="form-group">
-                        <label for="vehicle-type">Vehicle Type</label>
-                        <select id="vehicle-type">
-                            <option value="">Select vehicle type</option>
-                            <option value="van">Van</option>
-                            <option value="truck">Truck</option>
-                            <option value="car">Car</option>
-                        </select>
+                        <label for="driver-name">Driver Name</label>
+                        <input type="text" id="driver-name" placeholder="Enter driver name">
                     </div>
                     <div class="form-group">
                         <label for="damage-description">Damage Description</label>
                         <textarea id="damage-description" placeholder="Describe the damage"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Damage Photos</label>
-                        <div class="image-upload" onclick="document.getElementById('damage-photos').click()">
-                            <i class="fas fa-camera fa-2x" style="color: var(--text-secondary); margin-bottom: 1rem;"></i>
-                            <p>Click to upload damage photos</p>
-                            <input type="file" id="damage-photos" multiple accept="image/*" onchange="handleImageUpload(event)">
-                        </div>
-                        <button class="btn btn-secondary" onclick="takeDamagePhoto()"><i class="fas fa-camera"></i> Take Photo</button>
+                        <label for="damage-severity">Severity</label>
+                        <select id="damage-severity">
+                            <option value="minor">Minor</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="major">Major</option>
+                        </select>
                     </div>
-                    <button class="btn btn-primary" onclick="addVehicle()">Add Vehicle</button>
-                </div>
-
-                <div id="vehicles-container">
-                    <!-- Vehicles will be dynamically added here -->
+                    <div class="form-group">
+                        <label for="damage-location">Location on Vehicle</label>
+                        <input type="text" id="damage-location" placeholder="e.g., Front bumper, Left side">
+                    </div>
+                    <div class="form-group">
+                        <label for="damage-notes">Additional Notes</label>
+                        <textarea id="damage-notes" placeholder="Any additional information"></textarea>
+                    </div>
+                    
+                    <div class="photo-section">
+                        <label>Damage Photos</label>
+                        <div class="photo-buttons">
+                            <button class="btn btn-secondary photo-btn" onclick="takeDamagePhoto()">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <button class="btn btn-secondary photo-btn" onclick="uploadDamagePhoto()">
+                                <i class="fas fa-upload"></i> Upload Photo
+                            </button>
+                        </div>
+                        <input type="file" id="damage-photo-upload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                        <div id="photo-preview-container" class="photo-preview-container" style="display: none;">
+                            <h5>Photo Preview</h5>
+                            <div id="photo-preview"></div>
+                            <div class="photo-actions">
+                                <button class="btn btn-primary" onclick="confirmPhoto()">Confirm & Add</button>
+                                <button class="btn btn-secondary" onclick="cancelPhoto()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -356,6 +432,8 @@
             </div>
         </footer>
     </div>
+    <script src="fleet-manager.js"></script>
+    <script src="vehicle-damage-history.js"></script>
     <script src="common.js"></script>
     <script src="ridealong.js"></script>
     <script src="handover.js"></script>

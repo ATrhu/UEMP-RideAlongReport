@@ -168,7 +168,6 @@ function nextHandoverStep() {
             break;
         case 1:
             collectFleetData();
-            checkNotSelected();
             break;
         case 2:
             collectEquipmentData();
@@ -204,8 +203,6 @@ function showHandoverStep(step) {
         collectFleetData();
     } else if (step === 2) {
         collectEquipmentData();
-    } else if (step === 3) {
-        showHandoverPreview();
     }
 }
 
@@ -475,10 +472,20 @@ function generateHandoverReport() {
 }
 
 function copyHandoverSummary() {
-    const text = document.getElementById('handover-summary-text').value;
-    navigator.clipboard.writeText(text).then(() => {
-        alert('Handover report copied to clipboard!');
+    const summaryText = document.getElementById('handover-summary-text').value;
+    navigator.clipboard.writeText(summaryText).then(() => {
+        alert('Handover summary copied to clipboard!');
     }).catch(err => {
-        alert('Failed to copy: ' + err);
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy text. Please select and copy manually.');
     });
 }
+
+// Initialize event listeners when the tool is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener for OOS phones count
+    const oosPhonesCountInput = document.getElementById('oos-phones-count');
+    if (oosPhonesCountInput) {
+        oosPhonesCountInput.addEventListener('input', updateOosPhonesDetails);
+    }
+});
