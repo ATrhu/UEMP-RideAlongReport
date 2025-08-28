@@ -1437,3 +1437,524 @@ button {
         flex-direction: column;
     }
 }
+
+/* Equipment Care Styles */
+.equipment-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 1rem;
+}
+
+.tab-btn {
+    background: var(--light);
+    color: var(--text-secondary);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn:hover {
+    background: var(--background-light);
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: var(--white);
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.equipment-tab {
+    display: none;
+}
+
+.equipment-tab.active {
+    display: block;
+}
+
+/* Phone Care Styles */
+.phone-selection-section {
+    margin-bottom: 2rem;
+}
+
+.phone-selection-section h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
+.phone-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.phone-item {
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.phone-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.phone-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.phone-condition {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+}
+
+.phone-condition.condition-good {
+    background: var(--success);
+    color: white;
+}
+
+.phone-condition.condition-minor_damage {
+    background: var(--warning);
+    color: white;
+}
+
+.phone-condition.condition-major_damage {
+    background: var(--danger);
+    color: white;
+}
+
+.phone-condition.condition-broken {
+    background: #dc2626;
+    color: white;
+}
+
+.phone-condition.condition-maintenance {
+    background: #7c3aed;
+    color: white;
+}
+
+.phone-condition.condition-none {
+    background: var(--text-secondary);
+    color: white;
+}
+
+.phone-history-count {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.last-update {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Phone Condition Screen */
+.phone-screen {
+    margin-top: 2rem;
+}
+
+.phone-info-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.phone-summary {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.phone-summary h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
+.phone-condition-history {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.phone-condition-history h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.condition-entry {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: var(--background-light);
+}
+
+.condition-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.condition-date {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.condition-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.condition-status.good {
+    background: var(--success);
+    color: white;
+}
+
+.condition-status.minor_damage {
+    background: var(--warning);
+    color: white;
+}
+
+.condition-status.major_damage {
+    background: var(--danger);
+    color: white;
+}
+
+.condition-status.broken {
+    background: #dc2626;
+    color: white;
+}
+
+.condition-status.maintenance {
+    background: #7c3aed;
+    color: white;
+}
+
+.condition-content {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.condition-info p {
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.condition-photo img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.condition-photo img:hover {
+    transform: scale(1.05);
+}
+
+.condition-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.add-condition-section {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-condition-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+/* Battery Pack Styles */
+.battery-pack-section {
+    margin-top: 1rem;
+}
+
+.battery-pack-section h3 {
+    margin: 0 0 2rem 0;
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+.daily-inventory {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.daily-inventory h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.inventory-input-group {
+    margin-bottom: 1.5rem;
+}
+
+.inventory-input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.input-with-button {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.input-with-button input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.today-inventory-display {
+    margin-top: 1.5rem;
+}
+
+.today-inventory-display h5 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.battery-pack-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.battery-pack-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--background-light);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+}
+
+.bp-number {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.inventory-history {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-history h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.date-range-selector {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.date-range-selector label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.date-range-selector input {
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.history-date-group {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: var(--background-light);
+}
+
+.history-date-group h5 {
+    margin: 0 0 0.75rem 0;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.bp-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.bp-tag {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.date-summary {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.quick-stats {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quick-stats h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--background-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.stat-card h5 {
+    margin: 0 0 0.75rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Responsive Design for Equipment Care */
+@media (max-width: 768px) {
+    .equipment-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .tab-btn {
+        border-radius: 8px;
+        border-bottom: none;
+    }
+    
+    .phone-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .condition-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .date-range-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .input-with-button {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

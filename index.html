@@ -97,6 +97,24 @@
                                 <button class="btn btn-primary">Open Tool</button>
                             </div>
                         </div>
+
+                        <!-- Equipment Care Tool -->
+                        <div class="tool-card" onclick="openTool('equipment-care')">
+                            <div class="tool-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3>Equipment Care</h3>
+                            <p>Track phone conditions and battery pack inventory with photo documentation for equipment accountability.</p>
+                            <ul class="tool-features">
+                                <li>Phone condition tracking</li>
+                                <li>Battery pack inventory</li>
+                                <li>Photo documentation</li>
+                                <li>Daily accountability</li>
+                            </ul>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -302,6 +320,173 @@
             </div>
         </div>
 
+        <!-- Equipment Care Interface -->
+        <div id="equipment-care-interface" class="tool-interface">
+            <button class="back-btn" onclick="backToMenu()">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </button>
+            <div class="tool-header">
+                <h2>Equipment Care</h2>
+                <p>Track phone conditions and battery pack inventory for equipment accountability</p>
+            </div>
+            
+            <!-- Main Navigation Tabs -->
+            <div class="equipment-tabs">
+                <button class="tab-btn active" onclick="showEquipmentTab('phone-care')">
+                    <i class="fas fa-mobile-alt"></i> Phone Care
+                </button>
+                <button class="tab-btn" onclick="showEquipmentTab('battery-packs')">
+                    <i class="fas fa-battery-three-quarters"></i> Battery Packs
+                </button>
+            </div>
+
+            <!-- Phone Care Tab -->
+            <div id="phone-care-tab" class="equipment-tab active">
+                <div class="phone-selection-section">
+                    <h3>Select Phone for Condition Check</h3>
+                    <div class="phone-grid" id="phone-grid">
+                        <!-- Phones will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Phone Condition Screen -->
+                <div id="phone-condition-screen" class="phone-screen" style="display: none;">
+                    <div class="phone-info-header">
+                        <button class="back-btn-small" onclick="backToPhoneSelection()">
+                            <i class="fas fa-arrow-left"></i> Back to Selection
+                        </button>
+                        <h3 id="selected-phone-title">Phone Condition History</h3>
+                    </div>
+                    
+                    <div class="phone-summary">
+                        <h4 id="phone-summary-title"></h4>
+                        <div class="phone-stats" id="phone-stats">
+                            <!-- Phone statistics will be shown here -->
+                        </div>
+                    </div>
+
+                    <div class="phone-condition-history">
+                        <h4>Condition History</h4>
+                        <div id="phone-condition-list">
+                            <!-- Phone condition entries will be shown here -->
+                        </div>
+                    </div>
+
+                    <div class="add-condition-section">
+                        <h4>Add New Condition Report</h4>
+                        <div class="form-group">
+                            <label for="reported-by">Reported By</label>
+                            <input type="text" id="reported-by" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone-condition">Condition</label>
+                            <select id="phone-condition">
+                                <option value="good">Good</option>
+                                <option value="minor_damage">Minor Damage</option>
+                                <option value="major_damage">Major Damage</option>
+                                <option value="broken">Broken</option>
+                                <option value="maintenance">Needs Maintenance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone-description">Description</label>
+                            <textarea id="phone-description" placeholder="Describe the current condition or any issues"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone-notes">Additional Notes</label>
+                            <textarea id="phone-notes" placeholder="Any additional information"></textarea>
+                        </div>
+                        
+                        <div class="photo-section">
+                            <label>Condition Photos</label>
+                            <div class="photo-buttons">
+                                <button class="btn btn-secondary photo-btn" onclick="takePhonePhoto()">
+                                    <i class="fas fa-camera"></i> Take Photo
+                                </button>
+                                <button class="btn btn-secondary photo-btn" onclick="uploadPhonePhoto()">
+                                    <i class="fas fa-upload"></i> Upload Photo
+                                </button>
+                            </div>
+                            <input type="file" id="phone-photo-upload" accept="image/*" style="display: none;" onchange="handlePhonePhotoUpload(event)">
+                            <div id="phone-photo-preview-container" class="photo-preview-container" style="display: none;">
+                                <h5>Photo Preview</h5>
+                                <div id="phone-photo-preview"></div>
+                                <div class="photo-actions">
+                                    <button class="btn btn-primary" onclick="confirmPhonePhoto()">Confirm & Add</button>
+                                    <button class="btn btn-secondary" onclick="cancelPhonePhoto()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Battery Packs Tab -->
+            <div id="battery-packs-tab" class="equipment-tab">
+                <div class="battery-pack-section">
+                    <h3>Battery Pack Inventory</h3>
+                    
+                    <!-- Daily Inventory Input -->
+                    <div class="daily-inventory">
+                        <h4>Today's Inventory</h4>
+                        <div class="inventory-input-group">
+                            <label for="battery-pack-number">Battery Pack Number</label>
+                            <div class="input-with-button">
+                                <input type="number" id="battery-pack-number" placeholder="Enter BP number" min="1">
+                                <button class="btn btn-primary" onclick="addBatteryPack()">
+                                    <i class="fas fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="today-inventory-display">
+                            <h5>Today's Battery Packs:</h5>
+                            <div id="today-battery-packs" class="battery-pack-list">
+                                <!-- Today's battery packs will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory History -->
+                    <div class="inventory-history">
+                        <h4>Inventory History</h4>
+                        <div class="date-range-selector">
+                            <label for="start-date-bp">Start Date:</label>
+                            <input type="date" id="start-date-bp">
+                            <label for="end-date-bp">End Date:</label>
+                            <input type="date" id="end-date-bp">
+                            <button class="btn btn-secondary" onclick="viewInventoryHistory()">
+                                <i class="fas fa-search"></i> View History
+                            </button>
+                        </div>
+                        
+                        <div id="inventory-history-results">
+                            <!-- Inventory history will be shown here -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="quick-stats">
+                        <h4>Quick Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h5>Today</h5>
+                                <div id="today-stats" class="stat-content">
+                                    <!-- Today's stats -->
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <h5>Yesterday</h5>
+                                <div id="yesterday-stats" class="stat-content">
+                                    <!-- Yesterday's stats -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Vehicle Damage Check Interface -->
         <div id="vehicle-damage-interface" class="tool-interface">
             <button class="back-btn" onclick="backToMenu()">
@@ -434,6 +619,8 @@
     </div>
     <script src="fleet-manager.js"></script>
     <script src="vehicle-damage-history.js"></script>
+    <script src="equipment-care.js"></script>
+    <script src="equipment-care-functions.js"></script>
     <script src="common.js"></script>
     <script src="ridealong.js"></script>
     <script src="handover.js"></script>

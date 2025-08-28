@@ -12,6 +12,8 @@ function openTool(toolName) {
             initHandoverTool();
         } else if (toolName === 'vehicle-damage') {
             initVehicleDamageTool();
+        } else if (toolName === 'equipment-care') {
+            initEquipmentCareTool();
         }
     }
 }
