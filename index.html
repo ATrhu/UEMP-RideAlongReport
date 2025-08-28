@@ -3,440 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ride Along Report</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: url('background.png') no-repeat center center fixed, #000; /* Default to black, overridden by background.png if present */
-            background-size: cover; /* Ensures full cover */
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            position: relative;
-        }
-        #app {
-            max-width: 600px;
-            width: 90%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        h1 {
-            color: #FFD700;
-            text-align: center;
-        }
-        .screen {
-            display: none;
-        }
-        .active {
-            display: block;
-        }
-        input, textarea {
-            width: calc(100% - 24px);
-            padding: 12px;
-            margin: 10px auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            display: block;
-            text-align: center;
-        }
-        textarea {
-            height: 300px;
-            resize: vertical;
-        }
-        button {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .choice-button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            background: linear-gradient(to right, #B8860B, #000);
-            color: #fff;
-            text-align: left;
-            white-space: normal;
-        }
-        .choice-button:hover, .choice-button.selected {
-            background: linear-gradient(to right, #DAA520, #333);
-            color: #fff;
-        }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .nav-buttons button {
-            background: transparent;
-            color: #FFD700;
-            border: 1px solid #FFD700;
-        }
-        .nav-buttons button:disabled {
-            background: transparent;
-            color: #ccc;
-            border: 1px solid #ccc;
-            cursor: not-allowed;
-        }
-        #copy-btn {
-            background: #FFD700;
-            color: #000;
-            width: 100%;
-        }
-        #copy-btn:hover {
-            background: #DAA520;
-        }
-        #stops-behind-input {
-            display: none;
-            margin-top: 10px;
-        }
-        #bg-switch {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            align-items: center;
-        }
-        #bg-switch label {
-            margin-right: 10px;
-            color: #FFD700;
-        }
-        #bg-toggle {
-            width: 40px;
-            height: 20px;
-            background: #ccc;
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
-            transition: background 0.3s;
-        }
-        #bg-toggle::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: #fff;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s;
-        }
-        #bg-toggle.bg-on {
-            background: #FFD700;
-        }
-        #bg-toggle.bg-on::after {
-            transform: translateX(20px);
-        }
-    </style>
+    <title>UEMP Operations Hub - Manager Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="bg-switch">
-        <label>Background</label>
-        <div id="bg-toggle" onclick="toggleBackground()"></div>
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo" onclick="backToMenu()">
+                    <img src="logo.png" alt="UEMP Logo">
+                    <span>UEMP Operations Hub</span>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Menu -->
+        <main id="main-menu" class="main-content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>UEMP Operations Hub</h1>
+                    <p>Essential tools for managers to complete daily tasks efficiently and reliably.</p>
+                </div>
+            </section>
+
+            <!-- Tools Section -->
+            <section class="tools-section">
+                <div class="tools-container">
+                    <div class="section-title">
+                        <h2>Operations Tools</h2>
+                        <p>Select the tool you need to complete your task</p>
+                    </div>
+                    
+                    <div class="tools-grid">
+                        <!-- Ride Along Report Tool -->
+                        <div class="tool-card" onclick="openTool('ride-along')">
+                            <div class="tool-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h3>Ride Along Report</h3>
+                            <p>Create comprehensive ride-along reports with our step-by-step guided system. Perfect for training evaluations and driver assessments.</p>
+                            <ul class="tool-features">
+                                <li>Step-by-step guided process</li>
+                                <li>Pre-written professional messages</li>
+                                <li>Customizable templates</li>
+                                <li>Instant report generation</li>
+                            </ul>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                            </div>
+                        </div>
+
+                        <!-- Handover Report Tool -->
+                        <div class="tool-card" onclick="openTool('handover')">
+                            <div class="tool-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h3>Handover Report</h3>
+                            <p>Complete fleet and equipment handover reports with real-time updates and photo documentation.</p>
+                            <ul class="tool-features">
+                                <li>Fleet status tracking</li>
+                                <li>Equipment counts</li>
+                                <li>Photo documentation</li>
+                                <li>Instant report generation</li>
+                            </ul>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Damage Check Tool -->
+                        <div class="tool-card" onclick="openTool('vehicle-damage')">
+                            <div class="tool-icon">
+                                <i class="fas fa-car-crash"></i>
+                            </div>
+                            <h3>Vehicle Damage Check</h3>
+                            <p>Track vehicle damages with photos and organized documentation for accurate fleet management.</p>
+                            <ul class="tool-features">
+                                <li>Photo-based damage tracking</li>
+                                <li>Vehicle organization system</li>
+                                <li>Damage history tracking</li>
+                                <li>Easy comparison tools</li>
+                            </ul>
+                            <div class="tool-actions">
+                                <button class="btn btn-primary">Open Tool</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Tool Interfaces -->
+        <!-- Ride Along Report Interface -->
+        <div id="ride-along-interface" class="tool-interface">
+            <button class="back-btn" onclick="backToMenu()">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </button>
+            <div class="tool-header">
+                <h2>Ride Along Report</h2>
+                <p>Create a comprehensive ride-along evaluation report</p>
+            </div>
+            <div class="ride-along-interface">
+                <div id="app">
+                    <h1>Ride-Along Report</h1>
+                    <div id="name-screen" class="screen active">
+                        <label for="driver-name">Driver's Name</label>
+                        <input type="text" id="driver-name" placeholder="Enter Driver's Name">
+                    </div>
+                    <!-- Choice screens will be dynamically generated -->
+                    <div id="result-screen" class="screen">
+                        <h2>Generated Summary</h2>
+                        <textarea id="summary-text"></textarea>
+                        <button id="copy-btn" onclick="copySummary()">Copy to Clipboard</button>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button id="prev-btn" onclick="prevPage()" disabled>Previous</button>
+                    <button id="next-btn" onclick="nextPage()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Handover Report Interface -->
+        <div id="handover-interface" class="tool-interface">
+            <button class="back-btn" onclick="backToMenu()">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </button>
+            <div class="tool-header">
+                <h2>Handover Report</h2>
+                <p>Complete fleet and equipment handover reports</p>
+            </div>
+            <div class="handover-interface">
+                <h1>Handover Report</h1>
+                
+                <!-- Date Selection Screen -->
+                <div id="date-screen" class="screen active">
+                    <h2>Select Handover Period</h2>
+                    <div class="form-group">
+                        <label for="start-date">Start Date</label>
+                        <input type="date" id="start-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end-date">End Date</label>
+                        <input type="date" id="end-date" required>
+                    </div>
+                    <button class="btn btn-primary" onclick="nextHandoverStep()">Continue</button>
+                </div>
+
+                <!-- Fleet Status Screen -->
+                <div id="fleet-screen" class="screen">
+                    <h2>Fleet Status</h2>
+                    <p>Review current fleet status and mark any changes:</p>
+                    
+                    <div class="fleet-section">
+                        <h3>AMAZON BRANDED VANS</h3>
+                        <div class="van-category">
+                            <h4>Prime Vans</h4>
+                            <div class="van-grid" id="prime-vans"></div>
+                            <button class="btn btn-secondary" onclick="selectAllVans('prime-vans')">Select All</button>
+                        </div>
+                        <div class="van-category">
+                            <h4>CDV Vans</h4>
+                            <div class="van-grid" id="cdv-vans"></div>
+                            <button class="btn btn-secondary" onclick="selectAllVans('cdv-vans')">Select All</button>
+                        </div>
+                    </div>
+
+                    <div class="fleet-section">
+                        <h3>MERCHANT VANS</h3>
+                        <div class="van-grid" id="merchant-vans"></div>
+                        <button class="btn btn-secondary" onclick="selectAllVans('merchant-vans')">Select All</button>
+                    </div>
+
+                    <div class="fleet-section">
+                        <h3>FLEET SHARE VANS</h3>
+                        <div class="van-category">
+                            <h4>Prime Vans</h4>
+                            <div class="van-grid" id="fleet-share-prime"></div>
+                            <button class="btn btn-secondary" onclick="selectAllVans('fleet-share-prime')">Select All</button>
+                        </div>
+                        <div class="van-category">
+                            <h4>CDV Vans</h4>
+                            <div class="van-grid" id="fleet-share-cdv"></div>
+                            <button class="btn btn-secondary" onclick="selectAllVans('fleet-share-cdv')">Select All</button>
+                        </div>
+                    </div>
+
+                    <div class="fleet-section">
+                        <h3>RENTAL VANS</h3>
+                        <div class="van-grid" id="rental-vans"></div>
+                        <button class="btn btn-secondary" onclick="selectAllVans('rental-vans')">Select All</button>
+                    </div>
+
+                    <div class="fleet-section">
+                        <h3>OOS VANS</h3>
+                        <div class="van-grid" id="oos-vans"></div>
+                        <button class="btn btn-secondary" onclick="selectAllVans('oos-vans')">Select All</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="other-notes">Other Notes</label>
+                        <textarea id="other-notes" placeholder="e.g., 26 needs a new tire (Rear Right)"></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="nextHandoverStep()">Continue</button>
+                </div>
+
+                <!-- Equipment Counts Screen -->
+                <div id="equipment-screen" class="screen">
+                    <h2>Equipment Counts</h2>
+                    
+                    <div class="equipment-grid">
+                        <div class="equipment-item">
+                            <label for="phones-count">PHONES (Total)</label>
+                            <input type="number" id="phones-count" value="54" min="0">
+                            <label for="oos-phones-count">Number of OOS Phones</label>
+                            <input type="number" id="oos-phones-count" min="0" placeholder="Number of OOS phones">
+                            <div id="oos-phones-details"></div>
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="gas-cards-count">GAS CARDS (Total)</label>
+                            <input type="number" id="gas-cards-count" value="60" min="0">
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="handtrucks-count">HANDTRUCKS (Total)</label>
+                            <input type="number" id="handtrucks-count" value="34" min="0">
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="chargers-count">PORTABLE CHARGERS (Total)</label>
+                            <input type="number" id="chargers-count" value="45" min="0">
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="phone-holders">PHONE HOLDERS in Cage</label>
+                            <input type="number" id="phone-holders" value="13" min="0">
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="cables">CABLES in Cage</label>
+                            <input type="text" id="cables" value="none" placeholder="e.g., none, 5, etc.">
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="walkie-talkies-count">WALKIE TALKIES (Total)</label>
+                            <input type="number" id="walkie-talkies-count" value="6" min="0">
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="boosters-count">BOOSTERS (Total)</label>
+                            <input type="number" id="boosters-count" value="3" min="0">
+                            <input type="text" id="boosters-notes" placeholder="e.g., 2 charging downstairs, 1 missing">
+                        </div>
+                        
+                        <div class="equipment-item">
+                            <label for="ipad-count">IPAD (Total)</label>
+                            <input type="number" id="ipad-count" value="2" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="missing-equipment">EQUIPMENT MISSING/NEED TO ORDER</label>
+                        <textarea id="missing-equipment" placeholder="List any missing equipment or items that need ordering"></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="nextHandoverStep()">Continue</button>
+                </div>
+
+                <!-- Review and Generate Screen -->
+                <div id="review-screen" class="screen">
+                    <h2>Review and Generate Report</h2>
+                    <div id="handover-preview"></div>
+                    <button class="btn btn-primary" onclick="generateHandoverReport()">Generate Report</button>
+                </div>
+
+                <!-- Result Screen -->
+                <div id="handover-result-screen" class="screen">
+                    <h2>Handover Report Generated</h2>
+                    <textarea id="handover-summary-text" readonly></textarea>
+                    <button id="handover-copy-btn" onclick="copyHandoverSummary()">Copy to Clipboard</button>
+                </div>
+
+                <div class="nav-buttons">
+                    <button id="handover-prev-btn" onclick="prevHandoverStep()" disabled>Previous</button>
+                    <button id="handover-next-btn" onclick="nextHandoverStep()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Damage Check Interface -->
+        <div id="vehicle-damage-interface" class="tool-interface">
+            <button class="back-btn" onclick="backToMenu()">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </button>
+            <div class="tool-header">
+                <h2>Vehicle Damage Check</h2>
+                <p>Track and organize vehicle damages with photo documentation</p>
+            </div>
+            <div class="vehicle-damage-interface">
+                <div class="add-vehicle-form">
+                    <h3>Add New Vehicle</h3>
+                    <div class="form-group">
+                        <label for="vehicle-id">Vehicle ID</label>
+                        <input type="text" id="vehicle-id" placeholder="Enter vehicle ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicle-type">Vehicle Type</label>
+                        <select id="vehicle-type">
+                            <option value="">Select vehicle type</option>
+                            <option value="van">Van</option>
+                            <option value="truck">Truck</option>
+                            <option value="car">Car</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="damage-description">Damage Description</label>
+                        <textarea id="damage-description" placeholder="Describe the damage"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Damage Photos</label>
+                        <div class="image-upload" onclick="document.getElementById('damage-photos').click()">
+                            <i class="fas fa-camera fa-2x" style="color: var(--text-secondary); margin-bottom: 1rem;"></i>
+                            <p>Click to upload damage photos</p>
+                            <input type="file" id="damage-photos" multiple accept="image/*" onchange="handleImageUpload(event)">
+                        </div>
+                        <button class="btn btn-secondary" onclick="takeDamagePhoto()"><i class="fas fa-camera"></i> Take Photo</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="addVehicle()">Add Vehicle</button>
+                </div>
+
+                <div id="vehicles-container">
+                    <!-- Vehicles will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2024 UEMP Operations Hub. Essential tools for efficient operations.</p>
+            </div>
+        </footer>
     </div>
-    <div id="app">
-        <h1>Ride-Along Report</h1>
-        <div id="name-screen" class="screen">
-            <label for="driver-name">Driver's Name</label>
-            <input type="text" id="driver-name" placeholder="Enter Driver's Name">
-        </div>
-        <!-- Choice screens will be dynamically generated -->
-        <div id="result-screen" class="screen">
-            <h2>Generated Summary</h2>
-            <textarea id="summary-text"></textarea>
-            <button id="copy-btn" onclick="copySummary()">Copy to Clipboard</button>
-        </div>
-        <div class="nav-buttons">
-            <button id="prev-btn" onclick="prevPage()" disabled>Previous</button>
-            <button id="next-btn" onclick="nextPage()">Next</button>
-        </div>
-    </div>
-    <script>
-        function toggleBackground() {
-            const toggle = document.getElementById('bg-toggle');
-            const body = document.body;
-            if (toggle.classList.contains('bg-on')) {
-                toggle.classList.remove('bg-on');
-                body.style.background = '#000';
-            } else {
-                toggle.classList.add('bg-on');
-                body.style.background = "url('background.png') no-repeat center center fixed, #000";
-                body.style.backgroundSize = 'cover';
-            }
-        }
-        // Define skills and notes
-        const skills = [
-            { id: 'flex', label: 'Flex App Usage', good: 'Good understanding of Flex app usage.', mid: 'Needs time to get used to the Flex app.', bad: 'Limited understanding of Flex app usage.' },
-            { id: 'organize_van', label: 'Organize Van', good: 'Knows how to organize van with overflows and bags.', mid: 'Needs more practice organizing van with overflows and bags.', bad: 'Does not know how to organize van with overflows and bags.' },
-            { id: 'bag_overflow', label: 'Bag vs Overflows', good: 'Understands difference between bag packages and overflows; knows where to look without wasting time.', mid: 'Partial understanding of bag vs overflows; some confusion.', bad: 'Confuses bag packages and overflows; wastes time searching wrong places.' },
-            { id: 'customer_instructions', label: 'Customer Instructions', good: 'Follows customer instructions.', mid: 'Follows customer instructions with minor issues.', bad: 'Does not follow customer instructions consistently.' },
-            { id: 'language', label: 'Language Challenges', good: 'No language challenges noted.', mid: 'Minor language challenges.', bad: 'Language Barrier.' },
-            { id: 'mark_undeliverable', label: 'Mark Undeliverable', good: 'Knows how to mark undeliverable packages correctly (e.g., damage, missing, closed business).', mid: 'Needs guidance on marking undeliverable packages.', bad: 'Does not know how to mark undeliverable packages correctly.' },
-            { id: 'photos', label: 'Photos', good: 'Takes clear photos.', mid: 'Photos need improvement.', bad: 'Takes unclear or poor photos.' },
-            { id: 'polite', label: 'Polite with Customers', good: 'Polite with customers.', mid: 'Generally polite, but room for improvement.', bad: 'Not always polite with customers.' },
-            { id: 'driving', label: 'Driving Skills', good: 'Strong driver: full stops, speed limits, follows traffic rules.', mid: 'Adequate driver, needs some refinement.', bad: 'Weak driver: ignores stops, speeds, breaks traffic rules.' },
-            { id: 'building_deliveries', label: 'Building Deliveries', good: 'Knows how to handle building deliveries: upstairs, package rooms, reception, organizes by floor.', mid: 'Needs more practice with building deliveries.', bad: 'Struggles with building deliveries: avoids upstairs, mishandles package rooms/reception, poor organization.' },
-            { id: 'house_deliveries', label: 'House Deliveries', good: 'Knows how to handle house deliveries: organizes packages, special notes (e.g., back door), multiple stops.', mid: 'Needs more practice with house deliveries.', bad: 'Struggles with house deliveries: poor organization, ignores special notes, risks multiple-stop errors.' },
-            { id: 'delivery_speed', label: 'Delivery Speed', good: 'Delivers quickly: photo and go.', mid: 'Delivery speed is average; some extra time at stops.', bad: 'Delivers slowly; spends extra time at stops.' },
-            { id: 'identify_addresses', label: 'Identify Addresses', good: 'Identifies addresses accurately.', mid: 'Occasionally struggles with address identification.', bad: 'Struggles to identify addresses accurately.' },
-            { id: 'parking', label: 'Parking Sequence', good: 'Knows proper parking sequence.', mid: 'Needs reminder on parking sequence.', bad: 'Does not know proper parking sequence.' },
-            { id: 'gps', label: 'Map/GPS Skills', good: 'Good map/GPS skills.', mid: 'Needs improvement on map/GPS skills.', bad: 'Poor map/GPS skills.' },
-            { id: 'learner', label: 'Learning Speed', good: 'Quick learner overall.', mid: 'Average learner; takes time.', bad: 'Slow learner overall.' },
-            { id: 'attitude', label: 'Attitude', good: 'Positive attitude and eager to learn.', mid: 'Neutral attitude; moderate interest in learning.', bad: 'Negative attitude or reluctant to learn.' },
-            { id: 'gas_card', label: 'Gas Card & Powered by Amazon App', good: 'Knows how to use the gas card and Powered by Amazon app.', mid: 'Needs more guidance on using the gas card and Powered by Amazon app.', bad: 'Does not know how to use the gas card and Powered by Amazon app.' },
-            { id: 'time_card', label: 'Timecard Editing', good: 'Knows how to edit timecard and meal period times.', mid: 'Needs more guidance on editing timecard and meal period times.', bad: 'Does not know how to edit timecard and meal period times.' },
-            { id: 'feels_ready', label: 'Feels Ready', good: 'Feels ready and confident to go solo on the next scheduled day.', mid: 'Needs one more day of training; does not feel confident going alone yet.', bad: 'Does not feel ready to go solo on the next scheduled day.' },
-            { id: 'driver_feeling', label: 'Driver Feeling', overwhelmed: '😵‍💫 Feels overwhelmed about the job.', happy: '😊 Feels happy about the job.', confident: '💪 Feels confident about the job.', challenged: '🏆 Feels challenged in a positive way.', good_mental: '👍 Good mental state.', bad_mental: '👎 Bad mental state.', lazy: '😴 Seems lazy about the job.' },
-            { id: 'overall_comment', label: 'Overall Comment', killed_it: '🔥 Killed it today', struggled: '🙈 Struggled today', had_easy: '😎 Had it easy today', pushed_through: '🫡 Pushed through it today', did_amazing: '🤩 Did amazing today', had_fun: '🤪 Had fun today', did_crazy: '🥶 Did crazy today', did_insane: '🤯 Did insaneeee today', hmm: '🤔 Hmm today', overwhelmed_today: '🫨 Overwhelmed today', did_good: '🤘🏼 Did good today' },
-            { id: 'experienced', label: 'Experience Level', good: 'Experienced from prior routes.', mid: '', bad: 'Little or no experience as a carrier.' },
-            { id: 'training_needed', label: 'Training Needed', good: "Doesn't need more training overall.", mid: 'Needs some more training.', bad: 'Will need a lot of training.' }
-        ];
-        const notes = [
-            { id: 'coached', text: '🚨 Emergency coached on-road: Driver required interruption for re-training due to falling behind.', label: 'Emergency Coached On-Road', has_input: true, input_label: 'Stops Behind', input_id: 'stops-behind' },
-            { id: 'morning_issues', text: '⚠️ Faced issues with the van at the start of the route.', label: 'Morning Van Issues' },
-            { id: 'equipment_issues', text: '⚠️ Faced issues with equipment (phone).', label: 'Equipment Issues' },
-            { id: 'route_issues', text: '⚠️ Faced issues with the route itself (awful route, bad sequencing).', label: 'Route Issues' },
-            { id: 'only_buildings', text: '⚠️ Only buildings route.', label: 'Only Buildings Route' },
-            { id: 'not_nursery', text: '⚠️ Had to do a non-nursery route.', label: 'Non-Nursery Route' },
-            { id: 'handled_challenges', text: '✅ Handled challenges like OTP issues; strengthened skills.', label: 'Handled Challenges' },
-            { id: 'more_details', text: 'More details available if needed.', label: 'More Details' },
-            { id: 'checklist', text: 'Ride-along checklist will be posted soon (time constraint prevented signing today).', label: 'Checklist Posting', emote: '😓' }
-        ];
-        // State
-        let state = {
-            name: '',
-            selections: {},
-            stops_behind: ''
-        };
-        const totalChoicePages = skills.length + notes.length;
-        const resultPageIndex = totalChoicePages + 1;
-        let currentPage = 0;
-        // Initialize selections
-        skills.forEach(s => { state.selections[s.id] = null; });
-        notes.forEach(n => { state.selections[n.id] = null; });
-        // Create choice screens
-        function createChoiceScreens() {
-            skills.forEach((item, index) => {
-                const screen = document.createElement('div');
-                screen.id = `screen-${index + 1}`;
-                screen.className = 'screen';
-                let innerHTML = `<h2>${item.label}</h2>`;
-                if (item.id === 'driver_feeling' || item.id === 'overall_comment') {
-                    const options = Object.keys(item).filter(key => key !== 'id' && key !== 'label');
-                    options.forEach(opt => {
-                        innerHTML += `<button class="choice-button" data-value="${opt}" onclick="selectChoice('${item.id}', '${opt}')">${item[opt]}</button>`;
-                    });
-                    innerHTML += `<button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
-                } else if (item.id === 'feels_ready' || item.id === 'training_needed') {
-                    innerHTML += `
-                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'🔧 ' + item.mid}</button>
-                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'❌ ' + item.bad}</button>
-                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
-                } else if (item.id === 'experienced') {
-                    innerHTML += `
-                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'🔧 ' + item.bad}</button>
-                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
-                } else {
-                    innerHTML += `
-                        <button class="choice-button" data-value="good" onclick="selectChoice('${item.id}', 'good')">${'✅ ' + item.good}</button>
-                        <button class="choice-button" data-value="mid" onclick="selectChoice('${item.id}', 'mid')">${'🔧 ' + item.mid}</button>
-                        <button class="choice-button" data-value="bad" onclick="selectChoice('${item.id}', 'bad')">${'❌ ' + item.bad}</button>
-                        <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
-                }
-                screen.innerHTML = innerHTML;
-                document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
-            });
-            notes.forEach((item, index) => {
-                const screenIndex = skills.length + index + 1;
-                const screen = document.createElement('div');
-                screen.id = `screen-${screenIndex}`;
-                screen.className = 'screen';
-                let innerHTML = `<h2>${item.label}</h2>
-                    <button class="choice-button" data-value="include" onclick="selectChoice('${item.id}', 'include')">${item.emote ? item.emote + ' ' : ''}${item.text}</button>
-                    <button class="choice-button" data-value="dna" onclick="selectChoice('${item.id}', 'dna')">DNA</button>`;
-                if (item.has_input) {
-                    innerHTML += `<input type="number" id="${item.input_id}-input" placeholder="${item.input_label}" style="display: none;">`;
-                }
-                screen.innerHTML = innerHTML;
-                document.getElementById('app').insertBefore(screen, document.getElementById('result-screen'));
-            });
-        }
-        createChoiceScreens();
-        // Show page
-        function showPage(page) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            if (page === 0) {
-                document.getElementById('name-screen').classList.add('active');
-                document.getElementById('driver-name').value = state.name;
-            } else if (page === resultPageIndex) {
-                document.getElementById('result-screen').classList.add('active');
-                generateSummary();
-            } else {
-                const screen = document.getElementById(`screen-${page}`);
-                screen.classList.add('active');
-                const item = page <= skills.length ? skills[page - 1] : notes[page - skills.length - 1];
-                const selected = state.selections[item.id];
-                const buttons = screen.querySelectorAll('button.choice-button');
-                buttons.forEach(btn => {
-                    btn.classList.toggle('selected', btn.dataset.value === selected);
-                });
-                const input = screen.querySelector('input');
-                if (input && selected === 'include') {
-                    input.style.display = 'block';
-                    input.value = state.stops_behind || '';
-                } else if (input) {
-                    input.style.display = 'none';
-                }
-            }
-            document.getElementById('prev-btn').disabled = (page === 0);
-            document.getElementById('next-btn').disabled = (page === resultPageIndex);
-            currentPage = page;
-        }
-        // Select choice
-        function selectChoice(id, value) {
-            state.selections[id] = value === 'dna' ? null : value;
-            const item = notes.find(n => n.id === id) || skills.find(s => s.id === id);
-            if (item && item.has_input && value === 'include') {
-                // Stay on page to input
-                showPage(currentPage);
-                return;
-            }
-            nextPage();
-        }
-        // Next page
-        function nextPage() {
-            if (currentPage === 0) {
-                state.name = document.getElementById('driver-name').value.trim().toUpperCase();
-                if (!state.name) {
-                    alert('Please enter a name.');
-                    return;
-                }
-            } else {
-                const item = currentPage <= skills.length ? skills[currentPage - 1] : notes[currentPage - skills.length - 1];
-                if (item.has_input && state.selections[item.id] === 'include') {
-                    const input = document.getElementById(`${item.input_id}-input`);
-                    state.stops_behind = input.value.trim();
-                }
-            }
-            if (currentPage < resultPageIndex - 1) {
-                currentPage++;
-                showPage(currentPage);
-            } else {
-                currentPage = resultPageIndex;
-                showPage(currentPage);
-            }
-        }
-        // Prev page
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                showPage(currentPage);
-            }
-        }
-        // Generate summary
-        function generateSummary() {
-            let message = `${state.name}\n\n`;
-          
-            // Top: Coached or Overall Comment
-            const coached = notes.find(n => n.id === 'coached');
-            if (state.selections[coached.id] === 'include') {
-                let coachedText = coached.text;
-                if (state.stops_behind) {
-                    coachedText += ` The driver was ${state.stops_behind} stops behind.`;
-                }
-                message += coachedText + '\n\n';
-            } else if (state.selections['overall_comment']) {
-                const overall = skills.find(s => s.id === 'overall_comment')[state.selections['overall_comment']];
-                message += `Overall: ${overall}\n\n`;
-            }
-          
-            // Goods
-            const goods = skills.filter(s => state.selections[s.id] === 'good' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `✅ ${s.good}`);
-            const handled = notes.find(n => n.id === 'handled_challenges');
-            if (state.selections[handled.id] === 'include') {
-                goods.push(handled.text);
-            }
-            const feelsReadyGood = state.selections['feels_ready'] === 'good' ? `✅ ${skills.find(s => s.id === 'feels_ready').good}` : '';
-            if (feelsReadyGood) goods.push(feelsReadyGood);
-            const experiencedGood = state.selections['experienced'] === 'good' ? `✅ ${skills.find(s => s.id === 'experienced').good}` : '';
-            if (experiencedGood) goods.push(experiencedGood);
-            if (goods.length > 0) message += goods.join('\n') + '\n\n';
-            const trainingGood = state.selections['training_needed'] === 'good' ? `✅ ${skills.find(s => s.id === 'training_needed').good}` : '';
-            if (trainingGood) message += trainingGood + '\n\n';
-          
-            // Mids
-            const mids = skills.filter(s => state.selections[s.id] === 'mid' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `🔧 ${s.mid}`);
-            const feelsReadyMid = state.selections['feels_ready'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'feels_ready').mid}` : '';
-            if (feelsReadyMid) mids.push(feelsReadyMid);
-            const experiencedBad = state.selections['experienced'] === 'bad' ? `🔧 ${skills.find(s => s.id === 'experienced').bad}` : '';
-            if (experiencedBad) mids.push(experiencedBad);
-            if (mids.length > 0) message += mids.join('\n') + '\n\n';
-            const trainingMid = state.selections['training_needed'] === 'mid' ? `🔧 ${skills.find(s => s.id === 'training_needed').mid}` : '';
-            if (trainingMid) message += trainingMid + '\n\n';
-          
-            // Bads
-            const bads = skills.filter(s => state.selections[s.id] === 'bad' && !['feels_ready', 'driver_feeling', 'overall_comment', 'experienced', 'training_needed'].includes(s.id)).map(s => `❌ ${s.bad}`);
-            const feelsReadyBad = state.selections['feels_ready'] === 'bad' ? `❌ ${skills.find(s => s.id === 'feels_ready').bad}` : '';
-            if (feelsReadyBad) bads.push(feelsReadyBad);
-            if (bads.length > 0) message += bads.join('\n') + '\n\n';
-            const trainingBad = state.selections['training_needed'] === 'bad' ? `❌ ${skills.find(s => s.id === 'training_needed').bad}` : '';
-            if (trainingBad) message += trainingBad + '\n\n';
-          
-            // Unfair situations
-            const unfair = notes.filter(n => state.selections[n.id] === 'include' && ['morning_issues', 'equipment_issues', 'route_issues', 'only_buildings', 'not_nursery'].includes(n.id)).map(n => n.text);
-            if (unfair.length > 0) message += unfair.join('\n') + '\n\n';
-          
-            // Driver feeling
-            const driverFeeling = state.selections['driver_feeling'] ? skills.find(s => s.id === 'driver_feeling')[state.selections['driver_feeling']] : '';
-            if (driverFeeling) message += `Driver feelings: ${driverFeeling}\n\n`;
-          
-            // Comments (org help)
-            if (state.selections['organize_van'] === 'mid' || state.selections['organize_van'] === 'bad') {
-                message += `Comments: Please help organize the van on the launchpad next working day.\n\n`;
-            }
-          
-            // Trainer notes
-            let trainerNotes = [];
-            const checklist = notes.find(n => n.id === 'checklist');
-            if (state.selections[checklist.id] === 'include') {
-                trainerNotes.push(`${checklist.emote} ${checklist.text}`);
-            }
-            const moreDetails = notes.find(n => n.id === 'more_details');
-            if (state.selections[moreDetails.id] === 'include') {
-                trainerNotes.push(moreDetails.text);
-            }
-            if (trainerNotes.length > 0) message += `Trainer notes: ${trainerNotes.join('\n')}`;
-          
-            document.getElementById('summary-text').value = message.trim();
-        }
-        // Copy to clipboard
-        function copySummary() {
-            const text = document.getElementById('summary-text').value;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            }).catch(err => {
-                alert('Failed to copy: ' + err);
-            });
-        }
-        // Start
-        showPage(0);
-    </script>
+    <script src="common.js"></script>
+    <script src="ridealong.js"></script>
+    <script src="handover.js"></script>
+    <script src="vehicledamage.js"></script>
 </body>
 </html>
