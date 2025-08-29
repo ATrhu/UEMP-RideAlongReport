@@ -135,48 +135,56 @@ function takeDamagePhoto() {
         alert('Please select a vehicle first.');
         return;
     }
-    
-    // Check if camera is available
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('Camera access is not available in your browser.');
-        return;
-    }
-    
+
     // Show photo modal
     document.getElementById('photo-modal').style.display = 'block';
-    
-    // Start camera with back camera preference
-    const constraints = {
-        video: {
-            facingMode: { ideal: 'environment' } // Prefer back camera
-        }
-    };
-    
-    navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => {
+
+    // Function to start camera with back camera
+    async function startBackCamera() {
+        try {
+            // First, get permission and enumerate devices
+            await navigator.mediaDevices.getUserMedia({ video: true });
+
+            // Enumerate devices
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+            // Find back camera (look for labels like 'back', 'rear', or by groupId)
+            let backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
+
+            let constraints = { video: true };
+
+            if (backCamera) {
+                constraints.video = { deviceId: { exact: backCamera.deviceId } };
+            } else {
+                // Fallback to environment facingMode
+                constraints.video = { facingMode: { exact: 'environment' } };
+            }
+
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
             const video = document.getElementById('camera-feed');
             video.srcObject = stream;
             currentStream = stream;
             document.getElementById('camera-container').style.display = 'block';
-        })
-        .catch(err => {
+        } catch (err) {
             console.error('Error accessing camera:', err);
-            // Fallback to any available camera
+            alert('Unable to access back camera. Using default camera or check permissions.');
+            // Fallback to default
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
                     const video = document.getElementById('camera-feed');
                     video.srcObject = stream;
                     currentStream = stream;
-                    document.getElementById('camera-feed');
-                    video.srcObject = stream;
-                    currentStream = stream;
                     document.getElementById('camera-container').style.display = 'block';
                 })
                 .catch(fallbackErr => {
-                    console.error('Fallback camera error:', fallbackErr);
-                    alert('Unable to access camera. Please check permissions.');
+                    console.error('Fallback error:', fallbackErr);
+                    alert('Unable to access any camera. Please check permissions and try again.');
                 });
-        });
+        }
+    }
+
+    startBackCamera();
 }
 
 function capturePhoto() {
