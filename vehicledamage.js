@@ -19,6 +19,12 @@ function refreshFleetData() {
     if (window.fleetManager && window.fleetManager.getFleetSummary) {
         const summary = window.fleetManager.getFleetSummary();
         console.log('Current Fleet Summary:', summary);
+        
+        // Force re-initialization if needed
+        if (summary.branded.prime === 0 && summary.branded.cdv === 0) {
+            console.log('Fleet data appears empty, re-initializing...');
+            window.fleetManager.initializeDefaultFleet();
+        }
     }
 }
 
@@ -43,12 +49,14 @@ function populateFleetVehicles() {
     // Get all vehicles from the fleet manager
     const allVehicles = window.fleetManager.getAllVehicles();
     
+    console.log('All vehicles from FleetManager:', allVehicles);
+    console.log('FleetManager data:', window.fleetManager.fleetData);
+    
     // Clear existing grids
     document.getElementById('branded-vehicles').innerHTML = '';
     document.getElementById('fleet-share-vehicles').innerHTML = '';
     document.getElementById('merchant-vehicles').innerHTML = '';
     document.getElementById('rental-vehicles').innerHTML = '';
-    document.getElementById('oos-vehicles').innerHTML = '';
     
     // Populate each category
     allVehicles.forEach(vehicle => {
@@ -62,10 +70,14 @@ function populateFleetVehicles() {
             document.getElementById('merchant-vehicles').appendChild(vehicleElement);
         } else if (vehicle.category === 'rental') {
             document.getElementById('rental-vehicles').appendChild(vehicleElement);
-        } else if (vehicle.category === 'oos') {
-            document.getElementById('oos-vehicles').appendChild(vehicleElement);
         }
     });
+    
+    // Log what was added to each category
+    console.log('Branded vehicles count:', document.getElementById('branded-vehicles').children.length);
+    console.log('Fleet Share vehicles count:', document.getElementById('fleet-share-vehicles').children.length);
+    console.log('Merchant vehicles count:', document.getElementById('merchant-vehicles').children.length);
+    console.log('Rental vehicles count:', document.getElementById('rental-vehicles').children.length);
 }
 
 function createVehicleElement(vehicle) {
@@ -73,16 +85,9 @@ function createVehicleElement(vehicle) {
     vehicleDiv.className = 'vehicle-item';
     vehicleDiv.onclick = () => selectVehicle(vehicle);
     
-    // Get damage stats for this vehicle
-    const stats = window.damageHistory.getVehicleDamageStats(vehicle.id);
-    
     vehicleDiv.innerHTML = `
         <div class="vehicle-number">${vehicle.number}</div>
         <div class="vehicle-type">${vehicle.type}</div>
-        <div class="vehicle-damage-count">
-            <i class="fas fa-exclamation-triangle"></i> ${stats.totalEntries} damage reports
-        </div>
-        ${stats.lastDamage ? `<div class="last-damage">Last: ${new Date(stats.lastDamage).toLocaleDateString()}</div>` : ''}
     `;
     
     return vehicleDiv;
