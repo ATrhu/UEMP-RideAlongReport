@@ -233,6 +233,8 @@ class FleetManager {
 
     // Sync fleet data with handover data
     syncWithHandoverData(handoverData) {
+        console.log('FleetManager: Syncing with handover data:', handoverData);
+        
         if (handoverData && handoverData.fleet) {
             // Update branded vehicles
             this.fleetData.vehicles.branded.prime = handoverData.fleet.prime || [];
@@ -260,6 +262,7 @@ class FleetManager {
             this.fleetData.updatedBy = 'Handover Sync';
             this.saveFleetData();
             
+            console.log('FleetManager: After sync, fleet data:', this.fleetData.vehicles);
             return true;
         }
         return false;

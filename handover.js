@@ -62,6 +62,11 @@ function initializeFleetGrids() {
         button.textContent = i;
         button.onclick = () => toggleVanSelection('prime', i, button);
         primeGrid.appendChild(button);
+        
+        // Initialize handoverData with default van numbers
+        if (!handoverData.fleet.prime.includes(i)) {
+            handoverData.fleet.prime.push(i);
+        }
     }
 
     // Initialize CDV vans (32-40)
@@ -73,6 +78,11 @@ function initializeFleetGrids() {
         button.textContent = i;
         button.onclick = () => toggleVanSelection('cdv', i, button);
         cdvGrid.appendChild(button);
+        
+        // Initialize handoverData with default van numbers
+        if (!handoverData.fleet.cdv.includes(i)) {
+            handoverData.fleet.cdv.push(i);
+        }
     }
 
     // Initialize Merchant vans
@@ -84,6 +94,11 @@ function initializeFleetGrids() {
         button.textContent = num;
         button.onclick = () => toggleVanSelection('merchant', num, button);
         merchantGrid.appendChild(button);
+        
+        // Initialize handoverData with default van numbers
+        if (!handoverData.fleet.merchant.includes(num)) {
+            handoverData.fleet.merchant.push(num);
+        }
     });
 
     // Initialize Fleet Share Prime vans
@@ -95,6 +110,11 @@ function initializeFleetGrids() {
         button.textContent = num;
         button.onclick = () => toggleVanSelection('fleetSharePrime', num, button);
         fleetSharePrimeGrid.appendChild(button);
+        
+        // Initialize handoverData with default van numbers
+        if (!handoverData.fleet.fleetSharePrime.includes(num)) {
+            handoverData.fleet.fleetSharePrime.push(num);
+        }
     });
 
     // Initialize Fleet Share CDV vans
@@ -106,6 +126,11 @@ function initializeFleetGrids() {
         button.textContent = num;
         button.onclick = () => toggleVanSelection('fleetShareCdv', num, button);
         fleetShareCdvGrid.appendChild(button);
+        
+        // Initialize handoverData with default van numbers
+        if (!handoverData.fleet.fleetShareCdv.includes(num)) {
+            handoverData.fleet.fleetShareCdv.push(num);
+        }
     });
 
     // Initialize Rental vans (none)
