@@ -6,6 +6,7 @@ class EquipmentCareManager {
         this.phoneConditions = this.loadPhoneConditions();
         this.batteryPackHistory = this.loadBatteryPackHistory();
         this.initializeDefaultData();
+        this.ensurePhoneLabelsExist();
     }
 
     // Load phone conditions from local storage
@@ -29,8 +30,17 @@ class EquipmentCareManager {
     // Initialize default data if none exists
     initializeDefaultData() {
         if (Object.keys(this.phoneConditions).length === 0) {
-            // Initialize with default phone labels (you can modify these)
-            const defaultPhones = ['ORS1', 'ORS2', 'ORS3', 'BP1', 'BP2', 'BP3', 'BP4', 'BP5'];
+            // Initialize with correct phone labels: Phone 0-63 and ORS
+            const defaultPhones = [];
+            
+            // Add phones 0-63
+            for (let i = 0; i <= 63; i++) {
+                defaultPhones.push(`Phone ${i}`);
+            }
+            
+            // Add ORS (last phone)
+            defaultPhones.push('ORS');
+            
             defaultPhones.forEach(label => {
                 this.phoneConditions[label] = [];
             });
@@ -74,9 +84,100 @@ class EquipmentCareManager {
         return this.phoneConditions[phoneLabel] || [];
     }
 
+    // Get phone label by number (0-63) or 'ORS'
+    getPhoneLabelByNumber(number) {
+        if (number === 'ORS') {
+            return 'ORS';
+        }
+        
+        const num = parseInt(number);
+        if (num >= 0 && num <= 63) {
+            return `Phone ${num}`;
+        }
+        
+        return null; // Invalid number
+    }
+
     // Get all phone conditions
     getAllPhoneConditions() {
         return this.phoneConditions;
+    }
+
+    // Get the correct phone labels for the system
+    getPhoneLabels() {
+        const labels = [];
+        
+        // Add phones 0-63
+        for (let i = 0; i <= 63; i++) {
+            labels.push(`Phone ${i}`);
+        }
+        
+        // Add ORS (last phone)
+        labels.push('ORS');
+        
+        return labels;
+    }
+
+    // Ensure all phone labels exist in the system
+    ensurePhoneLabelsExist() {
+        const correctLabels = this.getPhoneLabels();
+        let updated = false;
+        
+        // Check if we need to migrate from old labels
+        const hasOldLabels = Object.keys(this.phoneConditions).some(label => 
+            !correctLabels.includes(label)
+        );
+        
+        if (hasOldLabels) {
+            // Migrate old data to new labels
+            this.migrateOldPhoneLabels();
+            updated = true;
+        }
+        
+        // Ensure all correct labels exist
+        correctLabels.forEach(label => {
+            if (!this.phoneConditions[label]) {
+                this.phoneConditions[label] = [];
+                updated = true;
+            }
+        });
+        
+        if (updated) {
+            this.savePhoneConditions();
+        }
+        
+        return updated;
+    }
+
+    // Migrate old phone labels to new system
+    migrateOldPhoneLabels() {
+        const correctLabels = this.getPhoneLabels();
+        const newPhoneConditions = {};
+        
+        // Initialize all correct labels
+        correctLabels.forEach(label => {
+            newPhoneConditions[label] = [];
+        });
+        
+        // Try to map old data to new labels where possible
+        Object.entries(this.phoneConditions).forEach(([oldLabel, data]) => {
+            if (correctLabels.includes(oldLabel)) {
+                // Label is already correct, keep the data
+                newPhoneConditions[oldLabel] = data;
+            } else if (oldLabel.startsWith('Phone ')) {
+                // Extract number and map to correct label
+                const number = oldLabel.replace('Phone ', '');
+                if (correctLabels.includes(`Phone ${number}`)) {
+                    newPhoneConditions[`Phone ${number}`] = data;
+                }
+            } else if (oldLabel === 'ORS' || oldLabel.startsWith('ORS')) {
+                // Map ORS labels to the correct ORS label
+                newPhoneConditions['ORS'] = data;
+            }
+            // Other old labels will be lost, but this ensures system stability
+        });
+        
+        this.phoneConditions = newPhoneConditions;
     }
 
     // Add battery pack inventory entry
