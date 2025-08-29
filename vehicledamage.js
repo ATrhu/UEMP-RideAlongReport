@@ -9,6 +9,12 @@ function initVehicleDamageTool() {
     // Show the vehicle selection screen
     showVehicleSelectionScreen();
     
+    // Force sync with handover data to ensure latest fleet information
+    if (window.fleetManager && window.handoverData) {
+        console.log('Vehicle Damage Check: Forcing sync with handover data');
+        window.fleetManager.syncWithHandoverData(window.handoverData);
+    }
+    
     // Refresh fleet data from FleetManager and populate vehicles
     refreshFleetData();
     populateFleetVehicles();
