@@ -355,64 +355,66 @@
                         <button class="back-btn-small" onclick="backToPhoneSelection()">
                             <i class="fas fa-arrow-left"></i> Back to Selection
                         </button>
-                        <h3 id="selected-phone-title">Phone Condition History</h3>
+                        <h3 id="selected-phone-title">Phone Photos</h3>
                     </div>
                     
-                    <div class="phone-summary">
-                        <h4 id="phone-summary-title"></h4>
-                        <div class="phone-stats" id="phone-stats">
-                            <!-- Phone statistics will be shown here -->
-                        </div>
-                    </div>
-
-                    <div class="phone-condition-history">
-                        <h4>Condition History</h4>
-                        <div id="phone-condition-list">
-                            <!-- Phone condition entries will be shown here -->
-                        </div>
-                    </div>
-
-                    <div class="add-condition-section">
-                        <h4>Add New Condition Report</h4>
-                        <div class="form-group">
-                            <label for="reported-by">Reported By</label>
-                            <input type="text" id="reported-by" placeholder="Enter your name">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone-condition">Condition</label>
-                            <select id="phone-condition">
-                                <option value="good">Good</option>
-                                <option value="minor_damage">Minor Damage</option>
-                                <option value="major_damage">Major Damage</option>
-                                <option value="broken">Broken</option>
-                                <option value="maintenance">Needs Maintenance</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone-description">Description</label>
-                            <textarea id="phone-description" placeholder="Describe the current condition or any issues"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone-notes">Additional Notes</label>
-                            <textarea id="phone-notes" placeholder="Any additional information"></textarea>
+                    <div class="phone-photos-section">
+                        <h4>Condition Photos</h4>
+                        <div id="phone-photos-grid">
+                            <!-- Phone photos will be populated here -->
                         </div>
                         
-                        <div class="photo-section">
-                            <label>Condition Photos</label>
-                            <div class="photo-buttons">
-                                <button class="btn btn-secondary photo-btn" onclick="takePhonePhoto()">
-                                    <i class="fas fa-camera"></i> Take Photo
-                                </button>
-                                <button class="btn btn-secondary photo-btn" onclick="uploadPhonePhoto()">
-                                    <i class="fas fa-upload"></i> Upload Photo
-                                </button>
+                        <div class="add-photo-section">
+                            <button class="btn btn-primary add-photo-btn" onclick="takePhonePhoto()">
+                                <i class="fas fa-camera"></i> Add New Photo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Phone Photo Modal -->
+                    <div id="phone-photo-modal" class="photo-modal" style="display: none;">
+                        <div class="photo-modal-content">
+                            <h4>Add Phone Photo</h4>
+                            
+                            <div class="photo-capture-section">
+                                <div id="phone-camera-container" style="display: none;">
+                                    <video id="phone-camera-feed" autoplay muted></video>
+                                    <button class="btn btn-primary" onclick="capturePhonePhoto()">
+                                        <i class="fas fa-camera"></i> Take Photo
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="closePhoneCamera()">
+                                        <i class="fas fa-times"></i> Close Camera
+                                    </button>
+                                </div>
+                                
+                                <div class="photo-upload-section">
+                                    <button class="btn btn-secondary" onclick="uploadPhonePhoto()">
+                                        <i class="fas fa-upload"></i> Upload Photo
+                                    </button>
+                                    <input type="file" id="phone-photo-upload" accept="image/*" style="display: none;" onchange="handlePhonePhotoUpload(event)">
+                                </div>
                             </div>
-                            <input type="file" id="phone-photo-upload" accept="image/*" style="display: none;" onchange="handlePhonePhotoUpload(event)">
+                            
                             <div id="phone-photo-preview-container" class="photo-preview-container" style="display: none;">
                                 <h5>Photo Preview</h5>
                                 <div id="phone-photo-preview"></div>
+                                <div class="form-group">
+                                    <label for="phone-driver-name">Person Name (optional)</label>
+                                    <input type="text" id="phone-driver-name" placeholder="Enter person name or leave blank">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone-photo-date">Photo Date</label>
+                                    <input type="date" id="phone-photo-date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="same-day-upload">Is this photo from today?</label>
+                                    <select id="same-day-upload">
+                                        <option value="yes">Yes, taken today</option>
+                                        <option value="same-day-upload">No, from another day</option>
+                                    </select>
+                                </div>
                                 <div class="photo-actions">
-                                    <button class="btn btn-primary" onclick="confirmPhonePhoto()">Confirm & Add</button>
+                                    <button class="btn btn-primary" onclick="confirmPhonePhoto()">Add Photo</button>
                                     <button class="btn btn-secondary" onclick="cancelPhonePhoto()">Cancel</button>
                                 </div>
                             </div>
@@ -538,68 +540,59 @@
                     <button class="back-btn-small" onclick="backToVehicleSelection()">
                         <i class="fas fa-arrow-left"></i> Back to Selection
                     </button>
-                    <h3 id="selected-vehicle-title">Vehicle Damage History</h3>
+                    <h3 id="selected-vehicle-title">Vehicle Damage Photos</h3>
                 </div>
                 
-                <div class="vehicle-details">
-                    <div class="vehicle-summary">
-                        <h4 id="vehicle-summary-title"></h4>
-                        <div class="damage-stats" id="damage-stats">
-                            <!-- Damage statistics will be shown here -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="damage-history-section">
-                    <h4>Damage History</h4>
-                    <div id="damage-history-list">
-                        <!-- Damage history entries will be shown here -->
-                    </div>
-                </div>
-
-                <div class="add-damage-section">
-                    <h4>Add New Damage Report</h4>
-                    <div class="form-group">
-                        <label for="driver-name">Driver Name</label>
-                        <input type="text" id="driver-name" placeholder="Enter driver name">
-                    </div>
-                    <div class="form-group">
-                        <label for="damage-description">Damage Description</label>
-                        <textarea id="damage-description" placeholder="Describe the damage"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="damage-severity">Severity</label>
-                        <select id="damage-severity">
-                            <option value="minor">Minor</option>
-                            <option value="moderate">Moderate</option>
-                            <option value="major">Major</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="damage-location">Location on Vehicle</label>
-                        <input type="text" id="damage-location" placeholder="e.g., Front bumper, Left side">
-                    </div>
-                    <div class="form-group">
-                        <label for="damage-notes">Additional Notes</label>
-                        <textarea id="damage-notes" placeholder="Any additional information"></textarea>
+                <div class="damage-photos-section">
+                    <h4>Damage Photos</h4>
+                    <div id="damage-photos-grid">
+                        <!-- Damage photos will be populated here -->
                     </div>
                     
-                    <div class="photo-section">
-                        <label>Damage Photos</label>
-                        <div class="photo-buttons">
-                            <button class="btn btn-secondary photo-btn" onclick="takeDamagePhoto()">
-                                <i class="fas fa-camera"></i> Take Photo
-                            </button>
-                            <button class="btn btn-secondary photo-btn" onclick="uploadDamagePhoto()">
-                                <i class="fas fa-upload"></i> Upload Photo
-                            </button>
+                    <div class="add-photo-section">
+                        <button class="btn btn-primary add-photo-btn" onclick="takeDamagePhoto()">
+                            <i class="fas fa-camera"></i> Add New Damage Photo
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Photo capture/upload modal -->
+                <div id="photo-modal" class="photo-modal" style="display: none;">
+                    <div class="photo-modal-content">
+                        <h4>Add Damage Photo</h4>
+                        
+                        <div class="photo-capture-section">
+                            <div id="camera-container" style="display: none;">
+                                <video id="camera-feed" autoplay muted></video>
+                                <button class="btn btn-primary" onclick="capturePhoto()">
+                                    <i class="fas fa-camera"></i> Take Photo
+                                </button>
+                                <button class="btn btn-secondary" onclick="closeCamera()">
+                                    <i class="fas fa-times"></i> Close Camera
+                                </button>
+                            </div>
+                            
+                            <div class="photo-upload-section">
+                                <button class="btn btn-secondary" onclick="uploadDamagePhoto()">
+                                    <i class="fas fa-upload"></i> Upload Photo
+                                </button>
+                                <input type="file" id="damage-photo-upload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                            </div>
                         </div>
-                        <input type="file" id="damage-photo-upload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                        
                         <div id="photo-preview-container" class="photo-preview-container" style="display: none;">
                             <h5>Photo Preview</h5>
                             <div id="photo-preview"></div>
+                            <div class="form-group">
+                                <label for="driver-name">Driver Name (optional)</label>
+                                <input type="text" id="driver-name" placeholder="Enter driver name or leave blank">
+                            </div>
+                            <div class="form-group">
+                                <label for="photo-date">Photo Date</label>
+                                <input type="date" id="photo-date">
+                            </div>
                             <div class="photo-actions">
-                                <button class="btn btn-primary" onclick="confirmPhoto()">Confirm & Add</button>
+                                <button class="btn btn-primary" onclick="confirmPhoto()">Add Photo</button>
                                 <button class="btn btn-secondary" onclick="cancelPhoto()">Cancel</button>
                             </div>
                         </div>

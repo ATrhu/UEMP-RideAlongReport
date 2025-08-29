@@ -102,71 +102,29 @@ function createVehicleElement(vehicle) {
 function selectVehicle(vehicle) {
     selectedVehicle = vehicle;
     showVehicleDamageScreen();
-    loadVehicleDamageHistory(vehicle);
+    loadVehicleDamagePhotos(vehicle.id);
     updateVehicleInfo(vehicle);
 }
 
 function updateVehicleInfo(vehicle) {
     document.getElementById('selected-vehicle-title').textContent = `Vehicle ${vehicle.number} - ${vehicle.type}`;
-    document.getElementById('vehicle-summary-title').textContent = `Vehicle ${vehicle.number} - ${vehicle.type}`;
-    
-    // Update damage statistics
-    const stats = window.damageHistory.getVehicleDamageStats(vehicle.id);
-    const statsDiv = document.getElementById('damage-stats');
-    
-    statsDiv.innerHTML = `
-        <div class="stat-item">
-            <span class="stat-label">Total Damage Reports:</span>
-            <span class="stat-value">${stats.totalEntries}</span>
-        </div>
-        ${stats.lastDamage ? `
-        <div class="stat-item">
-            <span class="stat-label">Last Damage:</span>
-            <span class="stat-value">${new Date(stats.lastDamage).toLocaleDateString()}</span>
-        </div>
-        ` : ''}
-        <div class="stat-item">
-            <span class="stat-label">Severity Breakdown:</span>
-            <span class="stat-value">${Object.entries(stats.severityBreakdown).map(([severity, count]) => `${severity}: ${count}`).join(', ') || 'None'}</span>
-        </div>
-    `;
 }
 
-function loadVehicleDamageHistory(vehicle) {
-    const history = window.damageHistory.getVehicleDamageHistory(vehicle.id);
-    const historyDiv = document.getElementById('damage-history-list');
+function loadVehicleDamagePhotos(vehicleId) {
+    const history = window.damageHistory.getVehicleDamageHistory(vehicleId);
+    const photosGrid = document.getElementById('damage-photos-grid');
     
     if (history.length === 0) {
-        historyDiv.innerHTML = '<p class="no-damage">No damage history found for this vehicle.</p>';
+        photosGrid.innerHTML = '<p class="no-damage">No damage photos found for this vehicle.</p>';
         return;
     }
     
-    historyDiv.innerHTML = history.map(entry => `
-        <div class="damage-entry">
-            <div class="damage-header">
-                <span class="damage-date">${new Date(entry.date).toLocaleDateString()}</span>
-                <span class="damage-severity ${entry.severity}">${entry.severity.toUpperCase()}</span>
-            </div>
-            <div class="damage-content">
-                <div class="damage-info">
-                    <p><strong>Driver:</strong> ${entry.driver}</p>
-                    <p><strong>Description:</strong> ${entry.description}</p>
-                    <p><strong>Location:</strong> ${entry.location}</p>
-                    ${entry.notes ? `<p><strong>Notes:</strong> ${entry.notes}</p>` : ''}
-                </div>
-                ${entry.photoData ? `
-                <div class="damage-photo">
-                    <img src="${entry.photoData}" alt="Damage photo" onclick="viewFullPhoto('${entry.photoData}')">
-                </div>
-                ` : ''}
-            </div>
-            <div class="damage-actions">
-                <button class="btn btn-small btn-secondary" onclick="editDamageEntry('${vehicle.id}', '${entry.id}')">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn btn-small btn-danger" onclick="deleteDamageEntry('${vehicle.id}', '${entry.id}')">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
+    photosGrid.innerHTML = history.map(entry => `
+        <div class="damage-photo-item">
+            <img src="${entry.photoData || 'placeholder.jpg'}" alt="Damage photo" onclick="viewFullPhoto('${entry.photoData}')">
+            <div class="photo-info">
+                <div class="photo-date">${new Date(entry.date).toLocaleDateString()}</div>
+                ${entry.driver ? `<div class="photo-driver">Driver: ${entry.driver}</div>` : ''}
             </div>
         </div>
     `).join('');
@@ -184,43 +142,46 @@ function takeDamagePhoto() {
         return;
     }
     
-    // Create camera modal
-    const cameraModal = document.createElement('div');
-    cameraModal.className = 'camera-modal';
-    cameraModal.innerHTML = `
-        <div class="camera-content">
-            <h3>Take Damage Photo</h3>
-            <video id="camera-video" autoplay></video>
-            <canvas id="camera-canvas" style="display: none;"></canvas>
-            <div class="camera-controls">
-                <button class="btn btn-primary" onclick="capturePhoto()">
-                    <i class="fas fa-camera"></i> Capture Photo
-                </button>
-                <button class="btn btn-secondary" onclick="closeCamera()">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-            </div>
-        </div>
-    `;
+    // Show photo modal
+    document.getElementById('photo-modal').style.display = 'block';
     
-    document.body.appendChild(cameraModal);
+    // Start camera with back camera preference
+    const constraints = {
+        video: {
+            facingMode: { ideal: 'environment' } // Prefer back camera
+        }
+    };
     
-    // Start camera
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia(constraints)
         .then(stream => {
-            const video = document.getElementById('camera-video');
+            const video = document.getElementById('camera-feed');
             video.srcObject = stream;
-            window.cameraStream = stream;
+            currentStream = stream;
+            document.getElementById('camera-container').style.display = 'block';
         })
         .catch(err => {
-            alert('Error accessing camera: ' + err.message);
-            document.body.removeChild(cameraModal);
+            console.error('Error accessing camera:', err);
+            // Fallback to any available camera
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    const video = document.getElementById('camera-feed');
+                    video.srcObject = stream;
+                    currentStream = stream;
+                    document.getElementById('camera-feed');
+                    video.srcObject = stream;
+                    currentStream = stream;
+                    document.getElementById('camera-container').style.display = 'block';
+                })
+                .catch(fallbackErr => {
+                    console.error('Fallback camera error:', fallbackErr);
+                    alert('Unable to access camera. Please check permissions.');
+                });
         });
 }
 
 function capturePhoto() {
-    const video = document.getElementById('camera-video');
-    const canvas = document.getElementById('camera-canvas');
+    const video = document.getElementById('camera-feed');
+    const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     
     // Set canvas size to match video
@@ -240,15 +201,12 @@ function capturePhoto() {
 }
 
 function closeCamera() {
-    if (window.cameraStream) {
-        window.cameraStream.getTracks().forEach(track => track.stop());
-        window.cameraStream = null;
+    if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
     }
     
-    const cameraModal = document.querySelector('.camera-modal');
-    if (cameraModal) {
-        document.body.removeChild(cameraModal);
-    }
+    document.getElementById('camera-container').style.display = 'none';
 }
 
 function uploadDamagePhoto() {
@@ -257,6 +215,8 @@ function uploadDamagePhoto() {
         return;
     }
     
+    // Hide camera container and show upload section
+    document.getElementById('camera-container').style.display = 'none';
     document.getElementById('damage-photo-upload').click();
 }
 
@@ -279,6 +239,9 @@ function showPhotoPreview() {
     
     previewDiv.innerHTML = `<img src="${currentPhotoData}" alt="Photo preview" style="max-width: 100%; max-height: 300px;">`;
     previewContainer.style.display = 'block';
+    
+    // Set default date to today
+    document.getElementById('photo-date').value = new Date().toISOString().split('T')[0];
 }
 
 function cancelPhoto() {
@@ -286,6 +249,7 @@ function cancelPhoto() {
     currentPhotoType = null;
     document.getElementById('photo-preview-container').style.display = 'none';
     document.getElementById('damage-photo-upload').value = '';
+    document.getElementById('photo-modal').style.display = 'none';
 }
 
 function confirmPhoto() {
@@ -296,11 +260,8 @@ function confirmPhoto() {
     
     // Get form data
     const damageData = {
-        driver: document.getElementById('driver-name').value || 'Unknown',
-        description: document.getElementById('damage-description').value || '',
-        severity: document.getElementById('damage-severity').value || 'minor',
-        location: document.getElementById('damage-location').value || '',
-        notes: document.getElementById('damage-notes').value || '',
+        driver: document.getElementById('driver-name').value || '',
+        date: document.getElementById('photo-date').value || new Date().toISOString().split('T')[0],
         photoData: currentPhotoData,
         photoType: currentPhotoType
     };
@@ -311,20 +272,16 @@ function confirmPhoto() {
     // Clear form and photo
     clearDamageForm();
     
-    // Reload damage history
-    loadVehicleDamageHistory(selectedVehicle);
-    updateVehicleInfo(selectedVehicle);
+    // Reload damage photos
+    loadVehicleDamagePhotos(selectedVehicle.id);
     
     // Show success message
-    alert('Damage report added successfully!');
+    alert('Damage photo added successfully!');
 }
 
 function clearDamageForm() {
     document.getElementById('driver-name').value = '';
-    document.getElementById('damage-description').value = '';
-    document.getElementById('damage-severity').value = 'minor';
-    document.getElementById('damage-location').value = '';
-    document.getElementById('damage-notes').value = '';
+    document.getElementById('photo-date').value = new Date().toISOString().split('T')[0];
     cancelPhoto();
 }
 
@@ -334,13 +291,12 @@ function editDamageEntry(vehicleId, entryId) {
 }
 
 function deleteDamageEntry(vehicleId, entryId) {
-    if (confirm('Are you sure you want to delete this damage entry?')) {
+    if (confirm('Are you sure you want to delete this damage photo?')) {
         if (window.damageHistory.removeDamageEntry(vehicleId, entryId)) {
-            loadVehicleDamageHistory(selectedVehicle);
-            updateVehicleInfo(selectedVehicle);
-            alert('Damage entry deleted successfully!');
+            loadVehicleDamagePhotos(vehicleId);
+            alert('Damage photo deleted successfully!');
         } else {
-            alert('Failed to delete damage entry.');
+            alert('Failed to delete damage photo.');
         }
     }
 }

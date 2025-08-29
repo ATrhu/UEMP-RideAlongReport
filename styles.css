@@ -1415,6 +1415,122 @@ button {
     background: rgba(0, 0, 0, 0.8);
 }
 
+/* Damage Photos Grid */
+.damage-photos-section, .phone-photos-section {
+    margin-top: 2rem;
+}
+
+.damage-photos-section h4, .phone-photos-section h4 {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+#damage-photos-grid, #phone-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.damage-photo-item, .phone-photo-item {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.damage-photo-item:hover, .phone-photo-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.damage-photo-item img, .phone-photo-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.photo-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.photo-date {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.photo-driver {
+    margin-top: 0.25rem;
+}
+
+.add-photo-section {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.add-photo-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.add-photo-btn:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Improved Button Interactions */
+.back-btn-small {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.back-btn-small:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.refresh-btn {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .fleet-categories {
