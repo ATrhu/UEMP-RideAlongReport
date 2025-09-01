@@ -1,0 +1,9 @@
+# UEMP Operations Hub V2 - Cursor Rules
+
+# Custom Commands
+[commands]
+start-server = "cd /Users/ruhh/Library/Mobile\\ Documents/com~apple~CloudDocs/Rucarpeta/Programming/HTML\\ Programs/UEMP\\ Operations\\ Hub\\ V2 && ./run.sh"
+
+# Keyboard Shortcuts
+[keyboard]
+cmd+shift+r = start-server

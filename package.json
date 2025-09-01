@@ -1,0 +1,34 @@
+{
+  "name": "uemp-operations-hub-v2",
+  "version": "2.0.0",
+  "description": "Complete redesign of UEMP Operations Hub with modern architecture and improved maintainability",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "operations",
+    "management",
+    "fleet",
+    "logistics",
+    "evaluation",
+    "dashboard"
+  ],
+  "author": "UEMP Operations Team",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "local",
+    "url": "/Users/ruhh/Library/Mobile Documents/com~apple~CloudDocs/Rucarpeta/Programming/HTML Programs/UEMP Operations Hub V2"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

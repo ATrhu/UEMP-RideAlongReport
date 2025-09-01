@@ -1,0 +1,28 @@
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node modules (if any)
+node_modules/
+
+# Local development files
+.local
+.env
+.env.local
+
+# Backup files
+*.bak
+*.backup
