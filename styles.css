@@ -2068,13 +2068,18 @@ body {
 
 .confirmation-actions {
     display: flex;
-    gap: var(--spacing-md);
-    justify-content: center;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
 }
 
 .confirmation-actions .btn {
-    flex: 1;
-    max-width: 150px;
+    width: 100%;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-base);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ========================================

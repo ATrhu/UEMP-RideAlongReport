@@ -378,67 +378,22 @@ function takePhonePhoto() {
 }
 
 function uploadPhonePhoto() {
-    document.getElementById('phone-photo-upload').click();
-}
-
-function handlePhonePhotoUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            equipmentCareState.setPhonePhotoData(e.target.result, 'upload');
-            showPhonePhotoPreview();
-        };
-        reader.readAsDataURL(file);
+    console.log('uploadPhonePhoto called');
+    const fileInput = document.getElementById('phone-photo-upload');
+    console.log('File input element:', fileInput);
+    if (fileInput) {
+        fileInput.click();
+        console.log('File picker opened');
+    } else {
+        console.error('File input element not found');
     }
 }
 
-function showPhonePhotoPreview() {
-    const previewContainer = document.getElementById('phone-photo-preview-container');
-    const previewDiv = document.getElementById('phone-photo-preview');
 
-    previewDiv.innerHTML = `<img src="${equipmentCareState.currentPhonePhotoData}" alt="Phone condition photo" style="max-width: 100%; max-height: 300px;">`;
-    previewContainer.style.display = 'block';
 
-    // Show modal
-    document.getElementById('phone-photo-modal').style.display = 'block';
-}
 
-function confirmPhonePhoto() {
-    if (!equipmentCareState.currentPhonePhotoData || !equipmentCareState.selectedPhone) {
-        showNotification('No photo data or phone selected', 'error');
-        return;
-    }
 
-    if (!window.equipmentCare) {
-        showNotification('Equipment care system not available', 'error');
-        return;
-    }
 
-    const conditionData = {
-        reportedBy: document.getElementById('reported-by').value || 'Unknown',
-        condition: document.getElementById('phone-condition').value || 'good',
-        description: document.getElementById('phone-description').value || '',
-        notes: document.getElementById('phone-notes').value || '',
-        photoData: equipmentCareState.currentPhonePhotoData,
-        photoType: equipmentCareState.currentPhonePhotoType
-    };
-
-    window.equipmentCare.addPhoneCondition(equipmentCareState.selectedPhone, conditionData);
-
-    clearPhoneForm();
-    loadPhoneConditionHistory(equipmentCareState.selectedPhone);
-    updatePhoneInfo(equipmentCareState.selectedPhone);
-
-    showNotification('Phone condition report added successfully!', 'success');
-}
-
-function cancelPhonePhoto() {
-    equipmentCareState.clearPhonePhotoData();
-    document.getElementById('phone-photo-preview-container').style.display = 'none';
-    document.getElementById('phone-photo-upload').value = '';
-    document.getElementById('phone-photo-modal').style.display = 'none';
-}
 
 function clearPhoneForm() {
     document.getElementById('reported-by').value = '';
@@ -530,14 +485,24 @@ function loadLatestPhonePhoto(phoneLabel) {
 }
 
 function handlePhonePhotoUpload(event) {
+    console.log('handlePhonePhotoUpload called', event);
     const file = event.target.files[0];
+    console.log('Selected file:', file);
     if (file) {
+        console.log('Processing file:', file.name, file.size, file.type);
         const reader = new FileReader();
         reader.onload = function(e) {
+            console.log('File loaded successfully');
             equipmentCareState.newPhotoData = e.target.result;
             showUploadConfirmation();
         };
+        reader.onerror = function(e) {
+            console.error('Error reading file:', e);
+            showNotification('Error reading file', 'error');
+        };
         reader.readAsDataURL(file);
+    } else {
+        console.log('No file selected');
     }
 }
 
