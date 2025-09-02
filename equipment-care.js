@@ -13,6 +13,7 @@ class EquipmentCareState {
         this.currentPhonePhotoData = null;
         this.currentPhonePhotoType = null;
         this.currentTab = 'phone-care';
+        this.newPhotoData = null;
     }
 
     setSelectedPhone(phone) {
@@ -39,6 +40,108 @@ class EquipmentCareState {
     }
 }
 
+// ========================================
+// Local Battery Pack Storage System
+// ========================================
+
+class BatteryPackStorage {
+    constructor() {
+        this.storageKey = 'uemp_battery_packs';
+        this.loadData();
+    }
+
+    loadData() {
+        try {
+            const data = localStorage.getItem(this.storageKey);
+            this.data = data ? JSON.parse(data) : {};
+        } catch (error) {
+            console.error('Error loading battery pack data:', error);
+            this.data = {};
+        }
+    }
+
+    saveData() {
+        try {
+            localStorage.setItem(this.storageKey, JSON.stringify(this.data));
+        } catch (error) {
+            console.error('Error saving battery pack data:', error);
+        }
+    }
+
+    addBatteryPackEntry(bpNumber, date = null) {
+        if (!date) {
+            date = new Date().toISOString().split('T')[0]; // Today's date
+        }
+
+        if (!this.data[date]) {
+            this.data[date] = [];
+        }
+
+        // Check if battery pack already exists for this date
+        if (!this.data[date].includes(bpNumber)) {
+            this.data[date].push(bpNumber);
+            this.data[date].sort((a, b) => a - b); // Sort numerically
+            this.saveData();
+            return true;
+        }
+        return false;
+    }
+
+    removeBatteryPackEntry(bpNumber, date) {
+        if (this.data[date]) {
+            const index = this.data[date].indexOf(bpNumber);
+            if (index > -1) {
+                this.data[date].splice(index, 1);
+                this.saveData();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    getBatteryPackNumbersForDate(date) {
+        return this.data[date] || [];
+    }
+
+    getBatteryPackStats() {
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        return {
+            today: this.getBatteryPackNumbersForDate(today),
+            yesterday: this.getBatteryPackNumbersForDate(yesterdayStr)
+        };
+    }
+
+    getBatteryPackHistoryForDate(date) {
+        const bpNumbers = this.getBatteryPackNumbersForDate(date);
+        return bpNumbers.map(bp => ({
+            batteryPackNumber: bp,
+            date: date,
+            id: `${date}_${bp}`
+        }));
+    }
+
+    getBatteryPackHistoryForRange(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const history = [];
+
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+            const dateStr = d.toISOString().split('T')[0];
+            const entries = this.getBatteryPackHistoryForDate(dateStr);
+            history.push(...entries);
+        }
+
+        return history;
+    }
+}
+
+// Initialize battery pack storage
+const batteryPackStorage = new BatteryPackStorage();
+
 // Initialize equipment care state
 const equipmentCareState = new EquipmentCareState();
 
@@ -53,6 +156,9 @@ function initEquipmentCareTool() {
     populatePhoneGrid();
     initializeBatteryPackInterface();
     setDefaultBatteryPackDates();
+
+    // Load initial battery pack data
+    refreshBatteryPackData();
 }
 
 function showEquipmentTab(tabName) {
@@ -91,29 +197,39 @@ function showEquipmentTab(tabName) {
 
 function populatePhoneGrid() {
     const phoneGrid = document.getElementById('phone-grid');
+
     if (!phoneGrid) return;
 
-    if (!window.equipmentCare) {
-        phoneGrid.innerHTML = '<p class="no-data">Equipment care system not available</p>';
-        return;
-    }
-
-    const allPhones = window.equipmentCare.getAllPhoneConditions();
+    // Clear existing content
     phoneGrid.innerHTML = '';
 
-    Object.keys(allPhones).forEach(phoneLabel => {
-        const phoneElement = createPhoneElement(phoneLabel, allPhones[phoneLabel]);
+    // Create phones 0-63
+    for (let i = 0; i <= 63; i++) {
+        const phoneElement = createPhoneElement(i.toString());
         phoneGrid.appendChild(phoneElement);
-    });
+    }
+
+    // Create ORS phone at the end
+    const orsPhoneElement = createPhoneElement('ORS');
+    phoneGrid.appendChild(orsPhoneElement);
 }
 
-function createPhoneElement(phoneLabel, conditionHistory) {
+function createPhoneElement(phoneLabel) {
     const phoneDiv = document.createElement('div');
     phoneDiv.className = 'phone-item';
     phoneDiv.onclick = () => selectPhone(phoneLabel);
 
-    // Get latest condition
-    const latestCondition = conditionHistory.length > 0 ? conditionHistory[conditionHistory.length - 1] : null;
+    // Get phone condition info if equipment care is available
+    let latestCondition = null;
+    let conditionHistory = [];
+    let hasPhoto = false;
+
+    if (window.equipmentCare) {
+        conditionHistory = window.equipmentCare.getPhoneConditionHistory(phoneLabel) || [];
+        latestCondition = conditionHistory.length > 0 ? conditionHistory[conditionHistory.length - 1] : null;
+        hasPhoto = latestCondition && latestCondition.photoData;
+    }
+
     const conditionClass = latestCondition ? `condition-${latestCondition.condition}` : 'condition-none';
 
     phoneDiv.innerHTML = `
@@ -121,8 +237,11 @@ function createPhoneElement(phoneLabel, conditionHistory) {
         <div class="phone-condition ${conditionClass}">
             ${latestCondition ? latestCondition.condition.replace('_', ' ').toUpperCase() : 'NO DATA'}
         </div>
-        <div class="phone-history-count">
-            <i class="fas fa-history"></i> ${conditionHistory.length} entries
+        <div class="phone-info">
+            <div class="phone-history-count">
+                <i class="fas fa-history"></i> ${conditionHistory.length}
+            </div>
+            ${hasPhoto ? '<div class="phone-has-photo"><i class="fas fa-camera"></i></div>' : ''}
         </div>
         ${latestCondition ? `<div class="last-update">Last: ${new Date(latestCondition.date).toLocaleDateString()}</div>` : ''}
     `;
@@ -135,6 +254,7 @@ function selectPhone(phoneLabel) {
     showPhoneConditionScreen();
     loadPhoneConditionHistory(phoneLabel);
     updatePhoneInfo(phoneLabel);
+    loadLatestPhonePhoto(phoneLabel);
 }
 
 function showPhoneConditionScreen() {
@@ -343,6 +463,131 @@ function viewFullPhonePhoto(photoData) {
 }
 
 // ========================================
+// New Phone Photo Management Functions
+// ========================================
+
+function loadLatestPhonePhoto(phoneLabel) {
+    const latestPhotoContainer = document.getElementById('latest-phone-photo');
+    if (!latestPhotoContainer) return;
+
+    if (!window.equipmentCare) {
+        latestPhotoContainer.innerHTML = '<p class="no-photo">Equipment care system not available</p>';
+        return;
+    }
+
+    const history = window.equipmentCare.getPhoneConditionHistory(phoneLabel) || [];
+    const latestEntry = history.length > 0 ? history[history.length - 1] : null;
+
+    if (latestEntry && latestEntry.photoData) {
+        latestPhotoContainer.innerHTML = `
+            <img src="${latestEntry.photoData}" alt="Latest phone photo" onclick="viewFullPhonePhoto('${latestEntry.photoData}')">
+            <div class="photo-info">
+                <span class="photo-date">${new Date(latestEntry.date).toLocaleDateString()}</span>
+                <span class="photo-condition">${latestEntry.condition.replace('_', ' ').toUpperCase()}</span>
+            </div>
+        `;
+    } else {
+        latestPhotoContainer.innerHTML = '<p class="no-photo">No photo available for this phone</p>';
+    }
+}
+
+function handlePhonePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            equipmentCareState.newPhotoData = e.target.result;
+            showPhonePhotoComparison();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function showPhonePhotoComparison() {
+    if (!equipmentCareState.newPhotoData) {
+        showNotification('No photo selected', 'error');
+        return;
+    }
+
+    // Get previous photo
+    const phoneLabel = equipmentCareState.selectedPhone;
+    const history = window.equipmentCare ? window.equipmentCare.getPhoneConditionHistory(phoneLabel) || [] : [];
+    const previousEntry = history.length > 0 ? history[history.length - 1] : null;
+
+    // Update comparison modal
+    const previousContainer = document.getElementById('previous-photo-container');
+    const newContainer = document.getElementById('new-photo-container');
+
+    if (previousEntry && previousEntry.photoData) {
+        previousContainer.innerHTML = `<img src="${previousEntry.photoData}" alt="Previous photo">`;
+    } else {
+        previousContainer.innerHTML = '<p class="no-photo">No previous photo</p>';
+    }
+
+    newContainer.innerHTML = `<img src="${equipmentCareState.newPhotoData}" alt="New photo">`;
+
+    // Show modal
+    document.getElementById('phone-comparison-modal').style.display = 'block';
+}
+
+function closePhoneComparison() {
+    document.getElementById('phone-comparison-modal').style.display = 'none';
+    equipmentCareState.newPhotoData = null;
+    document.getElementById('phone-photo-upload').value = '';
+}
+
+function savePhonePhotoComparison() {
+    // Hide comparison modal and show upload form
+    document.getElementById('phone-comparison-modal').style.display = 'none';
+    document.getElementById('phone-photo-upload-modal').style.display = 'block';
+}
+
+function cancelPhonePhotoUpload() {
+    equipmentCareState.newPhotoData = null;
+    document.getElementById('phone-photo-upload-modal').style.display = 'none';
+    document.getElementById('phone-photo-upload').value = '';
+}
+
+function confirmPhonePhotoUpload() {
+    if (!equipmentCareState.newPhotoData || !equipmentCareState.selectedPhone) {
+        showNotification('No photo data or phone selected', 'error');
+        return;
+    }
+
+    if (!window.equipmentCare) {
+        showNotification('Equipment care system not available', 'error');
+        return;
+    }
+
+    const storageOption = document.querySelector('input[name="storage-option"]:checked').value;
+    const isPermanent = storageOption === 'permanent';
+
+    const conditionData = {
+        reportedBy: document.getElementById('upload-reported-by').value || 'Unknown',
+        condition: document.getElementById('upload-phone-condition').value || 'good',
+        description: document.getElementById('upload-phone-description').value || '',
+        notes: document.getElementById('upload-phone-notes').value || '',
+        photoData: equipmentCareState.newPhotoData,
+        photoType: 'upload',
+        isPermanent: isPermanent,
+        uploadDate: new Date().toISOString()
+    };
+
+    // Add the condition entry
+    window.equipmentCare.addPhoneCondition(equipmentCareState.selectedPhone, conditionData);
+
+    // Clean up
+    cancelPhonePhotoUpload();
+
+    // Refresh displays
+    loadPhoneConditionHistory(equipmentCareState.selectedPhone);
+    updatePhoneInfo(equipmentCareState.selectedPhone);
+    loadLatestPhonePhoto(equipmentCareState.selectedPhone);
+
+    showNotification('Phone photo uploaded successfully!', 'success');
+}
+
+// ========================================
 // Battery Pack Management
 // ========================================
 
@@ -369,17 +614,12 @@ function addBatteryPack() {
     }
 
     const bpNum = parseInt(bpNumber);
-    if (isNaN(bpNum) || bpNum < 1) {
-        showNotification('Please enter a valid battery pack number', 'error');
+    if (isNaN(bpNum) || bpNum < 0) {
+        showNotification('Please enter a valid battery pack number (0 or greater)', 'error');
         return;
     }
 
-    if (!window.equipmentCare) {
-        showNotification('Equipment care system not available', 'error');
-        return;
-    }
-
-    window.equipmentCare.addBatteryPackEntry(bpNum);
+    batteryPackStorage.addBatteryPackEntry(bpNum);
 
     // Clear input
     document.getElementById('battery-pack-number').value = '';
@@ -390,16 +630,22 @@ function addBatteryPack() {
     showNotification(`Battery Pack ${bpNum} added successfully!`, 'success');
 }
 
-function refreshBatteryPackData() {
-    if (!window.equipmentCare) return;
+function handleBatteryPackKeyPress(event) {
+    // Check if Enter key was pressed
+    if (event.key === 'Enter' || event.keyCode === 13) {
+        event.preventDefault(); // Prevent form submission
+        addBatteryPack();
+    }
+}
 
+function refreshBatteryPackData() {
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
 
     // Update today's inventory
-    const todayBPs = window.equipmentCare.getBatteryPackNumbersForDate(today);
+    const todayBPs = batteryPackStorage.getBatteryPackNumbersForDate(today);
     const todayDiv = document.getElementById('today-battery-packs');
 
     if (todayBPs.length === 0) {
@@ -420,9 +666,7 @@ function refreshBatteryPackData() {
 }
 
 function updateQuickStats() {
-    if (!window.equipmentCare) return;
-
-    const stats = window.equipmentCare.getBatteryPackStats();
+    const stats = batteryPackStorage.getBatteryPackStats();
 
     document.getElementById('today-stats').innerHTML = `
         <div class="stat-number">${stats.today.length}</div>
@@ -437,16 +681,9 @@ function updateQuickStats() {
 
 function removeBatteryPack(bpNumber, date) {
     if (confirm(`Remove Battery Pack ${bpNumber} from ${date}?`)) {
-        if (!window.equipmentCare) {
-            showNotification('Equipment care system not available', 'error');
-            return;
-        }
+        const bpNum = parseInt(bpNumber);
 
-        // Find and remove the entry
-        const entries = window.equipmentCare.getBatteryPackHistoryForDate(date);
-        const entry = entries.find(e => e.batteryPackNumber === parseInt(bpNumber));
-
-        if (entry && window.equipmentCare.removeBatteryPackEntry(entry.id)) {
+        if (batteryPackStorage.removeBatteryPackEntry(bpNum, date)) {
             refreshBatteryPackData();
             showNotification(`Battery Pack ${bpNumber} removed successfully!`, 'success');
         } else {
@@ -464,12 +701,7 @@ function viewInventoryHistory() {
         return;
     }
 
-    if (!window.equipmentCare) {
-        showNotification('Equipment care system not available', 'error');
-        return;
-    }
-
-    const history = window.equipmentCare.getBatteryPackHistoryForRange(startDate, endDate);
+    const history = batteryPackStorage.getBatteryPackHistoryForRange(startDate, endDate);
     const resultsDiv = document.getElementById('inventory-history-results');
 
     if (history.length === 0) {

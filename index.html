@@ -461,7 +461,6 @@
                     Back to Operations
                 </button>
                 <h2>Vehicle Damage Check</h2>
-                <p>Track vehicle damages with photos and documentation</p>
             </header>
 
             <div class="tool-content">
@@ -501,11 +500,7 @@
                         <h3 id="selected-vehicle-title">Vehicle Damage Check</h3>
 
                         <div class="damage-actions">
-                            <button class="btn btn-primary" onclick="takeDamagePhoto()">
-                                <i class="fas fa-camera"></i>
-                                Take Damage Photo
-                            </button>
-                            <button class="btn btn-secondary" onclick="uploadDamagePhoto()">
+                            <button class="btn btn-primary" onclick="uploadDamagePhoto()">
                                 <i class="fas fa-upload"></i>
                                 Upload Photo
                             </button>
@@ -579,7 +574,6 @@
                     Back to Operations
                 </button>
                 <h2>Equipment Care</h2>
-                <p>Track phone conditions and battery pack inventory</p>
             </header>
 
             <div class="tool-content">
@@ -595,11 +589,11 @@
                         <!-- Phone Selection Screen -->
                         <div id="phone-selection-screen" class="interface-screen active">
                             <div class="screen-content">
-                                <h3>Phone Condition Tracking</h3>
+                                <h3>Phone Selection</h3>
                                 <p>Select a phone to check or update its condition:</p>
 
                                 <div class="phone-grid" id="phone-grid">
-                                    <!-- Phones will be populated here -->
+                                    <!-- All phones (0-63 + ORS) will be populated here -->
                                 </div>
                             </div>
                         </div>
@@ -612,34 +606,65 @@
                                 <!-- Phone Statistics -->
                                 <div class="phone-stats" id="phone-stats"></div>
 
-                                <!-- Add New Condition -->
-                                <div class="add-condition-section">
-                                    <h4>Report Phone Condition</h4>
-                                    <button class="btn btn-primary" onclick="takePhonePhoto()">
-                                        <i class="fas fa-camera"></i>
-                                        Take Photo
-                                    </button>
-                                    <button class="btn btn-secondary" onclick="uploadPhonePhoto()">
-                                        <i class="fas fa-upload"></i>
-                                        Upload Photo
-                                    </button>
-                                    <input type="file" id="phone-photo-upload" accept="image/*" style="display: none;" onchange="handlePhonePhotoUpload(event)">
+                                <!-- Latest Photo Display -->
+                                <div class="latest-photo-section" id="latest-photo-section">
+                                    <h4>Latest Photo</h4>
+                                    <div id="latest-phone-photo" class="latest-phone-photo">
+                                        <p class="no-photo">No photo available for this phone</p>
+                                    </div>
                                 </div>
 
-                                <!-- Photo Modal -->
-                                <div id="phone-photo-modal" class="modal" style="display: none;">
+                                <!-- Photo Upload Section -->
+                                <div class="photo-upload-section">
+                                    <h4>Update Phone Photo</h4>
+                                    <div class="upload-actions">
+                                        <button class="btn btn-primary" onclick="uploadPhonePhoto()">
+                                            <i class="fas fa-upload"></i>
+                                            Upload New Photo
+                                        </button>
+                                        <input type="file" id="phone-photo-upload" accept="image/*" style="display: none;" onchange="handlePhonePhotoUpload(event)">
+                                    </div>
+                                </div>
+
+                                <!-- Photo Comparison Modal -->
+                                <div id="phone-comparison-modal" class="modal" style="display: none;">
+                                    <div class="modal-content photo-comparison-modal">
+                                        <span class="close" onclick="closePhoneComparison()">&times;</span>
+                                        <h4>Photo Comparison</h4>
+                                        <div class="photo-comparison-container">
+                                            <div class="comparison-photo">
+                                                <h5>Previous Photo</h5>
+                                                <div id="previous-photo-container" class="photo-container">
+                                                    <p class="no-photo">No previous photo</p>
+                                                </div>
+                                            </div>
+                                            <div class="comparison-photo">
+                                                <h5>New Photo</h5>
+                                                <div id="new-photo-container" class="photo-container">
+                                                    <p class="no-photo">No new photo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="comparison-actions">
+                                            <button class="btn btn-secondary" onclick="closePhoneComparison()">Cancel</button>
+                                            <button class="btn btn-primary" onclick="savePhonePhotoComparison()">Save & Replace</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Photo Upload Modal -->
+                                <div id="phone-photo-upload-modal" class="modal" style="display: none;">
                                     <div class="modal-content">
-                                        <span class="close" onclick="cancelPhonePhoto()">&times;</span>
-                                        <h4>Phone Condition Photo</h4>
-                                        <div id="phone-photo-preview-container" style="display: none;">
-                                            <div id="phone-photo-preview"></div>
+                                        <span class="close" onclick="cancelPhonePhotoUpload()">&times;</span>
+                                        <h4>Upload Phone Photo</h4>
+                                        <div class="upload-form">
                                             <div class="form-group">
-                                                <label for="reported-by">Reported By</label>
-                                                <input type="text" id="reported-by" placeholder="Your name">
+                                                <label for="upload-reported-by">Reported By</label>
+                                                <input type="text" id="upload-reported-by" placeholder="Your name">
                                             </div>
                                             <div class="form-group">
-                                                <label for="phone-condition">Condition</label>
-                                                <select id="phone-condition">
+                                                <label for="upload-phone-condition">Condition</label>
+                                                <select id="upload-phone-condition">
                                                     <option value="excellent">Excellent</option>
                                                     <option value="good">Good</option>
                                                     <option value="fair">Fair</option>
@@ -649,16 +674,29 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="phone-description">Description</label>
-                                                <textarea id="phone-description" placeholder="Describe the condition..." rows="3"></textarea>
+                                                <label for="upload-phone-description">Description</label>
+                                                <textarea id="upload-phone-description" placeholder="Describe the condition..." rows="3"></textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="phone-notes">Additional Notes</label>
-                                                <textarea id="phone-notes" placeholder="Any additional notes..." rows="2"></textarea>
+                                                <label for="upload-phone-notes">Additional Notes</label>
+                                                <textarea id="upload-phone-notes" placeholder="Any additional notes..." rows="2"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="storage-temporary">Storage Options</label>
+                                                <div class="storage-options">
+                                                    <label class="radio-option">
+                                                        <input type="radio" id="storage-temporary" name="storage-option" value="temporary" checked>
+                                                        <span>Keep limited photos (automatic cleanup)</span>
+                                                    </label>
+                                                    <label class="radio-option">
+                                                        <input type="radio" name="storage-option" value="permanent">
+                                                        <span>Keep this photo forever</span>
+                                                    </label>
+                                                </div>
                                             </div>
                                             <div class="modal-actions">
-                                                <button class="btn btn-secondary" onclick="cancelPhonePhoto()">Cancel</button>
-                                                <button class="btn btn-primary" onclick="confirmPhonePhoto()">Save Condition</button>
+                                                <button class="btn btn-secondary" onclick="cancelPhonePhotoUpload()">Cancel</button>
+                                                <button class="btn btn-primary" onclick="confirmPhonePhotoUpload()">Upload Photo</button>
                                             </div>
                                         </div>
                                     </div>
@@ -706,7 +744,7 @@
                                 <h4>Add Battery Pack</h4>
                                 <div class="form-group">
                                     <label for="battery-pack-number">Battery Pack Number</label>
-                                    <input type="number" id="battery-pack-number" min="1" placeholder="Enter BP number">
+                                    <input type="number" id="battery-pack-number" min="0" placeholder="Enter BP number" onkeypress="handleBatteryPackKeyPress(event)">
                                 </div>
                                 <button class="btn btn-primary" onclick="addBatteryPack()">
                                     <i class="fas fa-plus"></i>
