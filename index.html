@@ -626,29 +626,27 @@
                                     </div>
                                 </div>
 
-                                <!-- Photo Comparison Modal -->
-                                <div id="phone-comparison-modal" class="modal" style="display: none;">
-                                    <div class="modal-content photo-comparison-modal">
-                                        <span class="close" onclick="closePhoneComparison()">&times;</span>
-                                        <h4>Photo Comparison</h4>
-                                        <div class="photo-comparison-container">
-                                            <div class="comparison-photo">
-                                                <h5>Previous Photo</h5>
-                                                <div id="previous-photo-container" class="photo-container">
-                                                    <p class="no-photo">No previous photo</p>
-                                                </div>
-                                            </div>
-                                            <div class="comparison-photo">
-                                                <h5>New Photo</h5>
-                                                <div id="new-photo-container" class="photo-container">
-                                                    <p class="no-photo">No new photo</p>
-                                                </div>
+                                <!-- Photo Comparison Section -->
+                                <div id="photo-comparison-section" class="photo-comparison-section" style="display: none;">
+                                    <h4>Photo Comparison</h4>
+                                    <div class="photo-comparison-container">
+                                        <div class="comparison-photo">
+                                            <h5>Current Photo</h5>
+                                            <div id="current-photo-container" class="photo-container">
+                                                <p class="no-photo">No current photo</p>
                                             </div>
                                         </div>
-                                        <div class="comparison-actions">
-                                            <button class="btn btn-secondary" onclick="closePhoneComparison()">Cancel</button>
-                                            <button class="btn btn-primary" onclick="savePhonePhotoComparison()">Save & Replace</button>
+                                        <div class="comparison-photo">
+                                            <h5>New Photo</h5>
+                                            <div id="new-photo-container" class="photo-container">
+                                                <p class="no-photo">No new photo</p>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="comparison-actions">
+                                        <button class="btn btn-secondary" onclick="cancelPhotoComparison()">Cancel</button>
+                                        <button class="btn btn-primary" onclick="useNewPhoto()">Use This Photo</button>
+                                        <button class="btn btn-danger" onclick="reportDamage()">Report Damage</button>
                                     </div>
                                 </div>
 
@@ -681,19 +679,7 @@
                                                 <label for="upload-phone-notes">Additional Notes</label>
                                                 <textarea id="upload-phone-notes" placeholder="Any additional notes..." rows="2"></textarea>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="storage-temporary">Storage Options</label>
-                                                <div class="storage-options">
-                                                    <label class="radio-option">
-                                                        <input type="radio" id="storage-temporary" name="storage-option" value="temporary" checked>
-                                                        <span>Keep limited photos (automatic cleanup)</span>
-                                                    </label>
-                                                    <label class="radio-option">
-                                                        <input type="radio" name="storage-option" value="permanent">
-                                                        <span>Keep this photo forever</span>
-                                                    </label>
-                                                </div>
-                                            </div>
+
                                             <div class="modal-actions">
                                                 <button class="btn btn-secondary" onclick="cancelPhonePhotoUpload()">Cancel</button>
                                                 <button class="btn btn-primary" onclick="confirmPhonePhotoUpload()">Upload Photo</button>

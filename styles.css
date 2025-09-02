@@ -1897,6 +1897,95 @@ body {
     }
 }
 
+/* ========================================
+   Damage Report Styles
+   ======================================== */
+
+.damage-report {
+    border-left: 4px solid #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.damage-report .condition-status {
+    background: #ef4444 !important;
+    color: white;
+}
+
+.damage-badge {
+    background: #ef4444;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.damage-comparison-preview {
+    margin-top: 10px;
+}
+
+.damage-comparison-preview .btn {
+    font-size: 0.9em;
+}
+
+/* ========================================
+   Damage Comparison Modal
+   ======================================== */
+
+.damage-comparison-modal .photo-modal-content {
+    max-width: 800px;
+    width: 95vw;
+}
+
+.damage-comparison-modal-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.damage-photo-section {
+    text-align: center;
+}
+
+.damage-photo-section h4 {
+    margin-bottom: 15px;
+    color: var(--text-primary);
+    font-size: 1.1em;
+}
+
+.damage-photo-container {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 15px;
+    border: 2px solid var(--border-color);
+}
+
+.damage-photo-container img {
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+}
+
+.damage-photo-container img:hover {
+    transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+    .damage-comparison-modal-content {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .damage-photo-section h4 {
+        font-size: 1em;
+    }
+
+    .damage-photo-container {
+        padding: 10px;
+    }
+}
+
 .condition-actions {
     margin-top: var(--spacing-md);
     padding-top: var(--spacing-md);
