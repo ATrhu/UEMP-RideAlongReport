@@ -253,8 +253,11 @@ function selectPhone(phoneLabel) {
     equipmentCareState.setSelectedPhone(phoneLabel);
     showPhoneConditionScreen();
     loadPhoneConditionHistory(phoneLabel);
-    updatePhoneInfo(phoneLabel);
+    loadDamageReports(phoneLabel);
     loadLatestPhonePhoto(phoneLabel);
+
+    // Update the title
+    document.getElementById('selected-phone-title').textContent = `Phone ${phoneLabel}`;
 }
 
 function showPhoneConditionScreen() {
@@ -324,66 +327,39 @@ function loadPhoneConditionHistory(phoneLabel) {
         return;
     }
 
-    historyDiv.innerHTML = history.map(entry => {
-        // Check if this is a damage report
-        const isDamageReport = entry.isDamageReport || entry.damageReported;
+    // Filter out damage reports from condition history (they appear in damage reports section)
+    const regularEntries = history.filter(entry => !entry.isDamageReport && !entry.damageReported);
 
-        if (isDamageReport && entry.previousPhotoData) {
-            // Damage report with photo comparison
-            return `
-                <div class="condition-entry damage-report">
-                    <div class="condition-header">
-                        <span class="condition-date">${new Date(entry.date).toLocaleDateString()}</span>
-                        <span class="condition-status ${entry.condition}"><i class="fas fa-exclamation-triangle"></i> DAMAGE REPORTED</span>
-                    </div>
-                    <div class="condition-content">
-                        <div class="condition-info">
-                            <p><strong>Reported By:</strong> ${entry.reportedBy}</p>
-                            <p><strong>Description:</strong> ${entry.description || 'Damage comparison available'}</p>
-                            <p><strong>Status:</strong> <span class="damage-badge">Damage Reported</span></p>
-                        </div>
-                        <div class="damage-comparison-preview">
-                            <button class="btn btn-small btn-primary" onclick="viewDamageComparison('${entry.previousPhotoData}', '${entry.photoData}', '${new Date(entry.date).toLocaleDateString()}')">
-                                <i class="fas fa-images"></i> View Damage Comparison
-                            </button>
-                        </div>
-                    </div>
-                    <div class="condition-actions">
-                        <button class="btn btn-small btn-danger" onclick="deletePhoneCondition('${phoneLabel}', '${entry.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
+    if (regularEntries.length === 0) {
+        historyDiv.innerHTML = '<p class="no-data">No condition history for this phone.</p>';
+        return;
+    }
+
+    historyDiv.innerHTML = regularEntries.map(entry => `
+        <div class="condition-entry">
+            <div class="condition-header">
+                <span class="condition-date">${new Date(entry.date).toLocaleDateString()}</span>
+                <span class="condition-status ${entry.condition}">${entry.condition.replace('_', ' ').toUpperCase()}</span>
+            </div>
+            <div class="condition-content">
+                <div class="condition-info">
+                    <p><strong>Reported By:</strong> ${entry.reportedBy}</p>
+                    <p><strong>Description:</strong> ${entry.description || 'No description'}</p>
+                    ${entry.notes ? `<p><strong>Notes:</strong> ${entry.notes}</p>` : ''}
                 </div>
-            `;
-        } else {
-            // Regular condition entry
-            return `
-                <div class="condition-entry">
-                    <div class="condition-header">
-                        <span class="condition-date">${new Date(entry.date).toLocaleDateString()}</span>
-                        <span class="condition-status ${entry.condition}">${entry.condition.replace('_', ' ').toUpperCase()}</span>
-                    </div>
-                    <div class="condition-content">
-                        <div class="condition-info">
-                            <p><strong>Reported By:</strong> ${entry.reportedBy}</p>
-                            <p><strong>Description:</strong> ${entry.description || 'No description'}</p>
-                            ${entry.notes ? `<p><strong>Notes:</strong> ${entry.notes}</p>` : ''}
-                        </div>
-                        ${entry.photoData ? `
-                        <div class="condition-photo">
-                            <img src="${entry.photoData}" alt="Condition photo" onclick="viewFullPhonePhoto('${entry.photoData}')">
-                        </div>
-                        ` : ''}
-                    </div>
-                    <div class="condition-actions">
-                        <button class="btn btn-small btn-danger" onclick="deletePhoneCondition('${phoneLabel}', '${entry.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
+                ${entry.photoData ? `
+                <div class="condition-photo">
+                    <img src="${entry.photoData}" alt="Condition photo" onclick="viewFullPhonePhoto('${entry.photoData}')">
                 </div>
-            `;
-        }
-    }).join('');
+                ` : ''}
+            </div>
+            <div class="condition-actions">
+                <button class="btn btn-small btn-danger" onclick="deletePhoneCondition('${phoneLabel}', '${entry.id}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    `).join('');
 }
 
 // ========================================
@@ -559,53 +535,118 @@ function handlePhonePhotoUpload(event) {
         const reader = new FileReader();
         reader.onload = function(e) {
             equipmentCareState.newPhotoData = e.target.result;
-            showPhotoComparison();
+            showUploadConfirmation();
         };
         reader.readAsDataURL(file);
     }
 }
 
-function showPhotoComparison() {
+// ========================================
+// New Photo Management System
+// ========================================
+
+function showUploadConfirmation() {
     if (!equipmentCareState.newPhotoData) {
         showNotification('No photo selected', 'error');
         return;
     }
 
-    // Get current photo
-    const phoneLabel = equipmentCareState.selectedPhone;
-    const history = window.equipmentCare ? window.equipmentCare.getPhoneConditionHistory(phoneLabel) || [] : [];
-    const currentEntry = history.length > 0 ? history[history.length - 1] : null;
+    // Set the preview image
+    const previewImg = document.getElementById('confirmation-photo-preview');
+    previewImg.src = equipmentCareState.newPhotoData;
 
-    // Update comparison section
-    const currentContainer = document.getElementById('current-photo-container');
-    const newContainer = document.getElementById('new-photo-container');
-
-    if (currentEntry && currentEntry.photoData) {
-        currentContainer.innerHTML = `<img src="${currentEntry.photoData}" alt="Current photo">`;
-    } else {
-        currentContainer.innerHTML = '<p class="no-photo">No current photo</p>';
-    }
-
-    newContainer.innerHTML = `<img src="${equipmentCareState.newPhotoData}" alt="New photo">`;
-
-    // Show comparison section
-    document.getElementById('photo-comparison-section').style.display = 'block';
-
-    // Hide upload section
-    document.getElementById('photo-upload-section').style.display = 'none';
+    // Show the modal
+    document.getElementById('upload-confirmation-modal').style.display = 'block';
 }
 
-function cancelPhotoComparison() {
-    document.getElementById('photo-comparison-section').style.display = 'none';
-    document.getElementById('photo-upload-section').style.display = 'block';
+function cancelUploadConfirmation() {
+    document.getElementById('upload-confirmation-modal').style.display = 'none';
     equipmentCareState.newPhotoData = null;
     document.getElementById('phone-photo-upload').value = '';
 }
 
-function useNewPhoto() {
-    // Show the upload modal with simplified options
-    document.getElementById('photo-comparison-section').style.display = 'none';
-    document.getElementById('phone-photo-upload-modal').style.display = 'block';
+function retryUpload() {
+    document.getElementById('upload-confirmation-modal').style.display = 'none';
+    document.getElementById('phone-photo-upload').value = '';
+    // The user can click upload again
+}
+
+function confirmUpload() {
+    document.getElementById('upload-confirmation-modal').style.display = 'none';
+
+    // Get current photo for comparison
+    const phoneLabel = equipmentCareState.selectedPhone;
+    const history = window.equipmentCare ? window.equipmentCare.getPhoneConditionHistory(phoneLabel) || [] : [];
+    const currentEntry = history.length > 0 ? history[history.length - 1] : null;
+
+    if (currentEntry && currentEntry.photoData) {
+        // Show comparison mode
+        showPhotoComparison(currentEntry.photoData, equipmentCareState.newPhotoData);
+    } else {
+        // No previous photo, just save the new one
+        saveNewPhoto();
+    }
+}
+
+function showPhotoComparison(previousPhoto, newPhoto) {
+    // Hide latest photo and show comparison
+    document.getElementById('latest-phone-photo').style.display = 'none';
+    document.getElementById('photo-comparison-container').style.display = 'grid';
+    document.getElementById('damage-description-section').style.display = 'block';
+    document.getElementById('comparison-actions').style.display = 'flex';
+
+    // Update section title
+    document.getElementById('photo-section-title').textContent = 'Comparison';
+
+    // Set photos
+    document.getElementById('previous-photo-container').innerHTML = `<img src="${previousPhoto}" alt="Previous photo">`;
+    document.getElementById('new-photo-container').innerHTML = `<img src="${newPhoto}" alt="New photo">`;
+}
+
+function cancelComparison() {
+    // Reset to latest photo view
+    document.getElementById('latest-phone-photo').style.display = 'block';
+    document.getElementById('photo-comparison-container').style.display = 'none';
+    document.getElementById('damage-description-section').style.display = 'none';
+    document.getElementById('comparison-actions').style.display = 'none';
+    document.getElementById('photo-section-title').textContent = 'Latest Photo';
+
+    // Clean up
+    equipmentCareState.newPhotoData = null;
+    document.getElementById('phone-photo-upload').value = '';
+    document.getElementById('damage-description').value = '';
+}
+
+function saveNewPhoto() {
+    if (!equipmentCareState.newPhotoData || !equipmentCareState.selectedPhone) {
+        showNotification('No photo data or phone selected', 'error');
+        return;
+    }
+
+    if (!window.equipmentCare) {
+        showNotification('Equipment care system not available', 'error');
+        return;
+    }
+
+    const conditionData = {
+        reportedBy: 'Manager', // Will be set by login system
+        condition: 'good', // Default condition
+        description: 'Photo uploaded',
+        photoData: equipmentCareState.newPhotoData,
+        photoType: 'condition_photo',
+        uploadDate: new Date().toISOString()
+    };
+
+    window.equipmentCare.addPhoneCondition(equipmentCareState.selectedPhone, conditionData);
+
+    // Update displays
+    loadLatestPhonePhoto(equipmentCareState.selectedPhone);
+    loadPhoneConditionHistory(equipmentCareState.selectedPhone);
+
+    // Reset to normal view
+    cancelComparison();
+
+    showNotification('Photo saved successfully!', 'success');
 }
 
 function reportDamage() {
@@ -614,7 +655,6 @@ function reportDamage() {
         return;
     }
 
-    // Get current photo for comparison
     const phoneLabel = equipmentCareState.selectedPhone;
     const history = window.equipmentCare ? window.equipmentCare.getPhoneConditionHistory(phoneLabel) || [] : [];
     const currentEntry = history.length > 0 ? history[history.length - 1] : null;
@@ -626,29 +666,58 @@ function reportDamage() {
 
     // Create damage report with both photos
     const damageData = {
-        reportedBy: 'System',
+        reportedBy: 'Manager', // Will be set by login system
         condition: 'damaged',
-        description: 'Damage reported with photo comparison',
-        notes: 'Damage comparison: previous vs new photo',
+        description: document.getElementById('damage-description').value || 'Damage reported',
         photoData: equipmentCareState.newPhotoData,
         previousPhotoData: currentEntry ? currentEntry.photoData : null,
         photoType: 'damage_report',
         isDamageReport: true,
-        uploadDate: new Date().toISOString(),
-        damageReported: true
+        damageReported: true,
+        uploadDate: new Date().toISOString()
     };
 
     window.equipmentCare.addPhoneCondition(phoneLabel, damageData);
 
-    // Update latest photo to the new one
-    loadLatestPhonePhoto(phoneLabel);
-    loadPhoneConditionHistory(phoneLabel);
-    updatePhoneInfo(phoneLabel);
+    // Save the new photo as the latest photo
+    saveNewPhoto();
 
-    // Clean up
-    cancelPhotoComparison();
+    // Load damage reports
+    loadDamageReports(phoneLabel);
 
-    showNotification('Damage reported successfully! Photo updated.', 'success');
+    showNotification('Damage reported and photo updated!', 'success');
+}
+
+function loadDamageReports(phoneLabel) {
+    if (!window.equipmentCare) return;
+
+    const history = window.equipmentCare.getPhoneConditionHistory(phoneLabel) || [];
+    const damageReportsList = document.getElementById('damage-reports-list');
+
+    // Filter only damage reports
+    const damageReports = history.filter(entry => entry.isDamageReport || entry.damageReported);
+
+    if (damageReports.length === 0) {
+        damageReportsList.innerHTML = '<p class="no-data">No damage reports for this phone.</p>';
+        return;
+    }
+
+    damageReportsList.innerHTML = damageReports.map(entry => `
+        <div class="damage-report-item">
+            <div class="damage-report-header">
+                <span class="damage-report-date">${new Date(entry.date).toLocaleString()}</span>
+                <span class="damage-report-manager">Reported by: ${entry.reportedBy}</span>
+            </div>
+            <div class="damage-report-description">
+                ${entry.description || 'No description'}
+            </div>
+            <div class="damage-report-photos">
+                <button class="btn btn-small btn-primary" onclick="viewDamageComparison('${entry.previousPhotoData || ''}', '${entry.photoData}', '${new Date(entry.date).toLocaleString()}')">
+                    <i class="fas fa-images"></i> View Comparison
+                </button>
+            </div>
+        </div>
+    `).join('');
 }
 
 function cancelPhonePhotoUpload() {
@@ -669,13 +738,11 @@ function confirmPhonePhotoUpload() {
     }
 
     const conditionData = {
-        reportedBy: document.getElementById('upload-reported-by').value || 'Unknown',
-        condition: document.getElementById('upload-phone-condition').value || 'good',
-        description: document.getElementById('upload-phone-description').value || '',
-        notes: document.getElementById('upload-phone-notes').value || '',
+        reportedBy: 'Manager', // Will be set by login system
+        condition: 'good', // Default condition
+        description: document.getElementById('upload-phone-description').value || 'Photo uploaded',
         photoData: equipmentCareState.newPhotoData,
-        photoType: 'upload',
-        isPermanent: true, // Always keep photos now
+        photoType: 'condition_photo',
         uploadDate: new Date().toISOString()
     };
 
@@ -687,7 +754,6 @@ function confirmPhonePhotoUpload() {
 
     // Refresh displays
     loadPhoneConditionHistory(equipmentCareState.selectedPhone);
-    updatePhoneInfo(equipmentCareState.selectedPhone);
     loadLatestPhonePhoto(equipmentCareState.selectedPhone);
 
     showNotification('Phone photo uploaded successfully!', 'success');

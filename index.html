@@ -601,39 +601,29 @@
                         <!-- Phone Condition Screen -->
                         <div id="phone-condition-screen" class="interface-screen">
                             <div class="screen-content">
-                                <h3 id="selected-phone-title">Phone Condition</h3>
+                                <h3 id="selected-phone-title">Phone 0</h3>
 
-                                <!-- Phone Statistics -->
-                                <div class="phone-stats" id="phone-stats"></div>
+                                <!-- Condition History -->
+                                <div class="condition-history">
+                                    <h4>Condition History</h4>
+                                    <div id="phone-condition-list" class="condition-list">
+                                        <!-- Condition entries will be populated here -->
+                                    </div>
+                                </div>
 
-                                <!-- Latest Photo Display -->
+                                <!-- Latest Photo/Comparison Section -->
                                 <div class="latest-photo-section" id="latest-photo-section">
-                                    <h4>Latest Photo</h4>
+                                    <h4 id="photo-section-title">Latest Photo</h4>
                                     <div id="latest-phone-photo" class="latest-phone-photo">
                                         <p class="no-photo">No photo available for this phone</p>
                                     </div>
-                                </div>
 
-                                <!-- Photo Upload Section -->
-                                <div class="photo-upload-section">
-                                    <h4>Update Phone Photo</h4>
-                                    <div class="upload-actions">
-                                        <button class="btn btn-primary" onclick="uploadPhonePhoto()">
-                                            <i class="fas fa-upload"></i>
-                                            Upload New Photo
-                                        </button>
-                                        <input type="file" id="phone-photo-upload" accept="image/*" style="display: none;" onchange="handlePhonePhotoUpload(event)">
-                                    </div>
-                                </div>
-
-                                <!-- Photo Comparison Section -->
-                                <div id="photo-comparison-section" class="photo-comparison-section" style="display: none;">
-                                    <h4>Photo Comparison</h4>
-                                    <div class="photo-comparison-container">
+                                    <!-- Photo Comparison Container (shown during comparison mode) -->
+                                    <div id="photo-comparison-container" class="photo-comparison-container" style="display: none;">
                                         <div class="comparison-photo">
-                                            <h5>Current Photo</h5>
-                                            <div id="current-photo-container" class="photo-container">
-                                                <p class="no-photo">No current photo</p>
+                                            <h5>Previous Photo</h5>
+                                            <div id="previous-photo-container" class="photo-container">
+                                                <p class="no-photo">No previous photo</p>
                                             </div>
                                         </div>
                                         <div class="comparison-photo">
@@ -643,10 +633,36 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="comparison-actions">
-                                        <button class="btn btn-secondary" onclick="cancelPhotoComparison()">Cancel</button>
-                                        <button class="btn btn-primary" onclick="useNewPhoto()">Use This Photo</button>
+
+                                    <!-- Damage Description (shown during comparison mode) -->
+                                    <div id="damage-description-section" class="damage-description-section" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="damage-description">Damage Description (Optional)</label>
+                                            <textarea id="damage-description" placeholder="Describe the damage..." rows="2"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Comparison Actions (shown during comparison mode) -->
+                                    <div id="comparison-actions" class="comparison-actions" style="display: none;">
+                                        <button class="btn btn-secondary" onclick="cancelComparison()">Cancel</button>
                                         <button class="btn btn-danger" onclick="reportDamage()">Report Damage</button>
+                                    </div>
+                                </div>
+
+                                <!-- Upload New Photo Button -->
+                                <div class="upload-actions">
+                                    <button class="btn btn-primary" onclick="uploadPhonePhoto()">
+                                        <i class="fas fa-upload"></i>
+                                        Upload New Photo
+                                    </button>
+                                    <input type="file" id="phone-photo-upload" accept="image/*" style="display: none;" onchange="handlePhonePhotoUpload(event)">
+                                </div>
+
+                                <!-- Damage Reports Section -->
+                                <div class="damage-reports-section">
+                                    <h4>Damage Reports</h4>
+                                    <div id="damage-reports-list" class="damage-reports-list">
+                                        <!-- Damage reports will be populated here -->
                                     </div>
                                 </div>
 
@@ -657,27 +673,8 @@
                                         <h4>Upload Phone Photo</h4>
                                         <div class="upload-form">
                                             <div class="form-group">
-                                                <label for="upload-reported-by">Reported By</label>
-                                                <input type="text" id="upload-reported-by" placeholder="Your name">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="upload-phone-condition">Condition</label>
-                                                <select id="upload-phone-condition">
-                                                    <option value="excellent">Excellent</option>
-                                                    <option value="good">Good</option>
-                                                    <option value="fair">Fair</option>
-                                                    <option value="poor">Poor</option>
-                                                    <option value="damaged">Damaged</option>
-                                                    <option value="lost">Lost</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="upload-phone-description">Description</label>
-                                                <textarea id="upload-phone-description" placeholder="Describe the condition..." rows="3"></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="upload-phone-notes">Additional Notes</label>
-                                                <textarea id="upload-phone-notes" placeholder="Any additional notes..." rows="2"></textarea>
+                                                <label for="upload-phone-description">Description (Optional)</label>
+                                                <textarea id="upload-phone-description" placeholder="Describe the photo..." rows="3"></textarea>
                                             </div>
 
                                             <div class="modal-actions">
@@ -693,6 +690,21 @@
                                     <h4>Condition History</h4>
                                     <div id="phone-condition-list" class="condition-list">
                                         <!-- Condition entries will be populated here -->
+                                    </div>
+                                </div>
+
+                                <!-- Upload Confirmation Modal -->
+                                <div id="upload-confirmation-modal" class="modal" style="display: none;">
+                                    <div class="modal-content upload-confirmation-modal">
+                                        <span class="close" onclick="cancelUploadConfirmation()">&times;</span>
+                                        <h4>Confirm Photo Upload</h4>
+                                        <div class="confirmation-photo-preview">
+                                            <img id="confirmation-photo-preview" src="" alt="Photo preview" style="max-width: 100%; max-height: 300px;">
+                                        </div>
+                                        <div class="confirmation-actions">
+                                            <button class="btn btn-secondary" onclick="retryUpload()">Choose Another Photo</button>
+                                            <button class="btn btn-primary" onclick="confirmUpload()">Save This Photo</button>
+                                        </div>
                                     </div>
                                 </div>
 
