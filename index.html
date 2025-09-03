@@ -603,18 +603,10 @@
                             <div class="screen-content">
                                 <h3 id="selected-phone-title">Phone 0</h3>
 
-                                <!-- Condition History -->
-                                <div class="condition-history">
-                                    <h4>Condition History</h4>
-                                    <div id="phone-condition-list" class="condition-list">
-                                        <!-- Condition entries will be populated here -->
-                                    </div>
-                                </div>
-
                                 <!-- Latest Photo/Comparison Section -->
                                 <div class="latest-photo-section" id="latest-photo-section">
                                     <h4 id="photo-section-title">Latest Photo</h4>
-                                    <div id="latest-phone-photo" class="latest-phone-photo">
+                                    <div id="latest-phone-photo" class="latest-phone-photo" style="transform: scale(1.5); transform-origin: center;">
                                         <p class="no-photo">No photo available for this phone</p>
                                     </div>
 
@@ -637,8 +629,8 @@
                                     <!-- Damage Description (shown during comparison mode) -->
                                     <div id="damage-description-section" class="damage-description-section" style="display: none;">
                                         <div class="form-group">
-                                            <label for="damage-description">Damage Description (Optional)</label>
-                                            <textarea id="damage-description" placeholder="Describe the damage..." rows="2"></textarea>
+                                            <label for="phone-damage-description">Damage Description (Optional)</label>
+                                            <textarea id="phone-damage-description" placeholder="Describe the damage..." rows="2"></textarea>
                                         </div>
                                     </div>
 
@@ -666,6 +658,14 @@
                                     </div>
                                 </div>
 
+                                <!-- Condition History (moved to bottom) -->
+                                <div class="condition-history">
+                                    <h4>Condition History</h4>
+                                    <div id="phone-condition-list" class="condition-list">
+                                        <!-- Condition entries will be populated here -->
+                                    </div>
+                                </div>
+
                                 <!-- Photo Upload Modal -->
                                 <div id="phone-photo-upload-modal" class="modal" style="display: none;">
                                     <div class="modal-content">
@@ -685,13 +685,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Condition History -->
-                                <div class="condition-history">
-                                    <h4>Condition History</h4>
-                                    <div id="phone-condition-list" class="condition-list">
-                                        <!-- Condition entries will be populated here -->
-                                    </div>
-                                </div>
+
 
                                 <!-- Upload Confirmation Modal -->
                                 <div id="upload-confirmation-modal" class="modal" style="display: none;">
@@ -704,6 +698,38 @@
                                         <div class="confirmation-actions">
                                             <button class="btn btn-secondary" onclick="retryUpload()">Choose Another Photo</button>
                                             <button class="btn btn-primary" onclick="confirmUpload()">Save This Photo</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Photo Comparison Modal -->
+                                <div id="photo-comparison-modal" class="modal" style="display: none;">
+                                    <div class="modal-content photo-comparison-modal">
+                                        <span class="close" onclick="closePhotoComparisonModal()">&times;</span>
+                                        <h4>Photo Comparison</h4>
+                                        <div class="comparison-modal-content">
+                                            <div class="comparison-modal-photo">
+                                                <h5>Previous Photo</h5>
+                                                <div id="comparison-modal-previous" class="comparison-modal-image">
+                                                    <p class="no-photo">No previous photo</p>
+                                                </div>
+                                            </div>
+                                            <div class="comparison-modal-photo">
+                                                <h5>New Photo</h5>
+                                                <div id="comparison-modal-new" class="comparison-modal-image">
+                                                    <p class="no-photo">No new photo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="comparison-modal-actions">
+                                            <div class="form-group">
+                                                <label for="modal-damage-description">Damage Description (Optional)</label>
+                                                <textarea id="modal-damage-description" placeholder="Describe the damage..." rows="3"></textarea>
+                                            </div>
+                                            <div class="modal-buttons">
+                                                <button class="btn btn-secondary" onclick="closePhotoComparisonModal()">Cancel</button>
+                                                <button class="btn btn-danger" onclick="reportDamageFromModal()">Report Damage</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
