@@ -9,20 +9,32 @@
 
 class RideAlongState {
     constructor() {
-        this.driverName = '';
-        this.trainerName = '';
+        this.traineeName = '';
         this.currentStep = 0;
         this.evaluationData = {};
         this.questions = [
-            // 1. Driving Aptitudes
+            // 1. Emergency Ride-Along (stays first)
+            {
+                id: 'coached',
+                title: 'Emergency Ride-Along',
+                question: 'Was this an emergency interruption during the driver\'s route?',
+                hasInput: true,
+                inputLabel: 'How many stops was the driver behind?',
+                inputId: 'stops-behind',
+                options: [
+                    { value: 'yes', label: 'Yes - Emergency interruption required', points: 0 },
+                    { value: 'no', label: 'No - Regular scheduled ride-along', points: 0 }
+                ]
+            },
+            // 2. Driving Aptitudes
             {
                 id: 'driving',
                 title: 'Driving Aptitudes',
                 question: 'Driving Aptitudes',
                 options: [
-                    { value: 'good', label: '✅ Good driver: full stops, speed limits, follows traffic rules.' },
-                    { value: 'mid', label: '🔧 Drives well, but has some minor bad habits; needs coaching.' },
-                    { value: 'bad', label: '❌ Weak driver: ignores stops, speeds, breaks traffic rules.' }
+                    { value: 'good', label: '✅ Good driver: full stops, speed limits, follows traffic rules.', points: 5 },
+                    { value: 'mid', label: '🔧 Drives well, but has some minor bad habits; needs coaching.', points: 3 },
+                    { value: 'bad', label: '❌ Weak driver: ignores stops, speeds, breaks traffic rules.', points: 1 }
                 ]
             },
             // 3. Van Organization
@@ -31,9 +43,9 @@ class RideAlongState {
                 title: 'Van Organization',
                 question: 'Van Organization',
                 options: [
-                    { value: 'good', label: '✅ Understands the importance of being organized with both overflows and bags.' },
-                    { value: 'mid', label: '🔧 Understands the importance of being organized, but needs more practice.' },
-                    { value: 'bad', label: '❌ Does not understand the importance of being organized.' }
+                    { value: 'good', label: '✅ Understands the importance of being organized with both overflows and bags.', points: 5 },
+                    { value: 'mid', label: '🔧 Understands the importance of being organized, but needs more practice.', points: 3 },
+                    { value: 'bad', label: '❌ Does not understand the importance of being organized.', points: 1 }
                 ]
             },
             // 4. Bag vs Overflows
@@ -42,9 +54,9 @@ class RideAlongState {
                 title: 'Bag vs Overflows',
                 question: 'Bag vs Overflows',
                 options: [
-                    { value: 'good', label: '✅ Understands the difference between packages in a bag and overflows.' },
-                    { value: 'mid', label: '🔧 Partial understanding of the difference between packages in a bag and overflows.' },
-                    { value: 'bad', label: '❌ Confuses packages in a bag and overflows; wastes time searching wrong places.' }
+                    { value: 'good', label: '✅ Understands the difference between packages in a bag and overflows.', points: 5 },
+                    { value: 'mid', label: '🔧 Partial understanding of the difference between packages in a bag and overflows.', points: 3 },
+                    { value: 'bad', label: '❌ Confuses packages in a bag and overflows; wastes time searching wrong places.', points: 1 }
                 ]
             },
             // 5. Flex App Usage
@@ -53,9 +65,9 @@ class RideAlongState {
                 title: 'Flex App Usage',
                 question: 'Flex App Usage',
                 options: [
-                    { value: 'good', label: '✅ Good understanding of the Amazon Flex app.' },
-                    { value: 'mid', label: '🔧 Needs time to get used to the Amazon Flex app.' },
-                    { value: 'bad', label: '❌ Limited understanding of the Amazon Flex app.' }
+                    { value: 'good', label: '✅ Good understanding of the Amazon Flex app.', points: 5 },
+                    { value: 'mid', label: '🔧 Needs time to get used to the Amazon Flex app.', points: 3 },
+                    { value: 'bad', label: '❌ Limited understanding of the Amazon Flex app.', points: 1 }
                 ]
             },
             // 6. Picture on Delivery
@@ -64,9 +76,9 @@ class RideAlongState {
                 title: 'Picture on Delivery',
                 question: 'Picture on Delivery',
                 options: [
-                    { value: 'good', label: '✅ Takes clear pictures on deliveries.' },
-                    { value: 'mid', label: '🔧 Occasionally takes unclear or poor pictures.' },
-                    { value: 'bad', label: '❌ Consistently takes unclear or poor pictures.' }
+                    { value: 'good', label: '✅ Takes clear pictures on deliveries.', points: 5 },
+                    { value: 'mid', label: '🔧 Occasionally takes unclear or poor pictures.', points: 3 },
+                    { value: 'bad', label: '❌ Consistently takes unclear or poor pictures.', points: 1 }
                 ]
             },
             // 7. Customer Instructions
@@ -75,9 +87,9 @@ class RideAlongState {
                 title: 'Customer Instructions',
                 question: 'Customer Instructions',
                 options: [
-                    { value: 'good', label: '✅ Follows all customer instructions.' },
-                    { value: 'mid', label: '🔧 Follows most customer instructions with minor issues.' },
-                    { value: 'bad', label: '❌ Consistently ignores customer instructions.' }
+                    { value: 'good', label: '✅ Follows all customer instructions.', points: 5 },
+                    { value: 'mid', label: '🔧 Follows most customer instructions with minor issues.', points: 3 },
+                    { value: 'bad', label: '❌ Consistently ignores customer instructions.', points: 1 }
                 ]
             },
             // 8. House Deliveries
@@ -86,9 +98,9 @@ class RideAlongState {
                 title: 'House Deliveries',
                 question: 'House Deliveries',
                 options: [
-                    { value: 'good', label: '✅ Doesn\'t get confused by stops with multiple locations.' },
-                    { value: 'mid', label: '🔧 Sometimes gets confused by stops with multiple locations.' },
-                    { value: 'bad', label: '❌ Doesn\'t understand stops with multiple locations and risks deliverying to the wrong houses/addresses.' }
+                    { value: 'good', label: '✅ Mastered deliverying to houses and stops with multiple locations are no problem.', points: 5 },
+                    { value: 'mid', label: '🔧 Minor difficulty with house deliveries; gets confused by stops with multiple locations.', points: 3 },
+                    { value: 'bad', label: '❌ Doesn\'t understand stops with multiple locations. risks deliverying to the wrong houses/addresses.', points: 1 }
                 ]
             },
             // 9. Building Deliveries
@@ -97,9 +109,9 @@ class RideAlongState {
                 title: 'Building Deliveries',
                 question: 'Building Deliveries',
                 options: [
-                    { value: 'good', label: '✅ Understands how to handle building deliveries: door to door, package rooms, receptionists.' },
-                    { value: 'mid', label: '🔧 Needs more practice with building deliveries.' },
-                    { value: 'bad', label: '❌ Dislikes building deliveries and complains about having to go upstairs door to door.' }
+                    { value: 'good', label: '✅ Understands how to handle building deliveries: door to door, package rooms, receptionists.', points: 5 },
+                    { value: 'mid', label: '🔧 Didn\'t experience building deliveries today.(might need coaching on that).', points: 3 },
+                    { value: 'bad', label: '❌ Hates apartment buildings; complains about having to go upstairs door to door.', points: 1 }
                 ]
             },
             // 10. Delivery Speed
@@ -108,9 +120,9 @@ class RideAlongState {
                 title: 'Delivery Speed',
                 question: 'Delivery Speed',
                 options: [
-                    { value: 'good', label: '✅ Delivers quickly: photo and go.' },
-                    { value: 'mid', label: '🔧 Delivery speed is average; some extra time at stops.' },
-                    { value: 'bad', label: '❌ Delivers slowly; spends extra time at stops.' }
+                    { value: 'good', label: '✅ Delivers quickly: photo and go.', points: 5 },
+                    { value: 'mid', label: '🔧 Delivery speed is average; some extra time at stops.', points: 3 },
+                    { value: 'bad', label: '❌ Delivers slowly; spends extra time at stops.', points: 1 }
                 ]
             },
             // 11. Identify Addresses
@@ -119,9 +131,9 @@ class RideAlongState {
                 title: 'Identify Addresses',
                 question: 'Identify Addresses',
                 options: [
-                    { value: 'good', label: '✅ Identifies the correct addresses without difficulty.' },
-                    { value: 'mid', label: '🔧 Occasionally struggles with identifying the correct addresses.' },
-                    { value: 'bad', label: '❌ Constantly struggles with identifying the correct addresses.' }
+                    { value: 'good', label: '✅ Identifies the correct addresses without difficulty.', points: 5 },
+                    { value: 'mid', label: '🔧 Occasionally struggles with identifying the correct addresses.', points: 3 },
+                    { value: 'bad', label: '❌ Constantly struggles with identifying the correct addresses.', points: 1 }
                 ]
             },
             // 12. Map/GPS Skills
@@ -130,9 +142,9 @@ class RideAlongState {
                 title: 'Map/GPS Skills',
                 question: 'Map/GPS Skills',
                 options: [
-                    { value: 'good', label: '✅ Good map/GPS skills.' },
-                    { value: 'mid', label: '🔧 Needs improvement on map/GPS skills.' },
-                    { value: 'bad', label: '❌ Poor map/GPS skills.' }
+                    { value: 'good', label: '✅ Good map/GPS skills.', points: 5 },
+                    { value: 'mid', label: '🔧 Needs improvement on map/GPS skills.', points: 3 },
+                    { value: 'bad', label: '❌ Poor map/GPS skills.', points: 1 }
                 ]
             },
             // 13. Undeliverable Packages
@@ -141,9 +153,9 @@ class RideAlongState {
                 title: 'Undeliverable Packages',
                 question: 'Undeliverable Packages',
                 options: [
-                    { value: 'good', label: '✅ Knows how to mark undeliverable packages correctly (e.g., damage, missing, business closed).' },
-                    { value: 'mid', label: '🔧 Needs some guidance on marking undeliverable packages.' },
-                    { value: 'bad', label: '❌ Doesn\'t know how to mark a package as undeliverable or attempted.' }
+                    { value: 'good', label: '✅ Knows how to mark undeliverable packages correctly (e.g., damage, missing, business closed).', points: 5 },
+                    { value: 'mid', label: '🔧 Needs some guidance on marking undeliverable packages.', points: 3 },
+                    { value: 'bad', label: '❌ Doesn\'t know how to mark a package as undeliverable or attempted.', points: 1 }
                 ]
             },
             // 14. Proper Parking Sequence
@@ -152,9 +164,9 @@ class RideAlongState {
                 title: 'Proper Parking Sequence',
                 question: 'Proper Parking Sequence',
                 options: [
-                    { value: 'good', label: '✅ Knows and follows the proper parking sequence.' },
-                    { value: 'mid', label: '🔧 Occasionally misses the proper parking sequence.' },
-                    { value: 'bad', label: '❌ Ignores the proper parking sequence or seems reluctant to learn it.' }
+                    { value: 'good', label: '✅ Knows and follows the proper parking sequence.', points: 5 },
+                    { value: 'mid', label: '🔧 Occasionally misses the proper parking sequence.', points: 3 },
+                    { value: 'bad', label: '❌ Didn\'t have the chance to learn the proper parking sequence.', points: 1 }
                 ]
             },
             // 15. Special Deliveries Experience
@@ -163,8 +175,8 @@ class RideAlongState {
                 title: 'Special Deliveries Experience',
                 question: 'Special Deliveries Experience',
                 options: [
-                    { value: 'good', label: '✅ Had the chance to experience special deliveries (lockers or OTP deliveries).' },
-                    { value: 'mid', label: '🔧 Did not experience special deliveries.' }
+                    { value: 'good', label: '✅ Had the chance to experience special deliveries (lockers or OTP deliveries).', points: 5 },
+                    { value: 'mid', label: '🔧 Did not experience special deliveries (Might need guidance on lockers or OTP deliveries).', points: 3 }
                 ]
             },
             // 16. Gas Card & Powered by Amazon App
@@ -173,9 +185,9 @@ class RideAlongState {
                 title: 'Gas Card & Powered by Amazon App',
                 question: 'Gas Card & Powered by Amazon App',
                 options: [
-                    { value: 'good', label: '✅ Knows how to use the gas card and Powered by Amazon app.' },
-                    { value: 'mid', label: '🔧 Needs more guidance on using the gas card and Powered by Amazon app.' },
-                    { value: 'bad', label: '❌ Didn\'t get the chance to use the gas card and Powered by Amazon app.' }
+                    { value: 'good', label: '✅ Knows how to use the gas card and Powered by Amazon app.', points: 5 },
+                    { value: 'mid', label: '🔧 Needs more guidance on using the gas card and Powered by Amazon app.', points: 3 },
+                    { value: 'bad', label: '❌ Does not know how to use the gas card and Powered by Amazon app.', points: 1 }
                 ]
             },
             // 17. Timecard Editing
@@ -184,9 +196,9 @@ class RideAlongState {
                 title: 'Timecard Editing',
                 question: 'Timecard Editing',
                 options: [
-                    { value: 'good', label: '✅ Knows how to edit timecard and meal period times.' },
-                    { value: 'mid', label: '🔧 Needs more guidance on editing timecard and meal period times.' },
-                    { value: 'bad', label: '❌ Struggles to edit timecard and meal period times.' }
+                    { value: 'good', label: '✅ Knows how to edit timecard and meal period times.', points: 5 },
+                    { value: 'mid', label: '🔧 Needs more guidance on editing timecard and meal period times.', points: 3 },
+                    { value: 'bad', label: '❌ Does not know how to edit timecard and meal period times.', points: 1 }
                 ]
             },
             // 18. Customer Treatment
@@ -195,8 +207,8 @@ class RideAlongState {
                 title: 'Customer Treatment',
                 question: 'Customer Treatment',
                 options: [
-                    { value: 'good', label: '✅ Polite and respectful with customers.' },
-                    { value: 'mid', label: '🔧 Not always polite or respectful with customers.' }
+                    { value: 'good', label: '✅ Polite and respectful with customers.', points: 5 },
+                    { value: 'bad', label: '❌ Not always polite or respectful with customers.', points: 1 }
                 ]
             },
             // 19. Language Challenges
@@ -205,45 +217,69 @@ class RideAlongState {
                 title: 'Language Challenges',
                 question: 'Language Challenges',
                 options: [
-                    { value: 'good', label: '✅ No language challenges noted.' },
-                    { value: 'mid', label: '🔧 Minor language challenges.' },
-                    { value: 'bad', label: '❌ Language Barrier.' }
+                    { value: 'good', label: '✅ No language challenges noted.', points: 5 },
+                    { value: 'mid', label: '🔧 Minor language challenges.', points: 3 },
+                    { value: 'bad', label: '❌ Language Barrier.', points: 1 }
                 ]
             },
-            // 20. Driver Feelings
+            // 20. Trainer Feedback
+            {
+                id: 'trainer_compliments',
+                title: 'Trainer Feedback',
+                question: 'Trainer Feedback (Select all that apply)',
+                isMultiple: true,
+                hasInput: true,
+                inputLabel: 'Describe the compliment',
+                inputId: 'other-compliment',
+                options: [
+                    { value: 'quick_learner', label: '✅ Quick learner', points: 5 },
+                    { value: 'positive_attitude', label: '✅ Very positive attitude', points: 5 },
+                    { value: 'great_effort', label: '✅ Showed great effort and determination', points: 5 },
+                    { value: 'good_communication', label: '✅ Good communication skills', points: 4 },
+                    { value: 'reliable', label: '✅ Reliable and consistent', points: 4 },
+                    { value: 'adaptable', label: '✅ Adaptable to changing situations', points: 4 },
+                    { value: 'slow_learner', label: '🔧 Takes time to learn new concepts', points: 3 },
+                    { value: 'other_compliment', label: '🦋 Other compliment', points: 5 },
+                    { value: 'communication_issues', label: '🔧 Struggles to communicate', points: 2 },
+                    { value: 'unreliable', label: '❌ Unreliable or inconsistent performance', points: 1 },
+                    { value: 'negative_attitude', label: '❌ Negative attitude or reluctant to learn', points: 1 },
+                    { value: 'lazy', label: '❌ Seems lazy or unmotivated', points: 1 }
+                ]
+            },
+            // 21. Driver Feelings
             {
                 id: 'driver_feeling',
                 title: 'Driver Feelings',
                 question: 'Driver Feelings',
                 isEmoji: true,
                 options: [
-                    { value: 'overwhelmed', label: '😵‍💫 Feels overwhelmed about the job.' },
-                    { value: 'happy', label: '😊 Feels happy about the job.' },
-                    { value: 'confident', label: '💪 Feels confident about the job.' },
-                    { value: 'challenged', label: '🏆 Feels challenged in a positive way.' },
-                    { value: 'good_mental', label: '👍 Good mindset and attitude.' },
-                    { value: 'bad_mental', label: '👎 Bad mindset/ poor attitude.' }
+                    { value: 'overwhelmed', label: '😵‍💫 Feels overwhelmed about the job.', points: 1 },
+                    { value: 'happy', label: '😊 Feels happy about the job.', points: 5 },
+                    { value: 'confident', label: '💪 Feels confident about the job.', points: 5 },
+                    { value: 'challenged', label: '🏆 Feels challenged in a positive way.', points: 4 },
+                    { value: 'good_mental', label: '👍 Good mindset and attitude.', points: 5 },
+                    { value: 'bad_mental', label: '👎 Bad mindset/ poor attitude.', points: 1 }
                 ]
             },
-            // 21. Overall Comment
+            // 22. Overall Comment
             {
                 id: 'overall_comment',
                 title: 'Overall Comment',
                 question: 'Overall Comment',
                 isEmoji: true,
                 options: [
-                    { value: 'killed_it', label: '🔥 Killed it today' },
-                    { value: 'struggled', label: '🙈 Struggled today' },
-                    { value: 'had_easy', label: '😎 Had it easy today' },
-                    { value: 'pushed_through', label: '🫡 Pushed through it today' },
-                    { value: 'did_amazing', label: '🤩 Did amazing today' },
-                    { value: 'had_fun', label: '🤪 Had fun today' },
-                    { value: 'did_crazy', label: '🥶 Did crazy good today' },
-                    { value: 'overwhelmed_today', label: '🫨 Overwhelmed today' },
-                    { value: 'did_good', label: '🤘🏼 Did good today' }
+                    { value: 'killed_it', label: '🔥 Killed it today', points: 5 },
+                    { value: 'struggled', label: '🙈 Struggled today', points: 2 },
+                    { value: 'had_easy', label: '😎 Had it easy today', points: 3 },
+                    { value: 'pushed_through', label: '🫡 Pushed through it today', points: 4 },
+                    { value: 'did_amazing', label: '🤩 Did amazing today', points: 5 },
+                    { value: 'had_fun', label: '🤪 Had fun today', points: 4 },
+                    { value: 'did_crazy', label: '🥶 Did crazy good today', points: 5 },
+                    { value: 'overwhelmed_today', label: '🫨 Overwhelmed today', points: 1 },
+                    { value: 'did_good', label: '🤘🏼 Did good today', points: 4 }
                 ]
             },
-            // 22. First Day Experience Issues
+            // 23. First Day Experience Issues
             {
                 id: 'first_day_issues',
                 title: 'First Day Experience Issues',
@@ -253,59 +289,65 @@ class RideAlongState {
                 inputLabel: 'Describe the issue',
                 inputId: 'custom-issue',
                 options: [
-                    { value: 'morning_van_issues', label: '⚠️ Faced issues with the van.' },
-                    { value: 'equipment_issues', label: '⚠️ Faced issues with equipment (phone, etc.).' },
-                    { value: 'route_issues', label: '⚠️ Faced issues with the route (awful route, bad sequencing, etc.).' },
-                    { value: 'only_buildings', label: '⚠️ Had an only buildings route.' },
-                    { value: 'not_nursery', label: '⚠️ Had to do a non-nursery route on the first day.' },
-                    { value: 'custom_issue', label: '⚠️ Other issue (describe below)' }
+                    { value: 'morning_van_issues', label: '⚠️ Faced issues with the van.', points: 0 },
+                    { value: 'equipment_issues', label: '⚠️ Faced issues with equipment (phone, etc.).', points: 0 },
+                    { value: 'route_issues', label: '⚠️ Faced issues with the route (awful route, bad sequencing, etc.).', points: 0 },
+                    { value: 'only_buildings', label: '⚠️ Had an only buildings route.', points: 0 },
+                    { value: 'not_nursery', label: '⚠️ Had to do a non-nursery route on the first day.', points: 0 },
+                    { value: 'custom_issue', label: '⚠️ Other issue (describe below)', points: 0 }
                 ]
             },
-            // 23. Driver Confidence
+            // 24. Prior Experience
+            {
+                id: 'experienced',
+                title: 'Prior Experience',
+                question: 'Does the driver have prior experience with Amazon or similar delivery routes?',
+                options: [
+                    { value: 'yes', label: 'Yes - Experienced from prior routes', points: 5 },
+                    { value: 'no', label: 'No - Zero experience as a carrier', points: 3 }
+                ]
+            },
+            // 25. Driver Confidence
             {
                 id: 'feels_ready',
                 title: 'Driver Confidence',
                 question: 'Does the driver feel ready and confident to go solo?',
                 options: [
-                    { value: 'yes', label: '🥶 Driver feels ready and confident to go solo next day' },
-                    { value: 'no', label:  '😟 Driver doesn\'t feel ready or confident to go alone yet' }
+                    { value: 'yes', label: 'Yes - Ready and confident to go solo', points: 5 },
+                    { value: 'no', label: 'No - Not confident going alone yet', points: 3 }
                 ]
             },
-            // 24. Training Readiness
+            // 26. Training Readiness
             {
                 id: 'training_needed',
                 title: 'Training Readiness',
                 question: 'According to you, is the trainee ready to go solo?',
                 options: [
-                    { value: 'yes', label: '🙂‍↕️ Trainer recommends to let the driver go solo next day' },
-                    { value: 'one_more', label: '☝🏻 Trainer recommends one more ride-along' },
-                    { value: 'multiple_more', label: '🤯 Trainer says multiple additional ride-alongs needed' }
+                    { value: 'yes', label: 'Yes - Ready to go solo immediately', points: 5 },
+                    { value: 'one_more', label: 'No - One more ride-along session needed', points: 3 },
+                    { value: 'multiple_more', label: 'No - Multiple additional sessions needed', points: 1 }
                 ]
             },
-            // 25. Report Accuracy
+            // 27. Report Accuracy
             {
                 id: 'more_details',
                 title: 'Report Accuracy',
                 question: 'Is the report accurate enough or do you have more details available?',
                 options: [
-                    { value: 'yes', label: 'Yes - Report is accurate enough' },
-                    { value: 'no', label: 'No - More details available' }
+                    { value: 'yes', label: 'Yes - Report is accurate enough', points: 5 },
+                    { value: 'no', label: 'No - More details available', points: 0 }
                 ]
             },
 
         ];
     }
 
-    setDriverName(name) {
-        this.driverName = name;
+    setTraineeName(name) {
+        this.traineeName = name;
     }
 
-    setTrainerName(name) {
-        this.trainerName = name;
-    }
-
-    setEvaluationData(questionId, value, inputValue = null) {
-        if (value === null) {
+    setEvaluationData(questionId, value, points, inputValue = null) {
+        if (value === null || points === null) {
             // Remove the evaluation data for deselection
             delete this.evaluationData[questionId];
         } else {
@@ -320,18 +362,55 @@ class RideAlongState {
                 };
             } else if (question && question.isNote) {
                 // For note questions, store with input value
-                this.evaluationData[questionId] = { value, inputValue };
+                this.evaluationData[questionId] = { value, points, inputValue };
             } else {
                 // For single selections, store as object
-                this.evaluationData[questionId] = { value };
+                this.evaluationData[questionId] = { value, points };
             }
         }
     }
 
+    getTotalScore() {
+        let totalScore = 0;
+
+        Object.entries(this.evaluationData).forEach(([questionId, data]) => {
+            // Skip questions that don't contribute to scoring
+            if (['first_day_issues', 'coached', 'handled_challenges', 'trainer_compliments', 'more_details'].includes(questionId)) {
+                return;
+            }
+
+            if (data && data.points !== undefined) {
+                totalScore += data.points;
+            }
+        });
+
+        return totalScore;
+    }
+
+    getMaxScore() {
+        // Count only questions that contribute to scoring
+        const scoringQuestions = this.questions.filter(q =>
+            !['first_day_issues', 'coached', 'handled_challenges', 'trainer_compliments', 'more_details'].includes(q.id)
+        );
+        return scoringQuestions.length * 5;
+    }
+
+    getScorePercentage() {
+        return Math.round((this.getTotalScore() / this.getMaxScore()) * 100);
+    }
+
+    getPerformanceLevel() {
+        const percentage = this.getScorePercentage();
+        if (percentage >= 90) return 'Outstanding';
+        if (percentage >= 80) return 'Excellent';
+        if (percentage >= 70) return 'Good';
+        if (percentage >= 60) return 'Satisfactory';
+        if (percentage >= 50) return 'Needs Improvement';
+        return 'Unsatisfactory';
+    }
 
     reset() {
-        this.driverName = '';
-        this.trainerName = '';
+        this.traineeName = '';
         this.currentStep = 0;
         this.evaluationData = {};
     }
@@ -362,11 +441,6 @@ function showRideAlongScreen(screenId) {
         targetScreen.classList.add('active');
     }
 
-    // Special handling for saved reports screen
-    if (screenId === 'saved-reports-screen') {
-        renderSavedReports();
-    }
-
     // Update navigation buttons
     updateNavigationButtons();
 }
@@ -391,25 +465,15 @@ function updateNavigationButtons() {
 function startRideAlong(event) {
     event.preventDefault();
 
-    const driverNameInput = document.getElementById('driver-name-input');
-    const trainerNameInput = document.getElementById('trainer-name-input');
-    const driverName = driverNameInput.value.trim();
-    const trainerName = trainerNameInput.value.trim();
+    const traineeNameInput = document.getElementById('trainee-name-input');
+    const traineeName = traineeNameInput.value.trim();
 
-    if (!driverName) {
-        showNotification('Please enter the driver name', 'error');
-        driverNameInput.focus();
+    if (!traineeName) {
+        showNotification('Please enter the trainee name', 'error');
         return;
     }
 
-    if (!trainerName) {
-        showNotification('Please enter the trainer name', 'error');
-        trainerNameInput.focus();
-        return;
-    }
-
-    rideAlongState.setDriverName(driverName);
-    rideAlongState.setTrainerName(trainerName);
+    rideAlongState.setTraineeName(traineeName);
     showRideAlongScreen('evaluation-screen');
     renderEvaluationStep();
 }
@@ -434,13 +498,13 @@ function renderEvaluationStep() {
         instructionText = 'Select the one that applies';
     }
 
-    const htmlContent = `
+    evaluationGrid.innerHTML = `
         <div class="evaluation-item">
             <div class="evaluation-question">
                 <strong>${question.title}</strong>
                 <br><span style="font-weight: normal; font-size: 0.9em; color: var(--text-secondary);">${instructionText}</span>
             </div>
-                            <div class="evaluation-options ${question.hasInput ? 'has-input-field' : ''}">
+                            <div class="evaluation-options ${question.hasInput ? 'has-input-field' : ''} ${question.id === 'trainer_compliments' ? 'trainer-feedback-circle' : ''}">
                 ${question.options.map(option => {
                     let isSelected = false;
 
@@ -457,28 +521,27 @@ function renderEvaluationStep() {
                     return `
                         <button class="option-btn ${isSelected ? 'selected' : ''} ${question.isMultiple ? 'multiple-choice' : ''}"
                                 data-value="${option.value}"
-                                onclick="window.selectEvaluationOption('${question.id}', '${option.value}')">
+                                data-points="${option.points}"
+                                onclick="selectEvaluationOption('${question.id}', '${option.value}', ${option.points})">
                             ${option.label}
                         </button>
                     `;
                 }).join('')}
 
                 ${question.hasInput ? `
-                    <div class="evaluation-input" id="${question.inputId}-container" style="min-height: 60px; margin-top: 15px; opacity: ${rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].selections && Array.isArray(rideAlongState.evaluationData[question.id].selections) && rideAlongState.evaluationData[question.id].selections.includes('custom_issue') ? '1' : '0'}; pointer-events: ${rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].selections && Array.isArray(rideAlongState.evaluationData[question.id].selections) && rideAlongState.evaluationData[question.id].selections.includes('custom_issue') ? 'auto' : 'none'}; transition: opacity 0.3s ease; text-align: center;">
+                    <div class="evaluation-input" id="${question.inputId}-container" style="min-height: 60px; margin-top: ${question.id === 'trainer_compliments' ? '20px' : '15px'}; opacity: ${question.id === 'coached' ? (rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].value === 'yes' ? '1' : '0') : (question.id === 'trainer_compliments' ? (rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].selections && Array.isArray(rideAlongState.evaluationData[question.id].selections) && rideAlongState.evaluationData[question.id].selections.includes('other_compliment') ? '1' : '0') : (rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].selections && Array.isArray(rideAlongState.evaluationData[question.id].selections) && rideAlongState.evaluationData[question.id].selections.includes('custom_issue') ? '1' : '0'))}; pointer-events: ${question.id === 'coached' ? (rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].value === 'yes' ? 'auto' : 'none') : (question.id === 'trainer_compliments' ? (rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].selections && Array.isArray(rideAlongState.evaluationData[question.id].selections) && rideAlongState.evaluationData[question.id].selections.includes('other_compliment') ? 'auto' : 'none') : (rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].selections && Array.isArray(rideAlongState.evaluationData[question.id].selections) && rideAlongState.evaluationData[question.id].selections.includes('custom_issue') ? 'auto' : 'none'))}; transition: opacity 0.3s ease; text-align: center;">
                         <label for="${question.inputId}-input" style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-primary); text-align: center;">${question.inputLabel}</label>
-                        <input type="text"
+                        <input type="${question.id === 'coached' ? 'number' : 'text'}"
                                id="${question.inputId}-input"
+                               ${question.id === 'coached' ? 'min="0"' : ''}
                                value="${rideAlongState.evaluationData[question.id] && rideAlongState.evaluationData[question.id].inputValue ? rideAlongState.evaluationData[question.id].inputValue : ''}"
                                oninput="updateNoteInput('${question.id}', '${question.inputId}')"
-                               style="padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); width: 300px; display: block; margin: 0 auto;">
+                               style="padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); width: ${question.id === 'coached' ? '200px' : '300px'}; display: block; margin: 0 auto;">
                     </div>
                 ` : ''}
             </div>
         </div>
     `;
-
-    console.log('Generated HTML:', htmlContent);
-    evaluationGrid.innerHTML = htmlContent;
 
     updateNavigationButtons();
 
@@ -488,9 +551,38 @@ function renderEvaluationStep() {
             const data = rideAlongState.evaluationData[question.id];
             const selections = data && data.selections ? data.selections : data;
             updateCustomIssueVisibility(selections);
+        } else if (question.id === 'coached') {
+            const inputContainer = document.getElementById('stops-behind-container');
+            if (inputContainer) {
+                const evaluationData = rideAlongState.evaluationData[question.id];
+                if (evaluationData && evaluationData.value === 'yes') {
+                    inputContainer.style.opacity = '1';
+                    inputContainer.style.pointerEvents = 'auto';
+                } else {
+                    inputContainer.style.opacity = '0';
+                    inputContainer.style.pointerEvents = 'none';
+                }
+            }
+        } else if (question.id === 'trainer_compliments') {
+            const inputContainer = document.getElementById('other-compliment-container');
+            if (inputContainer) {
+                const data = rideAlongState.evaluationData[question.id];
+                const selections = data && data.selections ? data.selections : data;
+                if (selections && Array.isArray(selections) && selections.includes('other_compliment')) {
+                    inputContainer.style.opacity = '1';
+                    inputContainer.style.pointerEvents = 'auto';
+                    // Position the input field below the circular layout
+                    inputContainer.style.position = 'relative';
+                    inputContainer.style.zIndex = '10';
+                } else {
+                    inputContainer.style.opacity = '0';
+                    inputContainer.style.pointerEvents = 'none';
+                }
+            }
         }
+    }
 }
-}
+
 function updateNoteInput(questionId, inputId) {
     const input = document.getElementById(inputId + '-input');
     if (input) {
@@ -564,6 +656,18 @@ function updateNavigationButtons() {
 function nextEvaluationStep() {
     const currentQuestion = rideAlongState.questions[rideAlongState.currentStep];
 
+    // Validate coached question if selected
+    if (currentQuestion && currentQuestion.id === 'coached') {
+        const coachedData = rideAlongState.evaluationData['coached'];
+        if (coachedData && coachedData.value === 'yes') {
+            const input = document.getElementById('stops-behind-input');
+            if (input && input.value && input.value.trim() !== '') {
+                // Update the input value in the state only if provided
+                coachedData.inputValue = input.value.trim();
+            }
+            // Don't block progression if no input is provided - it's optional
+        }
+    }
 
     // Move to next question or finish
     if (rideAlongState.currentStep < rideAlongState.questions.length - 1) {
@@ -582,7 +686,7 @@ function prevEvaluationStep() {
     }
 }
 
-function selectEvaluationOption(questionId, value) {
+function selectEvaluationOption(questionId, value, points) {
     const clickedButton = event.target;
     const currentQuestion = rideAlongState.questions.find(q => q.id === questionId);
 
@@ -599,18 +703,26 @@ function selectEvaluationOption(questionId, value) {
     }
 
     // Handle regular single-selection questions
-    handleSingleSelection(questionId, value, clickedButton);
+    handleSingleSelection(questionId, value, points, clickedButton);
 }
 
-function handleSingleSelection(questionId, value, clickedButton) {
+function handleSingleSelection(questionId, value, points, clickedButton) {
     // Check if this button is already selected
     if (clickedButton.classList.contains('selected')) {
         // If already selected, deselect it
         clickedButton.classList.remove('selected');
 
         // Remove the selection from state
-        rideAlongState.setEvaluationData(questionId, null);
+        rideAlongState.setEvaluationData(questionId, null, null);
 
+        // Handle input field for coached question
+        if (questionId === 'coached') {
+            const inputContainer = document.getElementById('stops-behind-container');
+            if (inputContainer) {
+                inputContainer.style.opacity = '0';
+                inputContainer.style.pointerEvents = 'none';
+            }
+        }
 
         // Show notification
         showNotification('Option deselected', 'info');
@@ -624,8 +736,32 @@ function handleSingleSelection(questionId, value, clickedButton) {
         clickedButton.classList.add('selected');
 
         // Store the selection
-        rideAlongState.setEvaluationData(questionId, value);
+        rideAlongState.setEvaluationData(questionId, value, points);
 
+        // Handle input field for coached question
+        if (questionId === 'coached') {
+            const inputContainer = document.getElementById('stops-behind-container');
+            if (value === 'yes') {
+                if (inputContainer) {
+                    inputContainer.style.opacity = '1';
+                    inputContainer.style.pointerEvents = 'auto';
+                    const input = document.getElementById('stops-behind-input');
+                    if (input) {
+                        input.focus();
+                        // Store initial value if it exists
+                        const existingData = rideAlongState.evaluationData[questionId];
+                        if (existingData && existingData.inputValue) {
+                            input.value = existingData.inputValue;
+                        }
+                    }
+                }
+            } else {
+                if (inputContainer) {
+                    inputContainer.style.opacity = '0';
+                    inputContainer.style.pointerEvents = 'none';
+                }
+            }
+        }
 
         // Update navigation buttons
         updateNavigationButtons();
@@ -636,6 +772,44 @@ function handleSingleSelection(questionId, value, clickedButton) {
 }
 
 function handleMultipleSelection(questionId, value, clickedButton) {
+    // Handle mutually exclusive options for trainer feedback
+    if (questionId === 'trainer_compliments') {
+        const mutuallyExclusivePairs = [
+            ['quick_learner', 'slow_learner'],
+            ['needs_encouragement', 'lazy']
+        ];
+
+        // Check if the selected value conflicts with any existing selections
+        for (const [option1, option2] of mutuallyExclusivePairs) {
+            if (value === option1 || value === option2) {
+                const conflictValue = value === option1 ? option2 : option1;
+                const currentData = rideAlongState.evaluationData[questionId];
+                const currentSelections = currentData && currentData.selections ? currentData.selections : [];
+
+                // If the conflicting option is selected, deselect it
+                if (currentSelections.includes(conflictValue)) {
+                    // Remove the conflicting option from selections
+                    const conflictButton = document.querySelector(`button[data-value="${conflictValue}"]`);
+                    if (conflictButton) {
+                        conflictButton.classList.remove('selected');
+                    }
+
+                    // Update the state to remove the conflicting option
+                    const updatedSelections = currentSelections.filter(sel => sel !== conflictValue);
+                    if (!updatedSelections.includes(value)) {
+                        updatedSelections.push(value);
+                    }
+                    rideAlongState.setEvaluationData(questionId, updatedSelections, 0);
+
+                    clickedButton.classList.add('selected');
+                    updateNavigationButtons();
+                    showNotification('Conflicting option automatically deselected', 'info');
+                    return;
+                }
+            }
+        }
+    }
+
     // Toggle selection for multiple choice questions
     if (clickedButton.classList.contains('selected')) {
         // If already selected, deselect it
@@ -646,9 +820,9 @@ function handleMultipleSelection(questionId, value, clickedButton) {
         const currentSelections = currentData && currentData.selections ? currentData.selections : [];
         const updatedSelections = currentSelections.filter(sel => sel !== value);
         if (updatedSelections.length > 0) {
-            rideAlongState.setEvaluationData(questionId, updatedSelections);
+            rideAlongState.setEvaluationData(questionId, updatedSelections, 0);
         } else {
-            rideAlongState.setEvaluationData(questionId, null);
+            rideAlongState.setEvaluationData(questionId, null, null);
         }
 
         // Update navigation buttons
@@ -673,7 +847,7 @@ function handleMultipleSelection(questionId, value, clickedButton) {
         const currentData = rideAlongState.evaluationData[questionId];
         const currentSelections = currentData && currentData.selections ? currentData.selections : [];
         const updatedSelections = [...currentSelections, value];
-        rideAlongState.setEvaluationData(questionId, updatedSelections);
+        rideAlongState.setEvaluationData(questionId, updatedSelections, 0);
 
         // Update navigation buttons
         updateNavigationButtons();
@@ -700,7 +874,7 @@ function handleNoteSelection(questionId, value, clickedButton) {
         if (clickedButton.classList.contains('selected')) {
             // Deselect
             clickedButton.classList.remove('selected');
-            rideAlongState.setEvaluationData(questionId, null);
+            rideAlongState.setEvaluationData(questionId, null, null);
 
             // Hide input if it exists
             if (currentQuestion.hasInput) {
@@ -717,7 +891,7 @@ function handleNoteSelection(questionId, value, clickedButton) {
             clickedButton.classList.add('selected');
             const inputValue = currentQuestion.hasInput ?
                 document.getElementById(currentQuestion.inputId + '-input').value : null;
-            rideAlongState.setEvaluationData(questionId, value, inputValue);
+            rideAlongState.setEvaluationData(questionId, value, 0, inputValue);
 
             // Show input if it exists
             if (currentQuestion.hasInput) {
@@ -747,6 +921,18 @@ function handleNoteSelection(questionId, value, clickedButton) {
 function nextEvaluationStep() {
     const currentQuestion = rideAlongState.questions[rideAlongState.currentStep];
 
+    // Validate coached question if selected
+    if (currentQuestion && currentQuestion.id === 'coached') {
+        const coachedData = rideAlongState.evaluationData['coached'];
+        if (coachedData && coachedData.value === 'yes') {
+            const input = document.getElementById('stops-behind-input');
+            if (input && input.value && input.value.trim() !== '') {
+                // Update the input value in the state only if provided
+                coachedData.inputValue = input.value.trim();
+            }
+            // Don't block progression if no input is provided - it's optional
+        }
+    }
 
     // Move to next question or finish
     if (rideAlongState.currentStep < rideAlongState.questions.length - 1) {
@@ -765,144 +951,135 @@ function prevEvaluationStep() {
     }
 }
 
-function generateReport(isViewMode = false) {
+function generateReport() {
     const reportText = document.getElementById('report-text');
     if (!reportText) return;
 
-    const driverName = rideAlongState.driverName || 'Not specified';
-    const trainerName = rideAlongState.trainerName || 'Not specified';
+    const traineeName = rideAlongState.traineeName || 'Unknown Trainee';
 
-    let report = `DRIVER: ${driverName}\nTRAINER: ${trainerName}\n=========================================\n\n`;
+    let report = `RIDE-ALONG FEEDBACK\n==========================================\n\n`;
 
     // Check if there are any evaluation responses
     const hasEvaluationData = Object.keys(rideAlongState.evaluationData).some(questionId => {
         const question = rideAlongState.questions.find(q => q.id === questionId);
         // Exclude special questions that don't count as evaluation data
-        return question && !['overall_comment', 'first_day_issues', 'driver_feeling', 'more_details', 'feels_ready', 'training_needed'].includes(questionId);
+        return question && !['coached', 'overall_comment', 'first_day_issues', 'driver_feeling', 'trainer_compliments', 'more_details'].includes(questionId);
     });
 
-    // Readiness Assessment - Combined Driver Confidence and Training Readiness (integrated into SUMMARY, no sub-header)
-    const feelsReadyQuestion = rideAlongState.questions.find(q => q.id === 'feels_ready');
-    const trainingNeededQuestion = rideAlongState.questions.find(q => q.id === 'training_needed');
-
-    let readinessAssessment = '';
-    if (feelsReadyQuestion && trainingNeededQuestion) {
-        const driverReady = rideAlongState.evaluationData['feels_ready'];
-        const trainerReady = rideAlongState.evaluationData['training_needed'];
-
-        let driverText = '';
-        if (driverReady && driverReady.value === 'yes') {
-            driverText = '🥶 Driver feels ready and confident to go solo next day.';
-        } else if (driverReady && driverReady.value === 'no') {
-            driverText = '😟 Driver doesn\'t feel ready or confident to go alone yet.';
-        }
-
-        let trainerText = '';
-        if (trainerReady && trainerReady.value === 'yes') {
-            trainerText = '🙂‍↕️ Trainer recommends letting driver go solo next day.';
-        } else if (trainerReady && trainerReady.value === 'one_more') {
-            trainerText = '☝🏻 Trainer recommends one more ride-along.';
-        } else if (trainerReady && trainerReady.value === 'multiple_more') {
-            trainerText = '🤯 Trainer recommends multiple additional ride-alongs.';
-        }
-
-        if (driverText && trainerText) {
-            if (driverReady.value === 'yes' && trainerReady.value === 'yes') {
-                readinessAssessment = `Both driver and trainer assess trainee as ready to go solo.\n`;
-            } else if (driverReady.value === 'yes' && (trainerReady.value === 'one_more' || trainerReady.value === 'multiple_more')) {
-                readinessAssessment = `${driverText} However, ${trainerText.toLowerCase()}\n`;
-            } else if (driverReady.value === 'no' && trainerReady.value === 'yes') {
-                readinessAssessment = `${trainerText} However, ${driverText.toLowerCase()}\n`;
-            } else {
-                readinessAssessment = `${driverText}\n${trainerText}\n`;
-            }
-        } else if (driverText) {
-            readinessAssessment = `${driverText}\n`;
-        } else if (trainerText) {
-            readinessAssessment = `${trainerText}\n`;
-        }
-    }
-
-    // Only add SUMMARY section if there are evaluation responses or readiness data
-    const hasSummaryContent = hasEvaluationData || readinessAssessment || 
-        (rideAlongState.evaluationData['overall_comment'] || rideAlongState.evaluationData['driver_feeling']);
-    if (hasSummaryContent) {
+    // Only add SUMMARY section if there are evaluation responses
+    if (hasEvaluationData) {
         report += `SUMMARY\n--------------------------------------------------------- \n`;
-
-        // Overall comment first
-        const overallComment = rideAlongState.questions.find(q => q.id === 'overall_comment');
-        if (overallComment && rideAlongState.evaluationData[overallComment.id]) {
-            const commentData = rideAlongState.evaluationData[overallComment.id];
-            const selectedOption = overallComment.options.find(opt => opt.value === commentData.value);
-            if (selectedOption) {
-                report += `Overall: ${selectedOption.label}\n`;
-            }
-        }
-
-        // Driver feelings next
-        const driverFeeling = rideAlongState.questions.find(q => q.id === 'driver_feeling');
-        if (driverFeeling && rideAlongState.evaluationData[driverFeeling.id]) {
-            const feelingData = rideAlongState.evaluationData[driverFeeling.id];
-            const selectedOption = driverFeeling.options.find(opt => opt.value === feelingData.value);
-            if (selectedOption) {
-                report += `Driver feelings: ${selectedOption.label}\n`;
-            }
-        }
-
-        // Readiness Assessment integrated last (plain text, no sub-header)
-        if (readinessAssessment) {
-            report += readinessAssessment;
-        }
-
-        report += '\n';
     }
 
-    // Group evaluations by performance level (excluding special questions including readiness)
-    const goods = [];
-    const mids = [];
-    const bads = [];
-
-    rideAlongState.questions.forEach(question => {
-        if (['overall_comment', 'first_day_issues', 'driver_feeling', 'more_details', 'feels_ready', 'training_needed'].includes(question.id)) {
-            return; // Skip these special questions in the main evaluation
+    // Handle emergency ride-along first (appears at the top of report)
+    const coached = rideAlongState.questions.find(q => q.id === 'coached');
+    if (coached && rideAlongState.evaluationData[coached.id]) {
+        const coachedData = rideAlongState.evaluationData[coached.id];
+        if (coachedData.value === 'yes') {
+            let coachedText = `🚨 EMERGENCY RIDE-ALONG: This was an emergency interruption during the driver's route due to falling excessively behind on deliveries.`;
+            if (coachedData.inputValue) {
+                coachedText += ` The driver was ${coachedData.inputValue} stops behind.`;
+            }
+            report += coachedText + '\n\n';
         }
+    }
 
-        const response = rideAlongState.evaluationData[question.id];
-        if (!response) return;
-
-        let responseText = '';
-
-        // Find the option that matches the selected value
-        const selectedOption = question.options.find(option => option.value === response.value);
+    // Handle overall comment
+    const overallComment = rideAlongState.questions.find(q => q.id === 'overall_comment');
+    if (overallComment && rideAlongState.evaluationData[overallComment.id]) {
+        const commentData = rideAlongState.evaluationData[overallComment.id];
+        const selectedOption = overallComment.options.find(opt => opt.value === commentData.value);
         if (selectedOption) {
-            responseText = selectedOption.label;
-            // Group by performance level based on value names
-            if (response.value === 'good' || response.value === 'yes') {
-                goods.push(responseText);
-            } else if (response.value === 'mid' || response.value === 'no') {
-                mids.push(responseText);
-            } else if (response.value === 'bad' || response.value === 'one_more' || response.value === 'multiple_more') {
-                bads.push(responseText);
+            report += `Overall: ${selectedOption.label}\n`;
+        }
+    }
+
+    // Handle driver feelings
+    const driverFeeling = rideAlongState.questions.find(q => q.id === 'driver_feeling');
+    if (driverFeeling && rideAlongState.evaluationData[driverFeeling.id]) {
+        const feelingData = rideAlongState.evaluationData[driverFeeling.id];
+        const selectedOption = driverFeeling.options.find(opt => opt.value === feelingData.value);
+        if (selectedOption) {
+            report += `Driver feelings: ${selectedOption.label}\n`;
+        }
+    }
+
+    // Only add newline and evaluation sections if there are evaluation responses
+    if (hasEvaluationData) {
+        report += '\n';
+
+        // Group evaluations by performance level
+        const goods = [];
+        const mids = [];
+        const bads = [];
+
+        rideAlongState.questions.forEach(question => {
+            if (['coached', 'overall_comment', 'first_day_issues', 'driver_feeling', 'trainer_compliments', 'more_details'].includes(question.id)) {
+                return; // Skip these special questions in the main evaluation
+            }
+
+            const response = rideAlongState.evaluationData[question.id];
+            if (!response) return;
+
+            let responseText = '';
+
+            // Handle multiple selection questions specially
+            if (question.id === 'trainer_compliments' && question.isMultiple) {
+                // Skip trainer compliments here as it will be handled separately
+                return;
+            }
+
+            // Find the option that matches the selected value
+            const selectedOption = question.options.find(option => option.value === response.value);
+            if (selectedOption) {
+                responseText = selectedOption.label;
+                // Group by performance level based on points or value
+                if (response.value === 'good' || response.value === 'yes' || (response.points && response.points >= 4)) {
+                    goods.push(responseText);
+                } else if (response.value === 'mid' || response.value === 'no' || (response.points && response.points >= 2 && response.points < 4)) {
+                    mids.push(responseText);
+                } else if (response.value === 'bad' || response.value === 'one_more' || response.value === 'multiple_more' || (response.points && response.points < 2)) {
+                    bads.push(responseText);
+                }
+            }
+        });
+
+        // STRENGTHS section
+        if (goods.length > 0) {
+            report += `STRENGTHS\n---------------------------------------------------------\n`;
+            report += goods.join('\n') + '\n\n';
+        }
+
+        // AREAS FOR IMPROVEMENT section
+        if (mids.length > 0) {
+            report += `AREAS FOR IMPROVEMENT\n---------------------------------------------------------\n`;
+            report += mids.join('\n') + '\n\n';
+        }
+
+        // CRITICAL ISSUES section
+        if (bads.length > 0) {
+            report += `CRITICAL ISSUES\n---------------------------------------------------------\n`;
+            report += bads.join('\n') + '\n\n';
+        }
+
+        // TRAINER FEEDBACK section
+        const trainerCompliments = rideAlongState.questions.find(q => q.id === 'trainer_compliments');
+        if (trainerCompliments && rideAlongState.evaluationData[trainerCompliments.id]) {
+            const complimentsData = rideAlongState.evaluationData[trainerCompliments.id];
+            if (complimentsData.selections && Array.isArray(complimentsData.selections) && complimentsData.selections.length > 0) {
+                const complimentTexts = complimentsData.selections.map(value => {
+                    if (value === 'other_compliment') {
+                        // Handle custom compliment with user input
+                        const customText = complimentsData.inputValue;
+                        return customText ? `🦋 ${customText}` : '🦋 The trainer likes the new hire';
+                    }
+                    const option = trainerCompliments.options.find(opt => opt.value === value);
+                    return option ? option.label : value;
+                });
+                report += `TRAINER FEEDBACK\n---------------------------------------------------------\n`;
+                report += complimentTexts.join('\n') + '\n\n';
             }
         }
-    });
-
-    // STRENGTHS section
-    if (goods.length > 0) {
-        report += `STRENGTHS\n---------------------------------------------------------\n`;
-        report += goods.join('\n') + '\n\n';
-    }
-
-    // AREAS FOR IMPROVEMENT section
-    if (mids.length > 0) {
-        report += `AREAS FOR IMPROVEMENT\n---------------------------------------------------------\n`;
-        report += mids.join('\n') + '\n\n';
-    }
-
-    // CRITICAL ISSUES section
-    if (bads.length > 0) {
-        report += `CRITICAL ISSUES\n---------------------------------------------------------\n`;
-        report += bads.join('\n') + '\n\n';
     }
 
     // SPECIAL NOTES section
@@ -956,17 +1133,6 @@ function generateReport(isViewMode = false) {
     }
 
     reportText.value = report.trim();
-
-    // Only save if not in view mode (i.e., when completing a new evaluation)
-    if (!isViewMode) {
-        const saved = saveReport(report.trim());
-        if (saved) {
-            showNotification('Report saved successfully!', 'success');
-        } else {
-            showNotification('Failed to save report', 'error');
-        }
-    }
-
     showRideAlongScreen('report-screen');
 }
 
@@ -975,7 +1141,7 @@ function generateRecommendations(performanceLevel, evaluationData) {
 
     // Analyze weak areas
     const weakAreas = Object.entries(evaluationData)
-        .filter(([_, data]) => data.value === 'bad' || data.value === 'one_more' || data.value === 'multiple_more')
+        .filter(([_, data]) => data.points <= 2)
         .map(([questionId, _]) => {
             const question = rideAlongState.questions.find(q => q.id === questionId);
             return question ? question.title : questionId;
@@ -1127,71 +1293,6 @@ function copyToClipboard(text) {
 }
 
 // ========================================
-// Report Storage Management
-// ========================================
-
-function saveReport(reportText) {
-    try {
-        // Get existing saved reports or create empty array
-        const savedReports = JSON.parse(localStorage.getItem('rideAlongReports') || '[]');
-
-        // Create report object
-        const reportData = {
-            id: Date.now().toString(),
-            driverName: rideAlongState.driverName || 'Not specified',
-            trainerName: rideAlongState.trainerName || 'Not specified',
-            timestamp: new Date().toISOString(),
-            date: new Date().toLocaleDateString(),
-            time: new Date().toLocaleTimeString(),
-            reportText: reportText,
-            evaluationData: JSON.parse(JSON.stringify(rideAlongState.evaluationData)) // Deep copy
-        };
-
-        // Add to beginning of array (most recent first)
-        savedReports.unshift(reportData);
-
-        // Keep only last 50 reports to prevent storage bloat
-        if (savedReports.length > 50) {
-            savedReports.splice(50);
-        }
-
-        // Save to localStorage
-        localStorage.setItem('rideAlongReports', JSON.stringify(savedReports));
-
-        console.log('Report saved successfully for driver:', reportData.driverName, 'by trainer:', reportData.trainerName);
-        return true;
-    } catch (error) {
-        console.error('Failed to save report:', error);
-        return false;
-    }
-}
-
-function getSavedReports() {
-    try {
-        return JSON.parse(localStorage.getItem('rideAlongReports') || '[]');
-    } catch (error) {
-        console.error('Failed to load saved reports:', error);
-        return [];
-    }
-}
-
-function deleteSavedReport(reportId) {
-    try {
-        const savedReports = getSavedReports();
-        const filteredReports = savedReports.filter(report => report.id !== reportId);
-        localStorage.setItem('rideAlongReports', JSON.stringify(filteredReports));
-        return true;
-    } catch (error) {
-        console.error('Failed to delete report:', error);
-        return false;
-    }
-}
-
-function copySavedReportToClipboard(reportText) {
-    return copyToClipboard(reportText);
-}
-
-// ========================================
 // Keyboard Navigation
 // ========================================
 
@@ -1226,135 +1327,13 @@ document.addEventListener('keydown', function(event) {
 });
 
 // ========================================
-// Saved Reports UI Management
-// ========================================
-
-function renderSavedReports() {
-    const savedReportsGrid = document.getElementById('saved-reports-grid');
-    const savedReportsEmpty = document.getElementById('saved-reports-empty');
-
-    if (!savedReportsGrid) return;
-
-    const savedReports = getSavedReports();
-
-    // No longer add create-new-card here - it's now in the header
-
-    if (savedReports.length > 0) {
-        savedReportsEmpty.style.display = 'none';
-        savedReportsGrid.innerHTML = savedReports.map(report => `
-            <div class="saved-report-item">
-                <div class="saved-report-header">
-                    <div class="saved-report-info">
-                        <h4>Driver: ${report.driverName}</h4>
-                        <p class="saved-report-meta">Trainer: ${report.trainerName} | ${report.date} at ${report.time}</p>
-                    </div>
-                    <div class="saved-report-actions">
-                        <button class="btn btn-primary btn-small" onclick="viewSavedReport('${report.id}')">
-                            <i class="fas fa-eye"></i>
-                            View
-                        </button>
-                        <button class="btn btn-secondary btn-small" onclick="copySavedReport('${report.id}')">
-                            <i class="fas fa-copy"></i>
-                            Copy
-                        </button>
-                        <button class="btn btn-danger btn-small" onclick="confirmDeleteSavedReport('${report.id}')">
-                            <i class="fas fa-trash"></i>
-                            Delete
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    } else {
-        savedReportsEmpty.style.display = 'block';
-        savedReportsGrid.innerHTML = '';
-    }
-}
-
-function viewSavedReport(reportId) {
-    const savedReports = getSavedReports();
-    const report = savedReports.find(r => r.id === reportId);
-
-    if (report) {
-        // Load the report data into the current state (for potential editing)
-        rideAlongState.driverName = report.driverName || 'Not specified';
-        rideAlongState.trainerName = report.trainerName || 'Not specified';
-        rideAlongState.evaluationData = report.evaluationData;
-
-        // Switch to report screen
-        showRideAlongScreen('report-screen');
-
-        // Set the textarea directly to the original saved text (no regeneration or save)
-        const reportText = document.getElementById('report-text');
-        if (reportText) {
-            reportText.value = report.reportText;
-        }
-
-        // Optional: Update the "New Report" button text or state if needed, but no auto-save
-        showNotification(`Viewing report for driver ${report.driverName} by trainer ${report.trainerName}`, 'info');
-    }
-}
-
-function copySavedReport(reportId) {
-    const savedReports = getSavedReports();
-    const report = savedReports.find(r => r.id === reportId);
-
-    if (report) {
-        const success = copySavedReportToClipboard(report.reportText);
-        if (success) {
-            showNotification('Report copied to clipboard!', 'success');
-        } else {
-            showNotification('Failed to copy report', 'error');
-        }
-    }
-}
-
-function confirmDeleteSavedReport(reportId) {
-    // Use setTimeout to avoid interfering with the click event
-    setTimeout(() => {
-        const savedReports = getSavedReports();
-        const report = savedReports.find(r => r.id === reportId);
-
-        if (report && confirm(`Are you sure you want to delete the report for "${report.driverName}" from ${report.date}?`)) {
-            const success = deleteSavedReport(reportId);
-            if (success) {
-                showNotification('Report deleted successfully!', 'success');
-                renderSavedReports(); // Refresh the list
-            } else {
-                showNotification('Failed to delete report', 'error');
-            }
-        }
-    }, 10);
-}
-
-// ========================================
 // Initialization
 // ========================================
-
-// Initialize ride-along tool - called when tool is opened from main menu
-function initridealongTool() {
-    // Immediately hide all screens and show saved reports screen
-    document.querySelectorAll('#ride-along-app .interface-screen').forEach(screen => {
-        screen.classList.remove('active');
-    });
-
-    const inputScreen = document.getElementById('driver-trainer-input-screen');
-    if (inputScreen) {
-        inputScreen.classList.add('active');
-    }
-
-    updateNavigationButtons();
-}
 
 // Make functions globally accessible for HTML onclick handlers
 window.nextEvaluationStep = nextEvaluationStep;
 window.prevEvaluationStep = prevEvaluationStep;
-window.selectEvaluationOption = selectEvaluationOption;
 window.copyReport = copyReport;
 window.startNewReport = startNewReport;
-window.viewSavedReport = viewSavedReport;
-window.copySavedReport = copySavedReport;
-window.confirmDeleteSavedReport = confirmDeleteSavedReport;
-window.initRideAlongTool = initridealongTool;
 
 console.log('Ride Along Tool loaded and ready');
