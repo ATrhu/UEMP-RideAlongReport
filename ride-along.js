@@ -346,26 +346,8 @@ const rideAlongState = new RideAlongState();
 
 function initRideAlongTool() {
     console.log('Initializing Ride Along Tool');
-    rideAlongState.reset();  // Reset state to prevent persistence
-    document.querySelectorAll('#ride-along-app .interface-screen').forEach(screen => {
-        screen.classList.remove('active');
-    });
-
-    const savedReports = getSavedReports();
-    if (savedReports.length > 0) {
-        const savedScreen = document.getElementById('saved-reports-screen');
-        if (savedScreen) {
-            savedScreen.classList.add('active');
-            renderSavedReports();
-        }
-    } else {
-        const inputScreen = document.getElementById('driver-trainer-input-screen');
-        if (inputScreen) {
-            inputScreen.classList.add('active');
-        }
-    }
-
-    updateNavigationButtons();
+    rideAlongState.reset();
+    showRideAlongScreen('trainee-name-screen');
 }
 
 function showRideAlongScreen(screenId) {
@@ -804,7 +786,7 @@ function generateReport(isViewMode = false) {
         return question && !['overall_comment', 'first_day_issues', 'driver_feeling', 'more_details', 'feels_ready', 'training_needed'].includes(questionId);
     });
 
-    // Readiness Assessment - Trainer first, driver as side note (integrated into SUMMARY)
+    // Readiness Assessment - Combined Driver Confidence and Training Readiness (integrated into SUMMARY, no sub-header)
     const feelsReadyQuestion = rideAlongState.questions.find(q => q.id === 'feels_ready');
     const trainingNeededQuestion = rideAlongState.questions.find(q => q.id === 'training_needed');
 
@@ -815,9 +797,9 @@ function generateReport(isViewMode = false) {
 
         let driverText = '';
         if (driverReady && driverReady.value === 'yes') {
-            driverText = 'driver feels ready.';
+            driverText = '🥶 Driver feels ready and confident to go solo next day.';
         } else if (driverReady && driverReady.value === 'no') {
-            driverText = 'driver doesn\'t feel ready or confident to go alone yet.';
+            driverText = '😟 Driver doesn\'t feel ready or confident to go alone yet.';
         }
 
         let trainerText = '';
@@ -830,19 +812,19 @@ function generateReport(isViewMode = false) {
         }
 
         if (driverText && trainerText) {
-            if (trainerReady.value === 'yes' && driverReady.value === 'yes') {
-                readinessAssessment = `${trainerText} And ${driverText}\n`;
-            } else if (trainerReady.value === 'yes' && driverReady.value === 'no') {
-                readinessAssessment = `${trainerText} But ${driverText}\n`;
-            } else if ((trainerReady.value === 'one_more' || trainerReady.value === 'multiple_more') && driverReady.value === 'yes') {
-                readinessAssessment = `${trainerText} But ${driverText}\n`;
+            if (driverReady.value === 'yes' && trainerReady.value === 'yes') {
+                readinessAssessment = `Both driver and trainer assess trainee as ready to go solo.\n`;
+            } else if (driverReady.value === 'yes' && (trainerReady.value === 'one_more' || trainerReady.value === 'multiple_more')) {
+                readinessAssessment = `${driverText} However, ${trainerText.toLowerCase()}\n`;
+            } else if (driverReady.value === 'no' && trainerReady.value === 'yes') {
+                readinessAssessment = `${trainerText} However, ${driverText.toLowerCase()}\n`;
             } else {
-                readinessAssessment = `${trainerText} And ${driverText}\n`;
+                readinessAssessment = `${driverText}\n${trainerText}\n`;
             }
-        } else if (trainerText) {
-            readinessAssessment = `${trainerText}\n`;
         } else if (driverText) {
             readinessAssessment = `${driverText}\n`;
+        } else if (trainerText) {
+            readinessAssessment = `${trainerText}\n`;
         }
     }
 
@@ -1359,25 +1341,16 @@ function confirmDeleteSavedReport(reportId) {
 // ========================================
 
 // Initialize ride-along tool - called when tool is opened from main menu
-function initRideAlongTool() {
+function initridealongTool() {
     console.log('Initializing Ride Along Tool');
-    rideAlongState.reset();  // Reset state to prevent persistence
+    rideAlongState.reset();  // Reset state to prevent persistence from previous sessions
     document.querySelectorAll('#ride-along-app .interface-screen').forEach(screen => {
         screen.classList.remove('active');
     });
 
-    const savedReports = getSavedReports();
-    if (savedReports.length > 0) {
-        const savedScreen = document.getElementById('saved-reports-screen');
-        if (savedScreen) {
-            savedScreen.classList.add('active');
-            renderSavedReports();
-        }
-    } else {
-        const inputScreen = document.getElementById('driver-trainer-input-screen');
-        if (inputScreen) {
-            inputScreen.classList.add('active');
-        }
+    const inputScreen = document.getElementById('driver-trainer-input-screen');
+    if (inputScreen) {
+        inputScreen.classList.add('active');
     }
 
     updateNavigationButtons();
@@ -1392,6 +1365,6 @@ window.startNewReport = startNewReport;
 window.viewSavedReport = viewSavedReport;
 window.copySavedReport = copySavedReport;
 window.confirmDeleteSavedReport = confirmDeleteSavedReport;
-window.initRideAlongTool = initRideAlongTool;
+window.initRideAlongTool = initridealongTool;
 
 console.log('Ride Along Tool loaded and ready');
